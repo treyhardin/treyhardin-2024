@@ -6,13 +6,12 @@ import { getHomePageContent } from '../utils/sanityClient';
 
 const data = await getHomePageContent()
 const content = data[0].content
+console.log(content)
 ---
 
-<Layout title="Creative Director & Developer">
+<Layout title="About">
 	<main>
-		{content.map((block) => (
-			<SectionBlock type={block._type} content={block} />
-		))}
+		<h1>About</h1>
 	</main>
 </Layout>
 

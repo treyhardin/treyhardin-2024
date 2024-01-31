@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getProjects } from '../../utils/sanityClient';
+
+const data = await getProjects()
+const content = data
+---
+
+<Layout title="Welcome to Astro.">
+	<main>
+		<h1>Work</h1>
+    <div class="projectsGrid">
+      {content.map((project) => (
+        <a href={`work/${project.slug.current}`}>
+          <p>{project.title}</p>
+        </a>
+      ))}
+    </div>
+	</main>
+</Layout>
+
+<style>
+	main {
+		min-height: 100lvh;
+	}
+</style>
