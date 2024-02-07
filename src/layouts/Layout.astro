@@ -28,7 +28,7 @@ const { title } = Astro.props;
 		<meta property="og:type" content="website">
 		<meta property="og:title" content={data[0].title}>
 		<meta property="og:description" content={data[0].description}>
-		<meta property="og:image" content="http://meetdomaine.com/og_image.png">
+		<meta property="og:image" content={urlFor(data[0].ogImage).url()}>
 
 		<!-- Twitter Meta Tags -->
 		<meta name="twitter:card" content="summary_large_image">
@@ -36,7 +36,7 @@ const { title } = Astro.props;
 		<meta property="twitter:url" content="https://www.treyhardin.com">
 		<meta name="twitter:title" content={data[0].title}>
 		<meta name="twitter:description" content={data[0].description}>
-		<meta name="twitter:image" content="http://meetdomaine.com/og_image.png">
+		<meta name="twitter:image" content={urlFor(data[0].twitterImage).url()}>
 
 		<meta name="generator" content={Astro.generator} />
     <ViewTransitions />
@@ -50,7 +50,7 @@ const { title } = Astro.props;
 <style is:global>
 
 	* {
-		
+
 	}
 
 	:root {
