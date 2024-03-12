@@ -1,19 +1,26 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
 import SectionBlock from '../components/sections/SectionBlock.astro';
 import { getHomePageContent } from '../utils/sanityClient';
+import Header from '../components/global/Header.astro';
 
 const data = await getHomePageContent()
-const content = data[0].content
+const content = data.content
+// console.log(content)
 ---
 
-<Layout title="Creative Director & Developer">
-	<main>
-		{content.map((block) => (
-			<SectionBlock type={block._type} content={block} />
-		))}
-	</main>
+<Layout 
+	title="Creative Director & Developer"
+	theme="light"
+	inlineHeader={true}
+>
+	{content.map((block, i) => (
+			<>
+				{i == 1 && <Header />}
+				<SectionBlock type={block._type} content={block} />
+			</>
+		)
+	)}
 </Layout>
 
 <style>

@@ -8,6 +8,11 @@ export const client = createClient({
   apiVersion: '2024-01-30', // use current date (YYYY-MM-DD) to target the latest API version
 })
 
+const contentBlocks = (`
+  _type == "sectionHome_Hero" => {..., "imageURL": image.asset->url},
+  _type == "sectionGlobal_VideoText" => {...},
+`)
+
 
 const builder = imageUrlBuilder(client)
 
@@ -26,8 +31,8 @@ export async function getPosts() {
 }
 
 export async function getHomePageContent() {
-  const content = await client.fetch('*[_type == "homePage"]')
-  return content
+  const content = await client.fetch(`*[_type == "homePage"]{..., content[]{${contentBlocks}} }`)
+  return content[0]
 }
 
 export async function getProjects() {

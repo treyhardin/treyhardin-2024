@@ -1,0 +1,146 @@
+---
+import { urlFor } from "../../../utils/sanityClient";
+import LogoTrey from '../../../icons/LogoTrey.astro'
+import Star from '../../../icons/Star.astro'
+const { content } = Astro.props;
+
+const details = [...content.details, ...content.details]
+---
+<section class="home_hero">
+
+  <div class="hero-content">
+
+    <div class="section-title">
+      <a href="#" class="logo">
+        <LogoTrey />
+      </a>
+      <p class="description caption">{content.description}</p>
+    </div>
+
+    <div class="details">
+      {details.map((detail) => {
+        return (
+          <>
+            <p class="detail-text h6">{detail}</p>
+            <span class="detail-icon">
+              <Star />
+            </span>
+          </>
+        )
+      })}
+    </div>
+
+    <img
+      class="image"
+      width="3600"
+      height="1800"
+      sizes="100vw"
+      srcset={`
+        ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
+        ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,
+        ${urlFor(content.image).width(1800).height(900).auto('format').url()} 1800w,
+        ${urlFor(content.image).width(2400).height(1200).auto('format').url()} 2400w,
+        ${urlFor(content.image).width(3000).height(1500).auto('format').url()} 3000w,
+        ${urlFor(content.image).width(3600).height(1800).auto('format').url()}
+      `}
+      src={urlFor(content.image).auto('format').url()}
+      alt={content.imageAlt} 
+    />
+  </div>
+
+  
+
+</section>
+
+<style>
+  .home_hero {
+    height: calc(100svh - var(--header-height) - var(--page-margin));
+    padding: var(--page-margin) var(--page-margin) 0;
+    color: var(--color-background);
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+
+  }
+
+  .hero-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+    flex-basis: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .section-title {
+    padding: var(--space-sm);
+    z-index: 1;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .logo {
+    color: inherit;
+    flex: 0 0 max(120px, 30vw);
+  }
+
+  .logo svg {
+    width: 100%;
+  }
+
+  .description {
+    max-width: 40ch;
+    text-align: justify;
+  }
+
+  .details {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: var(--space-2xs) 0;
+    z-index: 1;
+    width: 200%;
+    will-change: translate;
+    animation: scroll 30s linear 0s infinite;
+    gap: var(--space-xs);
+  }
+
+  @keyframes scroll {
+    to {
+      translate: -50% 0;
+    }
+  }
+
+  .detail-text {
+    flex-shrink: 0;
+    margin: 0;
+  }
+
+  .detail-icon {
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: var(--icon-md);
+    height: var(--icon-md);
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+
+
+</style>

@@ -1,0 +1,124 @@
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url("/InstrumenSerif-Regular.otf") format("opentype"),
+       url("/InstrumenSerif-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  src: url("/InstrumenSerif-Italic.otf") format("opentype"),
+       url("/InstrumenSerif-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+}
+
+:root {
+		--font-family-heading: 'Instrument Serif', Georgia, serif;
+		--font-family-body: 'Inter', Helvetica, Arial, system-ui, sans-serif;
+}
+
+
+body,
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6,
+p,
+legend,
+input,
+label,
+.caption {
+  --base-size-normalized: calc( (var(--base-size) / 1440) * 100vw );
+  font-size: max( calc(var(--min-size) * 1px), var(--base-size-normalized) );
+}
+
+h1, .h1,
+h2, .h2,
+h3, .h3,
+h4, .h4,
+h5, .h5,
+h6, .h6 {
+  margin: 0 0 0.2em;
+  font-weight: 400;
+}
+
+h1, .h1 {
+  --min-size: 42;
+  --base-size: 68;
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.05em;
+  line-height: 0.99;
+}
+
+h2, .h2 {
+  --min-size: 38;
+  --base-size: 54;
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.05em;
+  line-height: .95;
+}
+
+h3, .h3 {
+  --min-size: 32;
+  --base-size: 44;
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+
+h4, .h4 {
+  --min-size: 28;
+  --base-size: 34;
+  font-family: var(--font-family-heading);
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+}
+h5, .h5 {
+  --min-size: 22;
+  --base-size: 26;
+  font-family: var(--font-family-body);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+h6, .h6 {
+  --min-size: 18;
+  --base-size: 20;
+  font-family: var(--font-family-body);
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+body,
+p,
+.p {
+  --min-size: 12;
+  --base-size: 14;
+  font-family: var(--font-family-body);
+  /* margin: 0 0 1em; */
+  letter-spacing: 0;
+  margin: 0;
+}
+
+.caption {
+  --min-size: 10;
+  --base-size: 12;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+code {
+  font-family:
+    Menlo,
+    Monaco,
+    Lucida Console,
+    Liberation Mono,
+    DejaVu Sans Mono,
+    Bitstream Vera Sans Mono,
+    Courier New,
+    monospace;
+}

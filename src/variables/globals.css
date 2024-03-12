@@ -1,0 +1,14 @@
+* {
+    /* Browser Resets */
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+:root {
+    /* Global Sizes */
+    --header-height: 80px;
+    --page-margin: 20px;
+}

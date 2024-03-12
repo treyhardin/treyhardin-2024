@@ -1,0 +1,40 @@
+:root {
+
+  /* Color */
+  --color-ink: #000000;
+  --color-subdued: #000000;
+  --color-light: #ffffff;
+  --color-reverse: #ffffff;
+
+  --color-brand: #ffffff;
+  --color-brand-contrast: #ffffff;
+  --color-brand-secondary: #ffffff;
+  --color-brand-secondary-contrast: #ffffff;
+
+
+  --color-border: var(--color-neutral);
+
+
+
+}
+
+html {
+  background: var(--color-background);
+  color: var(--color-foreground);
+
+  --color-foreground: var(--color-reverse);
+  --color-foreground-secondary: var(--color-light);
+  --color-background: var(--color-ink);
+  --color-background-secondary: var(--color-subdued);
+  --color-link: var(--color-brand);
+  --color-link-hover: var(--color-brand-secondary);
+}
+
+html[data-theme="light"] {
+  --color-foreground: var(--color-ink);
+  --color-foreground-secondary: var(--color-subdued);
+  --color-background: var(--color-reverse);
+  --color-background-secondary: var(--color-light);
+  --color-link: var(--color-brand);
+  --color-link-hover: var(--color-brand-secondary);
+}
