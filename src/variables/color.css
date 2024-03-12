@@ -2,8 +2,9 @@
 
   /* Color */
   --color-ink: #000000;
-  --color-subdued: #000000;
-  --color-light: #ffffff;
+  --color-subdued: #646464;
+  --color-neutral: #858585;
+  --color-light: #aaaaaa;
   --color-reverse: #ffffff;
 
   --color-brand: #ffffff;

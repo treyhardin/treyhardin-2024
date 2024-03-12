@@ -1,11 +1,16 @@
 ---
 ---
 <header>
-  <a href="/">Home</a>
-  <a href="/work">Work</a>
-  <a href="/about">About</a>
-  <a href="/contact">Contact</a>
-  <a href="/styleguide">Styleguide</a>
+  <a href="/" class="caption">
+    Trey Hardin
+  </a>
+  <nav class="navigation-links">
+    <a href="/work" class="caption">Work</a>
+    <a href="/about" class="caption">About</a>
+    <a href="/about" class="caption">Musings</a>
+    <a href="/contact" class="caption">Contact</a>
+  </nav>
+  <p class="header-detail caption">Brooklyn, NY</a>
 </header>
 <style>
   header {
@@ -17,5 +22,20 @@
     height: var(--header-height);
     position: sticky;
     top: 0;
+    color: var(--color-foreground-secondary);
+  }
+
+  .navigation-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--color-foreground);
+  }
+
+  @media screen and (max-width:460px) {
+    .header-detail {
+      display: none;
+    }
   }
 </style>

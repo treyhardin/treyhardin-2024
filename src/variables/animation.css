@@ -1,0 +1,7 @@
+:root {
+  --anim-easing: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --anim-sm: 0.3s var(--anim-easing);
+  --anim-md: 0.65s var(--anim-easing);
+  --anim-lg: 1s var(--anim-easing);
+}
