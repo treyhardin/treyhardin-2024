@@ -1,0 +1,231 @@
+---
+import Star from "../../../icons/Star.astro";
+import { urlFor } from "../../../utils/sanityClient";
+
+const { content } = Astro.props;
+const buttonContentIterations = 10;
+// console.log(content)
+---
+<section class="projects">
+  {content.projects.map((project, i) => (
+    <div class="project-card">
+      <div class="media">
+        {i < 1 ?
+        <img 
+          class="image"
+          sizes="100vw"
+          width="50vw"
+          height="67vw"
+          srcset={`
+            ${urlFor(project.mainImage).width(600).height(800).auto('format').url()} 600w,
+            ${urlFor(project.mainImage).width(960).height(1280).auto('format').url()} 960w,
+            ${urlFor(project.mainImage).width(1280).height(1706).auto('format').url()} 1280w,
+            ${urlFor(project.mainImage).width(1440).height(1920).auto('format').url()} 1440w,
+          `}
+          src={urlFor(project.mainImage).width(600).height(800).auto('format').url()} 
+        /> :
+        <img 
+          class="image"
+          sizes="50vw"
+          width="50vw"
+          height="38vw"
+          srcset={`
+            ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+            ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+            ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+            ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+            ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
+          `}
+          src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+        />
+        }
+      </div>
+      <div class="content">
+        <div class="section-intro">
+          <p class="caption">Work</p>
+          <p class="caption">{`(0${i + 1})`}</p>
+        </div>
+        <div class="info">
+          <div class="section-title">
+            <div class="title-wrapper">
+              <a class={`title ${i < 1 ? 'h1' : 'h3'}`}>{project.title}</a>
+              <p class="project-type caption">{project.projectType}</p>
+            </div>
+            <p class="subtitle caption">{project.subtitle}</p>
+          </div>
+          {i < 1 && 
+            <div class="details">
+              <p class="excerpt h5">{project.excerpt}</p>  
+              <a class="button" href={`/work/${project.slug.current}`}>
+                View Project
+                <Star />
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  ))}
+</section>
+
+  <style>
+    .projects {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      padding: var(--page-margin);
+      gap: var(--page-margin);
+    }
+
+    .project-card {
+      margin-bottom: 100px;
+      display: flex;
+      flex-direction: column;
+      flex: 1 0 25%;
+      margin: 0;
+      position: relative;
+      gap: var(--space-2xs);
+    }
+
+    .project-card:nth-child(1) {
+      /* min-height: calc(100svh - var(--header-height)); */
+      flex-direction: row;
+      flex: 0 0 100%;
+      gap: var(--page-margin);
+    }
+
+    .project-card:nth-child(1) .media {
+      /* min-height: calc(100svh - var(--header-height)); */
+      flex: 0 1 50%;
+      aspect-ratio: 3 / 4;
+    }
+
+    .project-card:nth-child(1) .content {
+      padding: 0 var(--space-sm);
+    }
+
+    .project-card:nth-child(1) .info {
+      flex-grow: 1;
+      justify-content: center;
+    }
+
+    .project-card:nth-child(1) .section-intro {
+      position: relative;
+      padding: 0;
+      color: var(--color-foreground-secondary);
+      mix-blend-mode: none;
+    }
+
+    .media {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      aspect-ratio: 4 / 3;
+      z-index: 0;
+    }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      flex: 0 1 50%;
+    }
+
+    .section-intro {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      color: var(--color-foreground-secondary);
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      padding: var(--space-2xs);
+      color: var(--color-reverse);
+      mix-blend-mode: difference;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    .section-title {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3xs);
+    }
+
+    .title-wrapper {
+      display: flex;
+      flex-direction: row;
+      align-items: flex-start;
+      gap: var(--space-2xs);
+    }
+
+    .title {
+      margin: 0;
+    }
+
+    .project-type {
+      border: 1px solid var(--color-foreground);
+      border-radius: var(--radius-rounded);
+      padding: 0.2em 0.8em;
+    }
+ 
+    .details {
+      max-width: 60ch;
+      margin-left: 3em;
+      /* align-self: flex-end; */
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      align-items: flex-start;
+    }
+
+    @media screen and (max-width: 768px) {
+      .projects {
+        flex-direction: column;
+        flex-wrap: nowrap;
+      }
+
+      .project-card {
+        flex: 0 0 auto;
+        padding-bottom: var(--space-md);
+      }
+
+      .project-card:nth-child(1) {
+        flex-direction: column;
+      }
+
+      .project-card:nth-child(1) .content {
+        padding: 0;
+      }
+
+      .media {
+        flex: 0 0 auto;
+      }
+
+      .content {
+        flex: 0 0 auto;
+      }
+
+      .info {
+        gap: var(--space-sm);
+      }
+
+      .details {
+        /* max-width: unset; */
+        margin-left: 0;
+      }
+    }
+
+
+  </style>

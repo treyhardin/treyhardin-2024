@@ -26,6 +26,15 @@ a:not(.button):hover::after {
   padding: var(--space-3xs) var(--space-2xs);
   border: 1px solid var(--color-foreground);
   border-radius: var(--radius-sm);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3xs);
   /* outline: none;
   overflow: hidden; */
+}
+
+.button svg {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }

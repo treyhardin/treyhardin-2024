@@ -11,6 +11,7 @@ export const client = createClient({
 const contentBlocks = (`
   _type == "sectionHome_Hero" => {..., "imageURL": image.asset->url},
   _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
+  _type == "sectionGlobal_Projects" => {..., projects[]->{..., "projectType": type->title }},
 `)
 
 
