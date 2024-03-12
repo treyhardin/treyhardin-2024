@@ -28,6 +28,7 @@ h4, .h4,
 h5, .h5,
 h6, .h6,
 p,
+a,
 legend,
 input,
 label,
@@ -73,7 +74,7 @@ h3, .h3 {
 h4, .h4 {
   --min-size: 28;
   --base-size: 34;
-  font-family: var(--font-family-heading);
+  font-family: var(--font-family-body);
   letter-spacing: -0.05em;
   line-height: 1.1;
 }
@@ -94,7 +95,8 @@ h6, .h6 {
 
 body,
 p,
-.p {
+.p,
+a {
   --min-size: 12;
   --base-size: 14;
   font-family: var(--font-family-body);
@@ -103,7 +105,8 @@ p,
   margin: 0;
 }
 
-.caption {
+.caption,
+.button {
   --min-size: 10;
   --base-size: 12;
   letter-spacing: 0.02em;
@@ -121,28 +124,4 @@ code {
     Bitstream Vera Sans Mono,
     Courier New,
     monospace;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-  position: relative;
-}
-
-a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  /* right: 0; */
-  width: 0%;
-  bottom: -0.2em;
-  height: 1px;
-  background: red;
-  /* max-width: 0%; */
-  /* transition: width 1s linear; */
-  transition: width var(--anim-sm);
-}
-
-a:hover::after {
-  width: 100%;
 }
