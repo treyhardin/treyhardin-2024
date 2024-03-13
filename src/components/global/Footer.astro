@@ -1,5 +1,102 @@
 ---
+import { Icon } from 'astro-icon/components'
 ---
 <footer>
-  Footer
+
+  <div class="content">
+
+    <div class="section-title">
+
+      <span class="logo-primary">
+        <Icon name="logoTrey" class="logo"/>
+        <span class="tagline">
+          <Icon name="star" />
+          <p class="caption">"George" technically</p>
+        </span>
+      </span>
+
+      <nav class="navigation">
+        <a href="#" class="h5">Work</a>
+        <a href="#" class="h5">About</a>
+        <a href="#" class="h5">Musings</a>
+        <a href="#" class="h5">Contact</a>
+      </nav>
+    </div>
+
+
+    <div class="section-details">
+      <p class="h5">Brooklyn, NY</p>
+      <span class="logo-secondary">
+        <Icon name="logoHardin" class="logo" />
+      </span>
+
+    </div>
+  </div>
+  <div class="subfooter">
+    <p class="caption">Trey Hardin ©2024</p>
+    <a href="#" class="caption">Truman Creative</p>
+  </div>
 </footer>
+
+<style>
+
+  footer {
+    min-height: calc(100svh - var(--header-height));
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    padding: var(--space-2xs) var(--page-margin);
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+
+  .logo {
+    width: auto;
+    height: max(20vw, 100px);;
+  }
+
+  .section-title {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* align-items: flex-start; */
+    justify-content: space-between;
+  }
+
+  .logo-primary {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+
+  .tagline {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-3xs);
+  }
+
+  .navigation {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-xs);
+  }
+
+  .section-details {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .subfooter {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+</style>
