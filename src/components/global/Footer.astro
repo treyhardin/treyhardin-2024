@@ -66,6 +66,7 @@ import { Icon } from 'astro-icon/components'
     align-items: center;
     /* align-items: flex-start; */
     justify-content: space-between;
+    gap: var(--space-xs);
   }
 
   .logo-primary {
@@ -92,11 +93,36 @@ import { Icon } from 'astro-icon/components'
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: var(--space-xs);
   }
 
   .subfooter {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  @media screen and (max-width: 768px) {
+    footer {
+
+    }
+
+    .content {
+      /* justify-content: space-between; */
+    }
+
+    .section-title {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .navigation {
+      flex-direction: column;
+    }
+
+    .section-details {
+      flex-direction: column;
+      align-items: flex-end;
+    }
   }
 </style>
