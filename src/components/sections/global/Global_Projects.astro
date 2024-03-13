@@ -73,7 +73,7 @@ const buttonContentIterations = 10;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
-      padding: var(--page-margin);
+      padding: var(--page-margin) var(--page-margin) var(--space-xl);
       gap: var(--page-margin);
     }
 
@@ -116,6 +116,14 @@ const buttonContentIterations = 10;
       mix-blend-mode: none;
     }
 
+
+    .project-card:nth-child(1) .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: stretch;
+      flex: 0 1 50%;
+    }
+
     .media {
       border-radius: var(--radius-md);
       overflow: hidden;
@@ -132,8 +140,6 @@ const buttonContentIterations = 10;
     .content {
       display: flex;
       flex-direction: column;
-      justify-content: stretch;
-      flex: 0 1 50%;
     }
 
     .section-intro {

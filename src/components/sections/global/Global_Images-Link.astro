@@ -1,0 +1,225 @@
+---
+import Star from "../../../icons/Star.astro";
+import { urlFor } from "../../../utils/sanityClient";
+
+const { content } = Astro.props;
+const tickerCount = 10;
+const tickerText = [];
+
+for (let i = 0; i < tickerCount; i++) {
+  tickerText.push(content.linkText);
+}
+---
+<section class="images-link">
+
+  <div class="section-title">
+    <span class="media-featured">
+      <img 
+        class="image"
+        width="30vw"
+        height="22.5vw"
+        sizes="30vw"
+        srcset={`
+          ${urlFor(content.images[0].image).width(400).height(400).url()} 400w,
+        `}
+        src={urlFor(content.images[0].image).url()}
+      />
+    </span>
+    <span class="text">
+      <p class="description caption">{content.description}</p>
+    </span>
+  </div>
+
+  <a href="#" class="section-link">
+    {tickerText.map(() => (
+      <>
+        <p class="link-text h3">{content.linkText}</p>
+        <span class="icon">
+          <Star />
+        </span>
+      </>
+    ))}
+    </a>
+  </a>
+
+  <div class="section-details">
+    <span class="pagination">
+      <p class="caption">{content.subtext}</p>
+      <span class="divider"></span>
+    </span>
+    <span class="inline-images">
+      {content.images.map((asset, i) => {
+        if (i > 0){
+          return (
+            <span class="media-inline">
+              <img 
+                class="inline-image"
+                src={urlFor(asset.image).url()} 
+              />
+            </span>
+          )
+        }
+      })}
+    </span>
+  </div>
+
+</section>
+
+<style>
+  .images-link {
+    /* height: calc(100svh - var(--header-height)); */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: stretch;
+    gap: var(--space-2xs);
+    overflow: hidden;
+  }
+
+  .section-title {
+    padding: 0 var(--page-margin);
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    gap: var(--space-xs);
+    /* flex: 0 1 50%; */
+  }
+
+  .section-title .text {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .section-title .description {
+    flex: 0 1 100%;
+    max-width: 40ch;
+    text-align: justify;
+  }
+
+  .section-title .media-featured {
+    flex: 0 0 40%;
+    aspect-ratio: 4 / 3;
+  }
+
+  .section-title .media-featured .image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+
+  .media-featured,
+  .media-inline {
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+  }
+
+  .section-link {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    gap: var(--space-2xs);
+    padding: var(--space-xs) 0;
+    width: 200%;
+    will-change: translate;
+    animation: scroll 20s linear 0s infinite;
+    animation-play-state: running;
+    position: relative;
+    transition: color var(--anim-sm);
+  }
+
+  .section-link:hover {
+    animation-play-state: paused;
+    color: var(--color-background);
+  }
+
+  .section-link:hover .link-text,
+  .section-link:hover .icon {
+    z-index: 1;
+  }
+
+  .section-link::after {
+    position: absolute;
+    background: var(--color-foreground);
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 0;
+    /* top: 0; */
+    z-index: 0;
+    transition: height var(--anim-sm);
+  }
+
+  .section-link:hover::after {
+    height: 100%;
+  }
+
+  @keyframes scroll {
+    to {
+      translate: calc(-50% - var(--space-2xs)) 0;
+    }
+  }
+
+  .link-text {
+    flex: 0 0 auto;
+    margin: 0;
+  }
+
+  .section-link .icon {
+    flex: 0 0 var(--icon-md);
+    aspect-ratio: 1 / 1;
+  }
+
+  .section-details {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: flex-end;
+    padding: 0 var(--page-margin);
+    gap: var(--space-sm);
+    /* flex: 0 1 50%; */
+    align-self: stretch;
+  }
+
+  .pagination {
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    align-items: center;
+    gap: var(--space-2xs);
+    color: var(--color-foreground-secondary);
+    /* min-width: 200px; */
+  }
+
+  .pagination .divider {
+    flex-grow: 1;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .inline-images {
+    display: flex;
+    flex-direction: row;
+    justify-content: stretch;
+    flex: 0 0 60%;
+    gap: var(--space-2xs);
+  }
+
+  .media-inline {
+    flex: 0 1 100%;
+  }
+
+  .inline-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  
+</style>

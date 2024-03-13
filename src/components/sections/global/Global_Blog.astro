@@ -1,0 +1,113 @@
+---
+import Star from "../../../icons/Star.astro";
+import { urlFor } from "../../../utils/sanityClient";
+
+const { content } = Astro.props;
+console.log(content)
+---
+<section class="blog">
+  <div class="content">
+
+    <div class="section-title">
+      <span class="featured-post">
+        <h2 class="post-title h1">{content.featuredPost.title}</h2>
+        <a href="#" class="button">
+          <Star />
+          <p>Read More</p>
+        </a>
+      </span>
+      <p class="caption">Musings</p>
+    </div>
+
+    <div class="section-detail">
+      <div class="posts">
+
+      </div>
+      <a href="#" class="button">
+        <Star />
+        View All
+      </a>
+    </div>
+
+    <img 
+      class="image"
+      width="100vw"
+      height="100vh"
+      sizes="100vw"
+      srcset={`
+        ${urlFor(content.featuredPost.mainImage).width(600).height(600).auto('format').url()} 600w,
+        ${urlFor(content.featuredPost.mainImage).width(960).height(960).auto('format').url()} 960w,
+        ${urlFor(content.featuredPost.mainImage).width(1280).height(1280).auto('format').url()} 1280w,
+        ${urlFor(content.featuredPost.mainImage).width(1440).height(1440).auto('format').url()} 1440w,
+        ${urlFor(content.featuredPost.mainImage).width(1880).height(1880).auto('format').url()} 1880w,
+        ${urlFor(content.featuredPost.mainImage).width(2048).height(2048).auto('format').url()} 2048w,
+        ${urlFor(content.featuredPost.mainImage).width(2880).height(2880).auto('format').url()} 2880w,
+      `}
+      src={urlFor(content.featuredPost.mainImage).url()} 
+    />
+  </div>
+</section>
+
+<style>
+  .blog {
+    height: calc(100svh - var(--header-height));
+    padding: var(--space-md) var(--page-margin);
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    align-items: stretch;
+  }
+
+  .content {
+    flex-basis: 100%;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  .section-title {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-sm);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: var(--space-lg);
+  }
+
+  .featured-post {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xs);
+    align-items: flex-start;
+    max-width: 60ch;
+  }
+
+  .featured-post .post-title {
+    margin: 0;
+  }
+
+  .section-detail {
+    position: relative;
+    z-index: 1;
+    padding: var(--space-sm);
+    align-self: flex-end;
+    max-width: 40ch;
+  }
+
+  .image {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+  }
+</style>

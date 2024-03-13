@@ -2,6 +2,8 @@
 import HomeHero from './home/Home_Hero.astro'
 import VideoText from './global/Global_Video-Text.astro'
 import Projects from './global/Global_Projects.astro'
+import ImagesLink from './global/Global_Images-Link.astro'
+import Blog from './global/Global_Blog.astro'
 import About from './About.astro'
 import Work from './Work.astro'
 import Clients from './Clients.astro'
@@ -10,6 +12,8 @@ const { type, content } = Astro.props
 {type == 'sectionHome_Hero' && <HomeHero content={content} /> }
 {type == 'sectionGlobal_VideoText' && <VideoText content={content} /> }
 {type == 'sectionGlobal_Projects' && <Projects content={content} /> }
-{type == 'aboutSection' && <About /> }
+{type == 'sectionGlobal_ImagesLink' && <ImagesLink content={content} /> }
+{type == 'sectionGlobal_Blog' && <Blog content={content} /> }
+<!-- {type == 'aboutSection' && <About /> }
 {type == 'workSection' && <Work /> }
-{type == 'clientsSection' && <Clients /> }
+{type == 'clientsSection' && <Clients /> } -->

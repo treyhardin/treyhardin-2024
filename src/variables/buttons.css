@@ -4,6 +4,10 @@ a {
   position: relative;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 a:not(.button)::after {
   content: "";
   position: absolute;
