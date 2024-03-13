@@ -21,7 +21,11 @@ console.log(content)
 
     <div class="section-detail">
       <div class="posts">
-
+        {content.featuredPost.otherPosts.map((post) => (
+          <a href="#" class="related-post">
+            <p class="related-post-title h6">{post.title}</p>
+          </a>
+        ))}
       </div>
       <a href="#" class="button">
         <Star />
@@ -51,7 +55,9 @@ console.log(content)
 <style>
   .blog {
     height: calc(100svh - var(--header-height));
-    padding: var(--space-md) var(--page-margin);
+    /* display: none; */
+    padding: 0 var(--page-margin);
+    margin: var(--space-md) 0;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -96,7 +102,35 @@ console.log(content)
     z-index: 1;
     padding: var(--space-sm);
     align-self: flex-end;
-    max-width: 40ch;
+    max-width: 50ch;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2xs);
+  }
+
+  .posts {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .related-post {
+    padding: var(--space-xs) 0;
+  }
+
+  .related-post::after {
+    width: 100%;
+    background: currentColor;
+    opacity: 0.2;
+  }
+
+  .related-post:last-child::after {
+    display: none;
+  }
+
+  .related-post-title {
+    margin: 0;
   }
 
   .image {
