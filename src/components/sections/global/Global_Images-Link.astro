@@ -16,11 +16,15 @@ for (let i = 0; i < tickerCount; i++) {
     <span class="media-featured">
       <img 
         class="image"
-        width="30vw"
-        height="22.5vw"
+        width="40vw"
+        height="30vw"
         sizes="30vw"
         srcset={`
-          ${urlFor(content.images[0].image).width(400).height(400).url()} 400w,
+          ${urlFor(content.images[0].image).width(400).height(300).auto('format').url()} 400w,
+          ${urlFor(content.images[0].image).width(600).height(450).auto('format').url()} 600w,
+          ${urlFor(content.images[0].image).width(960).height(720).auto('format').url()} 960w,
+          ${urlFor(content.images[0].image).width(1280).height(960).auto('format').url()} 1280w,
+          ${urlFor(content.images[0].image).width(1440).height(1080).auto('format').url()} 1080w,
         `}
         src={urlFor(content.images[0].image).url()}
       />
@@ -53,7 +57,16 @@ for (let i = 0; i < tickerCount; i++) {
           return (
             <span class="media-inline">
               <img 
+                width="20vw"
+                height="26.67vw"
                 class="inline-image"
+                sizes="20vw"
+                srcset={`
+                  ${urlFor(asset.image).width(120).height(90).auto('format').url()} 120w,
+                  ${urlFor(asset.image).width(240).height(180).auto('format').url()} 240w,
+                  ${urlFor(asset.image).width(400).height(300).auto('format').url()} 400w,
+                  ${urlFor(asset.image).width(600).height(450).auto('format').url()} 600w,
+                `}
                 src={urlFor(asset.image).url()} 
               />
             </span>

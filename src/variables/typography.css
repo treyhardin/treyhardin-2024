@@ -52,7 +52,7 @@ h1, .h1 {
   --base-size: 96;
   font-family: var(--font-family-heading);
   letter-spacing: -0.05em;
-  line-height: 0.99;
+  line-height: 0.95;
 }
 
 h2, .h2 {
