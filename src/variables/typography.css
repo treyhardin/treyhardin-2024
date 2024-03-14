@@ -48,31 +48,31 @@ h6, .h6 {
 }
 
 h1, .h1 {
-  --min-size: 42;
-  --base-size: 68;
+  --min-size: 50;
+  --base-size: 96;
   font-family: var(--font-family-heading);
   letter-spacing: -0.05em;
   line-height: 0.99;
 }
 
 h2, .h2 {
-  --min-size: 38;
-  --base-size: 54;
+  --min-size: 42;
+  --base-size: 76;
   font-family: var(--font-family-heading);
   letter-spacing: -0.05em;
   line-height: .95;
 }
 
 h3, .h3 {
-  --min-size: 32;
-  --base-size: 44;
+  --min-size: 38;
+  --base-size: 64;
   font-family: var(--font-family-heading);
   letter-spacing: -0.05em;
   line-height: 1.1;
 }
 
 h4, .h4 {
-  --min-size: 28;
+  --min-size: 26;
   --base-size: 34;
   font-family: var(--font-family-body);
   letter-spacing: -0.05em;
@@ -82,14 +82,14 @@ h5, .h5 {
   --min-size: 22;
   --base-size: 26;
   font-family: var(--font-family-body);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.04em;
   line-height: 1.1;
 }
 h6, .h6 {
   --min-size: 18;
   --base-size: 20;
   font-family: var(--font-family-body);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.04em;
   line-height: 1.2;
 }
 
@@ -107,7 +107,7 @@ a {
 
 .caption,
 .button {
-  --min-size: 10;
+  --min-size: 12;
   --base-size: 12;
   letter-spacing: 0.02em;
   margin: 0;

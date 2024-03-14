@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 ---
 
-<Layout title="About">
+<Layout title="About" theme="dark">
 	<main>
 
     <section class="typography">
@@ -14,6 +14,18 @@ import Card from '../components/Card.astro';
       <h5>Heading 5</h5>
       <h6>Heading 6</h6>
     </section>
+
+    <section class="spacing">
+      <span class="spacer spacer-3xs"></span>
+      <span class="spacer spacer-2xs"></span>
+      <span class="spacer spacer-xs"></span>
+      <span class="spacer spacer-sm"></span>
+      <span class="spacer spacer-md"></span>
+      <span class="spacer spacer-lg"></span>
+      <span class="spacer spacer-xl"></span>
+      <span class="spacer spacer-2xl"></span>
+      <span class="spacer spacer-3xl"></span>
+    </section>
     
 	</main>
 </Layout>
@@ -21,5 +33,60 @@ import Card from '../components/Card.astro';
 <style>
 	main {
 		min-height: 100lvh;
+    padding: 0 var(--page-margin-narrow);
 	}
+
+  .typography {
+    padding: 0 0 var(--space-md);
+  }
+
+  .spacing {
+    display: flex;
+    flex-direction: row;
+    gap: var(--space-xs);
+    padding: 0 0 var(--space-md);
+  }
+
+  .spacer {
+    background: var(--color-foreground);
+    width: var(--size);
+    height: var(--size);
+  }
+
+  .spacer-3xl {
+    --size: var(--space-3xl);
+  }
+
+  .spacer-2xl {
+    --size: var(--space-2xl);
+  }
+
+  .spacer-xl {
+    --size: var(--space-xl);
+  }
+
+  .spacer-lg {
+    --size: var(--space-lg);
+  }
+
+  .spacer-md {
+    --size: var(--space-md);
+  }
+
+  .spacer-sm {
+    --size: var(--space-sm);
+  }
+
+  .spacer-xs {
+    --size: var(--space-xs);
+  }
+
+  .spacer-2xs {
+    --size: var(--space-2xs);
+  }
+
+  .spacer-3xs {
+    --size: var(--space-3xs);
+  }
+
 </style>

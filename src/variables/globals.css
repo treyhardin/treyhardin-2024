@@ -10,5 +10,6 @@
 :root {
     /* Global Sizes */
     --header-height: 80px;
-    --page-margin: 10px;
+    --page-margin: var(--space-2xs);
+    --page-margin-narrow: var(--space-md);
 }

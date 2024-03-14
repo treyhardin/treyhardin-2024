@@ -1,15 +1,24 @@
 :root {
 
 		/* Spacing */
-		--space-3xs: 5px;
-		--space-2xs: 10px;
-		--space-xs: 15px;
-		--space-sm: 20px;
-		--space-md: 30px;
-		--space-lg: 40px;
-		--space-xl: 60px;
-		--space-2xl: 80px;
-		--space-3xl: 120px;
+		/* --space-3xs: 5px; */
+		--space-3xs: max(5px, 0.5vw);
+		/* --space-2xs: 10px; */
+		--space-2xs: max(10px, 1.3vw);
+		/* --space-xs: 15px; */
+		--space-xs: max(15px, 1.95vw);
+		/* --space-sm: 20px; */
+		--space-sm: max(20px, 2.6vw);
+		/* --space-md: 30px; */
+		--space-md: max(30px, 4vw);
+		/* --space-lg: 40px; */
+		--space-lg: max(40px, 5vw);
+		/* --space-xl: 60px; */
+		--space-xl: max(60px, 8vw);
+		/* --space-2xl: 80px; */
+		--space-2xl: max(80px, 10vw);
+		/* --space-3xl: 120px; */
+		--space-3xl: max(120px, 16vw);
 
 		/* Radius */
 		--radius-sm: 6px;
