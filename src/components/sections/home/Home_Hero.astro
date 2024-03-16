@@ -1,8 +1,8 @@
 ---
 import { urlFor } from "../../../utils/sanityClient";
-import LogoTrey from '../../../icons/LogoTrey.astro'
 import Star from '../../../icons/Star.astro'
 const { content } = Astro.props;
+import { Icon } from 'astro-icon/components'
 
 const details = [...content.details, ...content.details]
 ---
@@ -11,46 +11,71 @@ const details = [...content.details, ...content.details]
   <div class="hero-content">
 
     <div class="section-title">
+
       <a href="#" class="logo">
-        <LogoTrey />
+        <Icon name="logoTrey" />
       </a>
-      <p class="description caption">{content.description}</p>
+      <span class="description-wrapper">
+        <p class="description caption">{content.description}</p>
+      </span>
     </div>
 
-    <div class="details">
-      {details.map((detail) => {
-        return (
-          <>
-            <p class="detail-text h6">{detail}</p>
-            <span class="detail-icon">
-              <Star />
-            </span>
-          </>
-        )
-      })}
+    <div class="details-wrapper">
+      <div class="details">
+        {details.map((detail) => {
+          return (
+            <>
+              <p class="detail-text h6">{detail}</p>
+              <span class="detail-icon">
+                <Star />
+              </span>
+            </>
+          )
+        })}
+      </div>
     </div>
 
-    <img
-      class="image"
-      width="3600"
-      height="1800"
-      sizes="100vw"
-      srcset={`
-        ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
-        ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,
-        ${urlFor(content.image).width(1800).height(900).auto('format').url()} 1800w,
-        ${urlFor(content.image).width(2400).height(1200).auto('format').url()} 2400w,
-        ${urlFor(content.image).width(3000).height(1500).auto('format').url()} 3000w,
-        ${urlFor(content.image).width(3600).height(1800).auto('format').url()}
-      `}
-      src={urlFor(content.image).auto('format').url()}
-      alt={content.imageAlt} 
-    />
+    <div class="media">
+      <img
+        class="image"
+        width="3600"
+        height="1800"
+        sizes="100vw"
+        srcset={`
+          ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
+          ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,
+          ${urlFor(content.image).width(1800).height(900).auto('format').url()} 1800w,
+          ${urlFor(content.image).width(2400).height(1200).auto('format').url()} 2400w,
+          ${urlFor(content.image).width(3000).height(1500).auto('format').url()} 3000w,
+          ${urlFor(content.image).width(3600).height(1800).auto('format').url()}
+        `}
+        src={urlFor(content.image).auto('format').url()}
+        alt={content.imageAlt} 
+      />
+    </div>
+
   </div>
-
-  
-
 </section>
+
+<script>
+  import { gsap } from "../../../utils/gsap";
+
+  const hero = document.querySelector(".home_hero");
+  const logo = hero.querySelector("[data-icon=logoTrey]");
+  const description = hero.querySelector(".description")
+  const details = hero.querySelector(".details-wrapper")
+  const image = hero.querySelector(".image")
+
+  const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 0.8}})
+
+  document.addEventListener("preloader:complete", () => {
+    timeline.from(image,{ scale: 1.2, duration: 3 }, "<")
+    timeline.from(logo,{ translateY: "-100%" }, "<")
+    timeline.from(description,{ translateY: "-100%" }, "<0.3")
+    timeline.from(details,{ translateY: "100%", duration: 1 }, "<0.4")
+  })
+
+</script>
 
 <style>
   .home_hero {
@@ -61,7 +86,6 @@ const details = [...content.details, ...content.details]
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
-
   }
 
   .hero-content {
@@ -86,17 +110,28 @@ const details = [...content.details, ...content.details]
   }
 
   .logo {
-    color: inherit;
     flex: 0 0 max(120px, 30vw);
+    overflow: hidden;
+    height: fit-content;
   }
 
-  .logo svg {
+  [data-icon="logoTrey"] {
+    /* opacity: 0.2; */
     width: 100%;
+    height: auto;
+  }
+
+  .description-wrapper {
+    overflow: hidden;
   }
 
   .description {
     max-width: 40ch;
     text-align: justify;
+  }
+
+  .details-wrapper {
+    z-index: 1;
   }
 
   .details {
@@ -105,11 +140,11 @@ const details = [...content.details, ...content.details]
     justify-content: space-around;
     align-items: center;
     padding: var(--space-2xs) 0;
-    z-index: 1;
     width: 200%;
     will-change: translate;
     animation: scroll 30s linear 0s infinite;
     gap: var(--space-xs);
+    /* translate: 0 -100%; */
   }
 
   @keyframes scroll {
@@ -130,12 +165,15 @@ const details = [...content.details, ...content.details]
     height: var(--icon-md);
   }
 
-  .image {
+  .media {
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+  }
+
+  .image {
     width: 100%;
     height: 100%;
     object-fit: cover;

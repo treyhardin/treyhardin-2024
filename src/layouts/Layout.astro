@@ -3,8 +3,10 @@ interface Props {
 	title: string;
 	theme: string;
 	inlineHeader?: boolean;
+	barbaNamespace?: string; 
 }
 
+import Preloader from '../components/global/Preloader.astro'
 import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 import { ViewTransitions } from "astro:transitions";
@@ -17,9 +19,10 @@ import '../variables/spacing.css';
 import '../variables/colors.css';
 import '../variables/forms.css';
 import '../variables/buttons.css';
+import { string } from 'astro/zod';
 
 const data = await getSiteSettings()
-const { title, theme, inlineHeader = false } = Astro.props;
+const { title, theme, inlineHeader = false, barbaNamespace } = Astro.props;
 ---
 
 <!doctype html>
@@ -30,33 +33,62 @@ const { title, theme, inlineHeader = false } = Astro.props;
 		<link rel="canonical" href="http://www.treyhardin.com" />
 		<meta name=”robots” content=”index, follow”> 
 
-		<link rel="icon" type="image/svg+xml" href={urlFor(data[0].favicon).url()} />
-		<title>{`${data[0].title} | ${title}`}</title>
-		<meta name="description" content={data[0].description} />
+		<link rel="icon" type="image/svg+xml" href={urlFor(data.favicon).url()} />
+		<title>{`${data.title} | ${title}`}</title>
+		<meta name="description" content={data.description} />
 
 		<!-- Facebook Meta Tags -->
 		<meta property="og:url" content="http://www.treyhardin.com">
 		<meta property="og:type" content="website">
-		<meta property="og:title" content={`${data[0].title} | ${title}`}>
-		<meta property="og:description" content={data[0].description}>
-		<meta property="og:image" content={urlFor(data[0].ogImage).url()}>
+		<meta property="og:title" content={`${data.title} | ${title}`}>
+		<meta property="og:description" content={data.description}>
+		<meta property="og:image" content={urlFor(data.ogImage).url()}>
 
 		<!-- Twitter Meta Tags -->
 		<meta name="twitter:card" content="summary_large_image">
 		<meta property="twitter:domain" content="treyhardin.com">
 		<meta property="twitter:url" content="http://www.treyhardin.com">
-		<meta name="twitter:title" content={`${data[0].title} | ${title}`}>
-		<meta name="twitter:description" content={data[0].description}>
-		<meta name="twitter:image" content={urlFor(data[0].twitterImage).url()}>
+		<meta name="twitter:title" content={`${data.title} | ${title}`}>
+		<meta name="twitter:description" content={data.description}>
+		<meta name="twitter:image" content={urlFor(data.twitterImage).url()}>
 
 		<meta name="generator" content={Astro.generator} />
     <ViewTransitions />
 	</head>
 	<body>
+		<Preloader content={data} />
 		{!inlineHeader && <Header /> }
 		<main>
 			<slot />
+			<Footer />
 		</main>
-		<Footer />
 	</body>
 </html>
+
+<script src="../utils/lenis.jsx"></script>
+
+<script>
+
+	document.addEventListener("DOMContentLoaded", () => {
+
+		console.log("DOM Loaded")
+		
+		if (window != undefined) {
+
+			// Clear session storage if refreshing page
+			if (window.location.href == sessionStorage.getItem("origin")) {
+					sessionStorage.clear();
+			}
+
+			// Store origin to maintain preloader state
+			window.onbeforeunload = () => {
+				sessionStorage.setItem("origin", window.location.href);
+			}
+		}
+  })
+
+	
+</script>
+
+
+<!-- <script src="../utils/barba.jsx"></script> -->

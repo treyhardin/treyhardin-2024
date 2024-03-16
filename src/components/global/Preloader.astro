@@ -1,0 +1,137 @@
+---
+import { urlFor } from "../../utils/sanityClient";
+import { Icon } from 'astro-icon/components'
+
+const { content } = Astro.props;
+---
+<div class="preloader" transition:persist>
+  <div class="content h1" id="preloader">
+    <Icon name="logoTrey" />
+    <span class="media">
+      {content.preloaderImages.map((asset, i) => (
+          <img 
+            class="image"
+            src={urlFor(asset.image).url()}
+            data-index={i}
+            alt=""
+          />
+      ))}
+    </span>
+    <Icon name="logoHardin" />
+  </div>
+</div>
+
+<script >
+
+  import { gsap } from '../../utils/gsap.jsx'
+
+  const animateImages = () => {
+
+    const element = document.querySelector('.preloader');
+    const images = element.querySelectorAll('.image');
+    let i = 0;
+
+    setInterval(() => {
+
+      if (i < images.length - 1) {
+        i++;
+      } else {
+        i = 0;
+      }
+
+      images.forEach(image => {
+        if (image.dataset.index != i) {
+          image.style.opacity = 0;
+        } else {
+          image.style.opacity = 1;
+        }
+      });
+    }, 300);
+  }
+
+  animateImages();
+
+  const preloaderCompleteEvent = new Event("preloader:complete");
+
+  document.addEventListener("astro:page-load", () => {
+    console.log("Astro-load")
+
+    const animationCallback = () => {
+      // console.log('complete')
+      document.dispatchEvent(preloaderCompleteEvent)
+  		sessionStorage.setItem("activeSession", "true");
+    }
+
+    const activeSession = sessionStorage.getItem("activeSession");
+    if (activeSession != "true") {
+      gsap.to(".preloader", {
+        duration: 0.4,
+        autoAlpha: 0,
+        delay: 2,
+        oncomplete: animationCallback,
+      })
+    } 
+
+  }, {once: true})
+
+</script>
+
+<style>
+  .preloader {
+    background: var(--color-foreground);
+    color: var(--color-background);
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: stretch;
+    gap: var(--space-2xs);
+    /* flex: 1 0 auto; */
+  }
+
+  [data-icon] {
+    flex: 0 0 auto;
+    /* height: 5vw;
+    width: auto; */
+    /* height: 100%; */
+    /* width: auto; */
+  }
+
+  .media {
+    /* aspect-ratio: 2 / 1; */
+    background-color: red;
+    /* flex-shrink: 0; */
+    flex: 0 0 13vw;
+    /* margin-bottom: 20px; */
+    /* height: 0.9em; */
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    position: relative;
+  }
+
+  .image {
+    /* width: 200px; */
+    /* height: 200px; */
+    /* height: 100%;
+    width: auto; */
+    /* height: 100%; */
+    /* height: 100%; */
+    /* width: auto; */
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>

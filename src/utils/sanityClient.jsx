@@ -25,7 +25,7 @@ export function urlFor(source) {
 
 export async function getSiteSettings() {
   const settings = await client.fetch('*[_type == "siteSettings"]')
-  return settings
+  return settings[0]
 }
 
 export async function getPosts() {

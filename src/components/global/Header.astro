@@ -1,6 +1,7 @@
 ---
+const { inline } = Astro.props;
 ---
-<header>
+<header data-inline={`${inline}`}>
   <a href="/" class="caption">
     Trey Hardin
   </a>
@@ -12,6 +13,25 @@
   </nav>
   <p class="header-detail caption">Brooklyn, NY</a>
 </header>
+
+<script>
+  import { gsap } from "../../utils/gsap";
+
+  const header = document.querySelector('header');
+  const timeline = gsap.timeline({ defaults: {duration: 1, ease: "power4.out"}});
+
+  document.addEventListener("preloader:complete", () => {
+    if (header.dataset.inline && header.dataset.inline == "true") {
+      timeline.from(header, {translateY: "100%", autoAlpha: 0, duration: 1})
+    }
+  })
+
+  document.addEventListener("astro:after-swap", () => {
+    // Non first page load anims go here
+  })
+
+</script>
+
 <style>
   header {
     display: flex;
@@ -23,7 +43,7 @@
     position: sticky;
     top: 0;
     color: var(--color-foreground-secondary);
-    z-index: 999;
+    z-index: 99;
   }
 
   .navigation-links {

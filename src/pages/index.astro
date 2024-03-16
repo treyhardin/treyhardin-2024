@@ -13,15 +13,17 @@ const content = data.content
 	title="Creative Director & Developer"
 	theme="light"
 	inlineHeader={true}
+	barbaNamespace="home"
 >
 	{content.map((block, i) => (
 			<>
-				{i == 1 && <Header />}
+				{i == 1 && <Header inline={true} />}
 				<SectionBlock type={block._type} content={block} />
 			</>
 		)
 	)}
 </Layout>
+
 
 <style>
 	main {
