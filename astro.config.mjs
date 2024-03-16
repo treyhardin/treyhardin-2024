@@ -8,7 +8,7 @@ export default defineConfig({
   image: {
     domains: ["https://cdn.sanity.io"]
   },
-  output: "server",
+  output: "static",
   adapter: vercel(),
   integrations: [icon()]
 });
