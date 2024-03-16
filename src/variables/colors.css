@@ -1,16 +1,16 @@
 :root {
 
   /* Color */
-  --color-ink: #000000;
-  --color-subdued: #646464;
-  --color-neutral: #858585;
-  --color-light: #e1e1e1;
-  --color-reverse: #eef0e4;
+  --color-ink: #212125;
+  --color-subdued: #48494F;
+  --color-neutral: #B7B9B2;
+  --color-light: #EBEDE2;
+  --color-reverse: #F6F7F2;
 
-  --color-brand: #ffffff;
-  --color-brand-contrast: #ffffff;
-  --color-brand-secondary: #ffffff;
-  --color-brand-secondary-contrast: #ffffff;
+  --color-brand: #E66F18;
+  --color-brand-contrast: var(--color-ink);
+  --color-brand-secondary: #496E8F;
+  --color-brand-secondary-contrast: var(--color-reverse);
 
   --color-border: var(--color-neutral);
 }

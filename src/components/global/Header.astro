@@ -2,14 +2,14 @@
 const { inline } = Astro.props;
 ---
 <header data-inline={`${inline}`}>
-  <a href="/" class="caption">
+  <a href="/" class="header-detail caption">
     Trey Hardin
   </a>
   <nav class="navigation-links">
-    <a href="/work" class="caption">Work</a>
-    <a href="/about" class="caption">About</a>
-    <a href="/about" class="caption">Musings</a>
-    <a href="/contact" class="caption">Contact</a>
+    <a href="/work" class="navigation-link caption">Work</a>
+    <a href="/about" class="navigation-link caption">About</a>
+    <a href="/about" class="navigation-link caption">Musings</a>
+    <a href="/contact" class="navigation-link caption">Contact</a>
   </nav>
   <p class="header-detail caption">Brooklyn, NY</a>
 </header>
@@ -17,12 +17,14 @@ const { inline } = Astro.props;
 <script>
   import { gsap } from "../../utils/gsap";
 
-  const header = document.querySelector('header');
   const timeline = gsap.timeline({ defaults: {duration: 1, ease: "power4.out"}});
+
+  const header = document.querySelector('header');
 
   document.addEventListener("preloader:complete", () => {
     if (header.dataset.inline && header.dataset.inline == "true") {
-      timeline.from(header, {translateY: "100%", autoAlpha: 0, duration: 1})
+      timeline.from('.navigation-link', {translateY: "100%", opacity: 0, stagger: 0.1})
+      timeline.from('.header-detail', {translateY: "100%", opacity: 0}, ">")
     }
   })
 
