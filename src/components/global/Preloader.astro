@@ -78,8 +78,8 @@ const { content } = Astro.props;
 
 <style>
   .preloader {
-    background: var(--color-foreground);
-    color: var(--color-background);
+    background: var(--color-neutral);
+    color: var(--color-reverse);
     position: fixed;
     top: 0;
     right: 0;
@@ -113,10 +113,12 @@ const { content } = Astro.props;
     /* aspect-ratio: 2 / 1; */
     background-color: red;
     /* flex-shrink: 0; */
-    flex: 0 0 13vw;
+    flex: 0 0 10vw;
+    margin-bottom: 1.5vw;
     /* margin-bottom: 20px; */
     /* height: 0.9em; */
-    border-radius: var(--radius-sm);
+    /* border-radius: var(--radius-sm); */
+    border-radius: var(--radius-rounded);
     overflow: hidden;
     position: relative;
   }

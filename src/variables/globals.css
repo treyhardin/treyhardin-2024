@@ -8,10 +8,10 @@
 }
 
 :root {
-    /* Global Sizes */
-    --header-height: 80px;
-    --page-margin: var(--space-2xs);
-    --page-margin-narrow: var(--space-sm);
+  /* Global Sizes */
+  --header-height: 80px;
+  --page-margin: var(--space-2xs);
+  --page-margin-narrow: var(--space-sm);
 }
 
 @media screen and (max-width: 768px) {

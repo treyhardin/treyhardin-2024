@@ -68,12 +68,12 @@ const details = [...content.details, ...content.details]
   const detailItems = hero.querySelectorAll(".detail-item")
   const image = hero.querySelector(".image")
 
-  const timeline = gsap.timeline({defaults: {ease: "power3.out", duration: 0.8}})
+  const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 0.8}})
 
   document.addEventListener("preloader:complete", () => {
-    timeline.from(content, {width: "30vw", duration: 0.8})
-    timeline.from(image,{ scale: 1.2, duration: 3 }, "<")
-    timeline.from(logo,{ translateY: "-100%" }, ">-2.5")
+    timeline.from(content, {width: "50vw", borderRadius: "100vw", duration: 0.8})
+    timeline.from(image,{ scale: 1.2, duration: 4 }, "<")
+    timeline.from(logo,{ translateY: "-100%" }, "<0.8")
     // timeline.from(details,{ translateY: "100%", duration: 1 }, "<")
     timeline.from(description,{ translateY: "-100%" }, "<0.4")
     timeline.from(detailItems,{ translateY: "100%", opacity: 0, duration: 1, stagger: 0.2 }, "<")
