@@ -70,7 +70,7 @@ const details = [...content.details, ...content.details]
   const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 0.8}})
 
   document.addEventListener("preloader:complete", () => {
-    timeline.from(content, {width: "50vw", borderRadius: "100vw", duration: 0.6})
+    timeline.from(content, {width: "50%", borderRadius: "100vw", duration: 0.6})
     timeline.from(image,{ scale: 1.2, duration: 4 }, "<")
     timeline.from(logo,{ translateY: "-100%" }, "<0.8")
     timeline.fromTo(description,{ 
@@ -111,6 +111,7 @@ const details = [...content.details, ...content.details]
     flex-basis: 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
+    width: 100%;
     /* width: 30vw; */
   }
 
