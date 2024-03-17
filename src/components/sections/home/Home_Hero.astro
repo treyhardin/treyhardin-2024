@@ -76,15 +76,13 @@ const details = [...content.details, ...content.details]
     timeline.fromTo(description,{ 
       autoAlpha: 0,
     },{
-      // translateY: 0,
       autoAlpha: 1,
       scrambleText: {
         text: "{original}",
         speed: 0.8,
         revealDelay: 0.6,
         delimiter: " ",
-        // chars: "TreyHardin",
-          chars: "!@#$%^&*()TREY",
+        chars: "!@#$%^&*()TREY",
       }
     }, "<0.4")
     timeline.from(detailItems,{ translateY: "100%", opacity: 0, duration: 1, stagger: 0.2 }, "<")
