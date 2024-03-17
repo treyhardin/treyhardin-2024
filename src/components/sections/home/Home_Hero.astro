@@ -40,7 +40,7 @@ const details = [...content.details, ...content.details]
         class="image"
         width="3600"
         height="1800"
-        sizes="100vw"
+        sizes="(max-width: 768px) 200vw, 100vw"
         srcset={`
           ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
           ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,

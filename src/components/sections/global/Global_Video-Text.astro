@@ -20,6 +20,7 @@ const { content } = Astro.props;
   <span class="media">
     {content.video ? 
       <video 
+        id="section-video-text_media"
         class="section-video-text_video video"
         src={content.videoURL}
         poster={urlFor(content.image).width(480).height(800).auto('format').url()}
@@ -30,6 +31,7 @@ const { content } = Astro.props;
       />
      : 
       <img 
+        id="section-video-text_media"
         sizes="(max-width: 768px): 100vw, 33vw"
         srcset={`
           ${urlFor(content.image).width(600).height(1000).auto('format').url()} 600w,
@@ -53,52 +55,16 @@ const { content } = Astro.props;
 </section>
 
 <script>
-  import { gsap } from "../../../utils/gsap";
+  import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
 
-
-  gsap.fromTo(".section-video-text_heading", {
-    autoAlpha: 0,
-  }, {
+  const timeline = gsap.timeline({ scrollTrigger: ".section-video-text_heading", defaults: { ease: "power4.out", duration: 0.6 }})
+  mediaZoom("#section-video-text_media", timeline, "<");
+  scrambleIn(".section-video-text_heading", timeline, "<")
+  timeline.to(".section-video-text_detail", {
     autoAlpha: 1,
-    scrollTrigger: ".section-video-text_heading",
-    scrambleText: {
-      text: "{original}",
-      chars: "!@#$%^&*()TREY",
-      revealDelay: 0.6,
-      speed: 0.8,
-    },
-    duration: 1,
-  })
-
-  gsap.fromTo(".section-video-text_description", {
-    autoAlpha: 0,
-  }, {
-    autoAlpha: 1,
-    scrollTrigger: ".section-video-text_description",
-    scrambleText: {
-      text: "{original}",
-      chars: "!@#$%^&*()TREY",
-      revealDelay: 0.6,
-      speed: 0.8,
-    },
-    duration: 1,
-  })
-
-  gsap.fromTo("section-video-text_video", {
-    scale: 3
-  },{
-    scrollTrigger: "section-video-text_video",
-    duration: 1,
-    ease: "power4.out"
-  })
-
-  // gsap.to(".section-video-text_detail", {
-  //   scrollTrigger: ".section-video-text_detail",
-  //   autoAlpha: 1,
-  //   duration: 1,
-  //   stagger: 0.2
-  // })
-
+    stagger: 0.05
+  }, "<0.4")
+  scrambleIn(".section-video-text_description", timeline, "<0.4")
 
 </script>
 
@@ -125,11 +91,12 @@ const { content } = Astro.props;
   }
 
   .section-video-text_heading {
-    visibility: hidden;
+    /* visibility: hidden; */
   }
 
   .heading * {
     margin: 0;
+    /* visibility: hidden; */
   }
 
   .heading *:nth-child(2){
@@ -195,6 +162,7 @@ const { content } = Astro.props;
     overflow: hidden;
     color: var(--color-foreground-secondary);
     border: 0.5px solid var(--color-border);
+    visibility: hidden;
   }
 
   @media screen and (max-width:768px) {
