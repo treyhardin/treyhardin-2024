@@ -1,6 +1,6 @@
 ---
-import Star from "../../../icons/Star.astro";
 import { urlFor } from "../../../utils/sanityClient";
+import Button from '../../global/Button.astro'
 
 const { content } = Astro.props;
 ---
@@ -13,10 +13,7 @@ const { content } = Astro.props;
     </h2>
     <div class="title-content">
       <p class="description caption">{content.description}</p>
-      <a href="#" class="button">
-        <Star />
-        Read More
-      </a>
+      <Button text="Read More" url="/test" />
     </div>
   </span>
 

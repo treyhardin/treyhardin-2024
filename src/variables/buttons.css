@@ -13,7 +13,7 @@ a:hover {
   cursor: pointer;
 }
 
-a:not(.button)::after {
+a::after {
   content: "";
   position: absolute;
   left: 0;
@@ -27,54 +27,7 @@ a:not(.button)::after {
   transition: width var(--anim-sm);
 }
 
-a:not(.button):hover::after {
+a:hover::after {
   width: 100%;
 }
 
-.button {
-  position: relative;
-  padding: 0 var(--space-2xs);
-  border: 1px solid var(--color-foreground);
-  border-radius: var(--radius-sm);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: var(--space-3xs);
-  height: var(--button-height);
-  outline: none;
-  overflow: hidden;
-}
-
-.button:hover {
-  /* background-color: var(--color-foreground); */
-  color: var(--color-background);
-  border-color: var(--color-brand);
-}
-
-.button::after {
-  content: "";
-  background: var(--color-brand);
-  position: absolute;
-  right: 0;
-  left: 0;
-  top: var(--button-height);
-  width: 100%;
-  height: auto;
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius-rounded) var(--radius-rounded) 0 0;
-  z-index: -1;
-  translate: 0 -25%;
-  transition: border-color var(--anim-md);
-  scale: 1 0.5;
-}
-
-.button:hover::after {
-  translate: 0 calc(-75% );
-  transition: all var(--anim-md);
-  /* border-radius: 0; */
-}
-
-.button svg {
-  width: var(--icon-sm);
-  height: var(--icon-sm);
-}
