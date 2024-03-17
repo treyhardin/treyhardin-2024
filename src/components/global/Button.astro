@@ -1,11 +1,26 @@
 ---
 import { Icon } from 'astro-icon/components'
 const { text, url, style, icon } = Astro.props;
+const tickerIterations = 10;
+
+const tickerContent = []
+for( let i=0; i < tickerIterations; i++ ) {
+  tickerContent.push(text)
+}
 ---
-<a class="button" href={url}>
+<a class={`button button-${style}`} href={url}>
   <!-- {icon && <Icon name={icon} />} -->
-  <Icon name="star" />
-  <span class="button-text">{text}</span>
+  { style == "ticker" ? 
+    <span class="ticker-track">
+    {tickerContent.map((element) => (
+      <Icon name="star" />
+      <span class="button-text">{element}</span>
+    ))}
+    </span>
+  :
+    <Icon name="star" />
+    <span class="button-text">{text}</span>
+   }
 </a>
 
 <style>
@@ -58,9 +73,56 @@ const { text, url, style, icon } = Astro.props;
     /* border-radius: 0; */
   }
 
-  .button svg {
-    width: var(--icon-sm);
-    height: var(--icon-sm);
+  .button [data-icon] {
+    /* width: var(--icon-sm);
+    height: var(--icon-sm); */
+    flex: 0 0 var(--icon-sm);
+    aspect-ratio: 1 / 1;
+    animation: icon-rotate 6s linear 0s infinite;
+  }
+
+  .button:hover [data-icon] {
+    animation-duration: 1s;
+  }
+
+  .button-text {
+    flex: 0 0 auto;
+  }
+
+  .button-ticker {
+    max-width: 100%;
+    align-self: stretch;
+    padding-inline: 0;
+    overflow: hidden;
+  }
+
+  .ticker-track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-3xs);
+    flex-wrap: nowrap;
+    animation: ticker 3s linear 0s infinite;
+    /* width: max-content; */
+    box-sizing: content-box;
+  }
+
+  @keyframes icon-rotate {
+    from {
+      rotate: 0deg;
+    }
+    to {
+      rotate: 360deg;
+    }
+  }
+
+  @keyframes ticker {
+    0% {
+      translate: 0 0;
+    }
+    100% {
+      translate: calc(-50%) 0;
+    }
   }
 
 </style>
