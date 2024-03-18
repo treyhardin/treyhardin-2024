@@ -93,7 +93,7 @@ for( let i=0; i < tickerIterations; i++ ) {
     max-width: 100%;
     align-self: stretch;
     padding-inline: 0;
-    overflow: hidden;
+    /* overflow: hidden; */
   }
 
   .ticker-track {
@@ -102,9 +102,11 @@ for( let i=0; i < tickerIterations; i++ ) {
     align-items: center;
     gap: var(--space-3xs);
     flex-wrap: nowrap;
-    animation: ticker 3s linear 0s infinite;
+    animation: ticker 20s linear 0s infinite;
     /* width: max-content; */
-    box-sizing: content-box;
+    flex: 0 0 max-content;
+    justify-content: space-between;
+    /* box-sizing: content-box; */
   }
 
   @keyframes icon-rotate {
@@ -121,7 +123,7 @@ for( let i=0; i < tickerIterations; i++ ) {
       translate: 0 0;
     }
     100% {
-      translate: calc(-50%) 0;
+      translate: calc(-50% - var(--space-3xs)) 0;
     }
   }
 

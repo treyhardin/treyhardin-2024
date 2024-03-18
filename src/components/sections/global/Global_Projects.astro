@@ -5,13 +5,13 @@ import Button from '../../global/Button.astro'
 
 const { content } = Astro.props;
 ---
-<section class="projects">
+<section class="section-projects">
   {content.projects.map((project, i) => (
-    <div class="project-card">
+    <div class="section-projects-card project-card">
       <div class="media">
         {i < 1 ?
         <img 
-          class="image"
+          class="section-projects-image image"
           sizes="100vw"
           width="50vw"
           height="67vw"
@@ -41,8 +41,8 @@ const { content } = Astro.props;
       </div>
       <div class="content">
         <div class="section-intro">
-          <p class="caption">Work</p>
-          <p class="caption">{`(0${i + 1})`}</p>
+          <p class="section-intro-text caption">Work</p>
+          <p class="section-intro-text caption">{`(0${i + 1})`}</p>
         </div>
         <div class="info">
           <div class="section-title">
@@ -64,8 +64,50 @@ const { content } = Astro.props;
   ))}
 </section>
 
+<script>
+  import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
+
+  const projectCards = document.querySelectorAll(".section-projects-card")
+  
+  projectCards.forEach((projectCard) => {
+
+    const image = projectCard.querySelector(".image")
+    const introText = projectCard.querySelectorAll(".section-intro-text")
+    const title = projectCard.querySelectorAll(".title")
+    const badge = projectCard.querySelectorAll(".project-type")
+    const subtitle = projectCard.querySelectorAll(".subtitle")
+    const details = projectCard.querySelectorAll(".details")
+    const excerpt = projectCard.querySelectorAll(".excerpt")
+
+    const timeline = gsap.timeline({ scrollTrigger: projectCard, defaults: {ease: "power4.out", duration: 0.6}});
+    mediaZoom(image, timeline, "<")
+    // scrambleIn(excerpt, timeline, "<")
+    timeline.from(title, {
+      translateY: "-100%",
+      delay: 0,
+    }, "<0.4")
+    timeline.from(introText, {
+      translateY: "100%",
+      stagger: 0.3,
+    }, "<")
+    timeline.from(badge, {
+      translateY: "-100%",
+    }, "<0.3")
+    timeline.from(subtitle, {
+      translateY: "100%",
+    }, "<0.3")
+    timeline.from(details, {
+      translateY: "30",
+      opacity: 0,
+      duration: 1
+    }, "<0.3")
+    
+  })
+
+</script>
+
   <style>
-    .projects {
+    .section-projects {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -148,9 +190,10 @@ const { content } = Astro.props;
       left: 0;
       right: 0;
       z-index: 2;
-      padding: var(--space-2xs);
+      padding: var(--space-2xs) var(--space-2xs) 0;
       color: var(--color-reverse);
       mix-blend-mode: difference;
+      overflow: hidden;
     }
 
     .info {
@@ -163,6 +206,7 @@ const { content } = Astro.props;
       display: flex;
       flex-direction: column;
       gap: var(--space-3xs);
+      overflow: hidden;
     }
 
     .title-wrapper {
@@ -170,6 +214,7 @@ const { content } = Astro.props;
       flex-direction: row;
       align-items: flex-start;
       gap: var(--space-2xs);
+      overflow: hidden;
     }
 
     .title {
@@ -190,10 +235,12 @@ const { content } = Astro.props;
       flex-direction: column;
       gap: var(--space-xs);
       align-items: flex-start;
+      /* word-wrap: break-word; */
+      word-break: break-all;
     }
 
     @media screen and (max-width: 768px) {
-      .projects {
+      .section-projects {
         flex-direction: column;
         flex-wrap: nowrap;
       }

@@ -24,7 +24,8 @@ export const scrambleIn = ( element, timeline, timing) => {
       text: "{original}",
       chars: "!@#$%^&*()TREY",
       revealDelay: 0.6,
-      speed: 0.8,
+      speed: 0.7,
     },
+    duration: 0.6,
   }, timing)
 }
