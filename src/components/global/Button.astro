@@ -1,9 +1,10 @@
 ---
 import { Icon } from 'astro-icon/components'
 const { text, url, style, icon } = Astro.props;
+
+const
 ---
 <a class="button" href={url}>
-  <!-- {icon && <Icon name={icon} />} -->
   <Icon name="star" />
   <span class="button-text">{text}</span>
 </a>
@@ -58,9 +59,20 @@ const { text, url, style, icon } = Astro.props;
     /* border-radius: 0; */
   }
 
-  .button svg {
+  .button [data-icon] {
     width: var(--icon-sm);
     height: var(--icon-sm);
+    animation: icon-rotate 10s linear 0s infinite;
+  }
+
+  .button:hover [data-icon] {
+    animation-play-state: paused;
+  }
+
+  @keyframes icon-rotate {
+    to {
+      rotate: 360deg;
+    }
   }
 
 </style>

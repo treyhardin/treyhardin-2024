@@ -45,7 +45,7 @@ const { content } = Astro.props;
   <span class="section-details">
     <ul class="details-table">
       {content.details.map((detail) => (
-        <li class="section-video-text_detail detail caption">{detail}</li>
+        <li class="section-video-text_detail detail utility">{detail}</li>
       ))}
     </ul>
   </span>
@@ -193,7 +193,7 @@ const { content } = Astro.props;
     text-align: center;
     padding: var(--space-3xs);
     overflow: hidden;
-    color: var(--color-foreground-secondary);
+    color: var(--color-border);
     border: 0.5px solid var(--color-border);
   }
 

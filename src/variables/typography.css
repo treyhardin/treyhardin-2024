@@ -14,16 +14,24 @@
   font-style: italic;
 }
 
-@font-face {
+/* @font-face {
   font-family: 'Inter';
   src: url("/Inter-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+} */
+
+@font-face {
+  font-family: 'Aeonik Pro';
+  src: url("/AeonikPro-Regular.otf") format("opentype"),
+       url("/AeonikPro-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
 }
 
 :root {
 		--font-family-heading: 'Instrument Serif', Georgia, serif;
-		--font-family-body: 'Inter', Helvetica, Arial, system-ui, sans-serif;
+		--font-family-body: 'Aeonik Pro', 'Inter', Helvetica, Arial, system-ui, sans-serif;
 }
 
 
@@ -39,7 +47,8 @@ a,
 legend,
 input,
 label,
-.caption {
+.caption,
+.utility {
   --base-size-normalized: calc( (var(--base-size) / 1440) * 100vw );
   font-size: max( calc(var(--min-size) * 1px), var(--base-size-normalized) );
 }
@@ -82,21 +91,21 @@ h4, .h4 {
   --min-size: 26;
   --base-size: 34;
   font-family: var(--font-family-body);
-  letter-spacing: -0.05em;
+  letter-spacing: -0.02em;
   line-height: 1.1;
 }
 h5, .h5 {
   --min-size: 22;
   --base-size: 26;
   font-family: var(--font-family-body);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 1.1;
 }
 h6, .h6 {
   --min-size: 18;
   --base-size: 20;
   font-family: var(--font-family-body);
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   line-height: 1.2;
 }
 
@@ -112,11 +121,20 @@ a {
   margin: 0;
 }
 
-.caption,
-.button {
+.caption {
   --min-size: 12;
+  --base-size: 14;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.utility,
+.button {
+  --min-size: 10;
   --base-size: 12;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.04em;
   margin: 0;
   text-transform: uppercase;
 }

@@ -1,10 +1,9 @@
 ---
-import Star from "../../../icons/Star.astro";
 import { urlFor } from "../../../utils/sanityClient";
+import Button from "../../global/Button.astro";
 
 const { content } = Astro.props;
 const buttonContentIterations = 10;
-// console.log(content)
 ---
 <section class="projects">
   {content.projects.map((project, i) => (
@@ -42,24 +41,25 @@ const buttonContentIterations = 10;
       </div>
       <div class="content">
         <div class="section-intro">
-          <p class="caption">Work</p>
-          <p class="caption">{`(0${i + 1})`}</p>
+          <p class="utility">Work</p>
+          <p class="utility">{`(0${i + 1})`}</p>
         </div>
         <div class="info">
           <div class="section-title">
             <div class="title-wrapper">
               <a class={`title ${i < 1 ? 'h1' : 'h3'}`}>{project.title}</a>
-              <p class="project-type caption">{project.projectType}</p>
+              <p class="project-type utility">{project.projectType}</p>
             </div>
-            <p class="subtitle caption">{project.subtitle}</p>
+            <p class="subtitle utility">{project.subtitle}</p>
           </div>
           {i < 1 && 
             <div class="details">
               <p class="excerpt h5">{project.excerpt}</p>  
-              <a class="button" href={`/work/${project.slug.current}`}>
-                View Project
-                <Star />
-              </a>
+              <Button 
+                style="ticker"
+                text="View Project" 
+                url="/"
+              />
             </div>
           }
         </div>
@@ -112,8 +112,7 @@ const buttonContentIterations = 10;
     .project-card:nth-child(1) .section-intro {
       position: relative;
       padding: 0;
-      color: var(--color-foreground-secondary);
-      mix-blend-mode: none;
+      mix-blend-mode: unset;
     }
 
 
@@ -153,7 +152,7 @@ const buttonContentIterations = 10;
       right: 0;
       z-index: 2;
       padding: var(--space-2xs);
-      color: var(--color-reverse);
+      color: var(--color-border);
       mix-blend-mode: difference;
     }
 
