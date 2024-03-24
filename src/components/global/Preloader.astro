@@ -99,6 +99,26 @@ const { content } = Astro.props;
     align-items: stretch;
     gap: var(--space-2xs);
     /* flex: 1 0 auto; */
+    /* color: var(--color-brand-secondary); */
+    /* animation: cycle-text-color 1s linear 0s infinite; */
+  }
+
+  @keyframes cycle-text-color {
+    0% {
+      color: var(--color-foreground);
+    }
+    50% {
+      color: var(--color-brand-secondary)
+    }
+    /* 33% {
+      color: var(--color-brand)
+    }
+    66% {
+      color: var(--color-brand-secondary)
+    } */
+    100% {
+      color: var(--color-foreground);
+    }
   }
 
   [data-icon] {

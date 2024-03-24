@@ -4,14 +4,16 @@ import Button from "../../global/Button.astro";
 
 const { content } = Astro.props;
 const buttonContentIterations = 10;
+
+const { content } = Astro.props;
 ---
-<section class="projects">
+<section class="section-projects">
   {content.projects.map((project, i) => (
-    <div class="project-card">
+    <div class="section-projects-card project-card">
       <div class="media">
         {i < 1 ?
         <img 
-          class="image"
+          class="section-projects-image image"
           sizes="100vw"
           width="50vw"
           height="67vw"
@@ -60,6 +62,7 @@ const buttonContentIterations = 10;
                 text="View Project" 
                 url="/"
               />
+
             </div>
           }
         </div>
@@ -68,8 +71,50 @@ const buttonContentIterations = 10;
   ))}
 </section>
 
+<script>
+  import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
+
+  const projectCards = document.querySelectorAll(".section-projects-card")
+  
+  projectCards.forEach((projectCard) => {
+
+    const image = projectCard.querySelector(".image")
+    const introText = projectCard.querySelectorAll(".section-intro-text")
+    const title = projectCard.querySelectorAll(".title")
+    const badge = projectCard.querySelectorAll(".project-type")
+    const subtitle = projectCard.querySelectorAll(".subtitle")
+    const details = projectCard.querySelectorAll(".details")
+    const excerpt = projectCard.querySelectorAll(".excerpt")
+
+    const timeline = gsap.timeline({ scrollTrigger: projectCard, defaults: {ease: "power4.out", duration: 0.6}});
+    mediaZoom(image, timeline, "<")
+    // scrambleIn(excerpt, timeline, "<")
+    timeline.from(title, {
+      translateY: "-100%",
+      delay: 0,
+    }, "<0.4")
+    timeline.from(introText, {
+      translateY: "100%",
+      stagger: 0.3,
+    }, "<")
+    timeline.from(badge, {
+      translateY: "-100%",
+    }, "<0.3")
+    timeline.from(subtitle, {
+      translateY: "100%",
+    }, "<0.3")
+    timeline.from(details, {
+      translateY: "30",
+      opacity: 0,
+      duration: 1
+    }, "<0.3")
+    
+  })
+
+</script>
+
   <style>
-    .projects {
+    .section-projects {
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
@@ -154,6 +199,7 @@ const buttonContentIterations = 10;
       padding: var(--space-2xs);
       color: var(--color-border);
       mix-blend-mode: difference;
+      overflow: hidden;
     }
 
     .info {
@@ -166,6 +212,7 @@ const buttonContentIterations = 10;
       display: flex;
       flex-direction: column;
       gap: var(--space-3xs);
+      overflow: hidden;
     }
 
     .title-wrapper {
@@ -173,6 +220,7 @@ const buttonContentIterations = 10;
       flex-direction: row;
       align-items: flex-start;
       gap: var(--space-2xs);
+      overflow: hidden;
     }
 
     .title {
@@ -193,10 +241,12 @@ const buttonContentIterations = 10;
       flex-direction: column;
       gap: var(--space-xs);
       align-items: flex-start;
+      /* word-wrap: break-word; */
+      word-break: break-all;
     }
 
     @media screen and (max-width: 768px) {
-      .projects {
+      .section-projects {
         flex-direction: column;
         flex-wrap: nowrap;
       }

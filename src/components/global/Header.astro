@@ -20,20 +20,6 @@ const { inline } = Astro.props;
   const timeline = gsap.timeline({ defaults: {duration: 1, ease: "power4.out"}});
   const navigationLinks = document.querySelectorAll('.navigation-link');
 
-  // navigationLinks.forEach((link) => {
-  //   link.addEventListener("mouseover", () => {
-  //     gsap.to(link, {
-  //       scrambleText: {
-  //         text: "{original}", 
-  //         chars: "TreyHardin", 
-  //         revealDelay: 0.5, 
-  //         speed: 0.8, 
-  //       }
-  //     })
-  //     // console.log('hover')
-  //   })
-  // })
-
   document.addEventListener("preloader:complete", () => {
     // if (header.dataset.inline && header.dataset.inline == "true") {
       timeline.from(navigationLinks, {
@@ -101,9 +87,14 @@ const { inline } = Astro.props;
     align-self: center;
   }
 
-  /* @media screen and (max-width:460px) {
-    .header-detail {
+  @media screen and (max-width:460px) {
+    /* .header-detail {
+      display: none;
+    } */
+
+
+    .header-detail:last-child {
       display: none;
     }
-  } */
+  }
 </style>
