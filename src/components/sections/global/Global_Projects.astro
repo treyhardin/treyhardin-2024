@@ -1,7 +1,9 @@
 ---
-import Star from "../../../icons/Star.astro";
 import { urlFor } from "../../../utils/sanityClient";
-import Button from '../../global/Button.astro'
+import Button from "../../global/Button.astro";
+
+const { content } = Astro.props;
+const buttonContentIterations = 10;
 
 const { content } = Astro.props;
 ---
@@ -41,21 +43,26 @@ const { content } = Astro.props;
       </div>
       <div class="content">
         <div class="section-intro">
-          <p class="section-intro-text caption">Work</p>
-          <p class="section-intro-text caption">{`(0${i + 1})`}</p>
+          <p class="utility">Work</p>
+          <p class="utility">{`(0${i + 1})`}</p>
         </div>
         <div class="info">
           <div class="section-title">
             <div class="title-wrapper">
               <a class={`title ${i < 1 ? 'h1' : 'h3'}`}>{project.title}</a>
-              <p class="project-type caption">{project.projectType}</p>
+              <p class="project-type utility">{project.projectType}</p>
             </div>
-            <p class="subtitle caption">{project.subtitle}</p>
+            <p class="subtitle utility">{project.subtitle}</p>
           </div>
           {i < 1 && 
             <div class="details">
               <p class="excerpt h5">{project.excerpt}</p>  
-              <Button text="View Project" url="/google" style="ticker" />
+              <Button 
+                style="ticker"
+                text="View Project" 
+                url="/"
+              />
+
             </div>
           }
         </div>
@@ -150,8 +157,7 @@ const { content } = Astro.props;
     .project-card:nth-child(1) .section-intro {
       position: relative;
       padding: 0;
-      color: var(--color-foreground-secondary);
-      mix-blend-mode: none;
+      mix-blend-mode: unset;
     }
 
 
@@ -190,8 +196,8 @@ const { content } = Astro.props;
       left: 0;
       right: 0;
       z-index: 2;
-      padding: var(--space-2xs) var(--space-2xs) 0;
-      color: var(--color-reverse);
+      padding: var(--space-2xs);
+      color: var(--color-border);
       mix-blend-mode: difference;
       overflow: hidden;
     }

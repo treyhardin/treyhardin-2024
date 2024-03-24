@@ -1,8 +1,8 @@
 :root {
 
   /* Color */
-  --color-ink: #212125;
-  --color-subdued: #48494F;
+  --color-ink: #C16A19;
+  --color-subdued: #C69466;
   --color-neutral: #B7B9B2;
   --color-light: #EBEDE2;
   --color-reverse: #F6F7F2;
@@ -23,7 +23,7 @@ html {
   --color-foreground-secondary: var(--color-light);
   --color-background: var(--color-ink);
   --color-background-secondary: var(--color-subdued);
-  --color-border: var(--color-subdued);
+  --color-border: var(--color-neutral);
   --color-link: var(--color-brand);
   --color-link-hover: var(--color-brand-secondary);
 }
@@ -33,7 +33,7 @@ html[data-theme="light"] {
   --color-foreground-secondary: var(--color-subdued);
   --color-background: var(--color-reverse);
   --color-background-secondary: var(--color-light);
-  --color-border: var(--color-light);
+  --color-border: var(--color-neutral);
   --color-link: var(--color-brand);
   --color-link-hover: var(--color-brand-secondary);
 }
