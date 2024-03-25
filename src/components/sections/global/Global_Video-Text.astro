@@ -57,14 +57,18 @@ const { content } = Astro.props;
 <script>
   import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
 
-  const timeline = gsap.timeline({ scrollTrigger: ".section-video-text_heading", defaults: { ease: "power4.out", duration: 0.6 }})
-  mediaZoom("#section-video-text_media", timeline, "<");
-  scrambleIn(".section-video-text_heading", timeline, "<")
-  timeline.to(".section-video-text_detail", {
-    autoAlpha: 1,
-    stagger: 0.05
-  }, "<0.4")
-  scrambleIn(".section-video-text_description", timeline, "<0.4")
+  const mediaTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_media", defaults: { ease: "power4.out", duration: 0.8 }})
+  const headingTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_heading", defaults: { ease: "power4.out", duration: 0.8 }})
+  const descriptionTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_description", defaults: { ease: "power4.out", duration: 1.8 }})
+
+  mediaZoom("#section-video-text_media", mediaTimeline);
+  scrambleIn(".section-video-text_heading", headingTimeline)
+
+  descriptionTimeline.from(".section-video-text_description", { opacity: 0 })
+  descriptionTimeline.from(".section-video-text_detail", {
+    opacity: 0,
+    stagger: 0.1
+  }, "<0.2")
 
 </script>
 
@@ -113,7 +117,7 @@ const { content } = Astro.props;
   }
 
   .description {
-    visibility: hidden;
+    /* visibility: hidden; */
     word-wrap: break-word;
     word-break: break-all;
     text-align: justify;
@@ -162,7 +166,7 @@ const { content } = Astro.props;
     overflow: hidden;
     color: var(--color-border);
     border: 0.5px solid var(--color-border);
-    visibility: hidden;
+    /* visibility: hidden; */
   }
 
   @media screen and (max-width:768px) {

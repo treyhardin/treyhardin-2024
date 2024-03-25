@@ -94,6 +94,7 @@ h4, .h4 {
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
+
 h5, .h5 {
   --min-size: 22;
   --base-size: 26;
@@ -101,6 +102,7 @@ h5, .h5 {
   letter-spacing: -0.02em;
   line-height: 1.1;
 }
+
 h6, .h6 {
   --min-size: 18;
   --base-size: 20;
