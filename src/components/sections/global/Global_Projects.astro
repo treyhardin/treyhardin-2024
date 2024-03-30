@@ -2,7 +2,6 @@
 import { urlFor } from "../../../utils/sanityClient";
 import Button from "../../global/Button.astro";
 
-const { content } = Astro.props;
 const buttonContentIterations = 10;
 
 const { content } = Astro.props;
@@ -58,6 +57,7 @@ const { content } = Astro.props;
             <div class="details">
               <p class="excerpt h5">{project.excerpt}</p>  
               <Button 
+                type="primary"
                 style="ticker"
                 text="View Project" 
                 url="/"

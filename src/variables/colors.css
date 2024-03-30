@@ -1,13 +1,13 @@
 :root {
 
   /* Color */
-  --color-ink: #C16A19;
+  --color-ink: #B26720;
   --color-subdued: #C69466;
   --color-neutral: #B7B9B2;
   --color-light: #EBEDE2;
-  --color-reverse: #F6F7F2;
+  --color-reverse: #EBEEDE;
 
-  --color-brand: #E66F18;
+  --color-brand: #272333;
   --color-brand-contrast: var(--color-ink);
   --color-brand-secondary: #496E8F;
   --color-brand-secondary-contrast: var(--color-reverse);

@@ -80,12 +80,13 @@ for (let i = 0; i < tickerCount; i++) {
 
 <style>
   .images-link {
+    padding: var(--page-margin) 0;
     /* height: calc(100svh - var(--header-height)); */
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: stretch;
-    gap: var(--space-2xs);
+    gap: var(--page-margin);
     overflow: hidden;
   }
 
@@ -147,17 +148,19 @@ for (let i = 0; i < tickerCount; i++) {
 
   .section-link:hover {
     animation-play-state: paused;
+    /* animation-duration: 30s; */
     color: var(--color-background);
   }
 
   .section-link:hover .link-text,
   .section-link:hover .icon {
     z-index: 1;
+    /* rotate: -3deg; */
   }
 
   .section-link::after {
     position: absolute;
-    background: var(--color-foreground);
+    background: var(--color-brand);
     bottom: 0;
     left: 0;
     right: 0;
@@ -221,7 +224,7 @@ for (let i = 0; i < tickerCount; i++) {
     flex-direction: row;
     justify-content: stretch;
     flex: 0 0 60%;
-    gap: var(--space-2xs);
+    gap: var(--page-margin);
   }
 
   .media-inline {

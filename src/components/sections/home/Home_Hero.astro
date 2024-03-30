@@ -12,9 +12,9 @@ const details = [...content.details, ...content.details]
 
     <div class="section-title">
 
-      <a href="#" class="logo">
+      <span class="logo">
         <Icon name="logoTrey" />
-      </a>
+      </span>
       <span class="description-wrapper">
         <p class="description caption">{content.description}</p>
       </span>
@@ -42,6 +42,7 @@ const details = [...content.details, ...content.details]
         height="1800"
         sizes="(max-width: 768px) 200vw, 100vw"
         srcset={`
+          ${urlFor(content.image).width(60).height(30).auto('format').url()} 60w,
           ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
           ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,
           ${urlFor(content.image).width(1800).height(900).auto('format').url()} 1800w,
@@ -67,25 +68,13 @@ const details = [...content.details, ...content.details]
   const detailItems = hero.querySelectorAll(".detail-item")
   const image = hero.querySelector(".image")
 
-  const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 0.8}})
+  const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 1.4}})
 
   document.addEventListener("preloader:complete", () => {
-    timeline.from(content, {width: "50%", borderRadius: "100vw", duration: 0.6})
-    timeline.from(image,{ scale: 1.2, duration: 4 }, "<")
-    timeline.from(logo,{ translateY: "-100%" }, "<0.8")
-    timeline.fromTo(description,{ 
-      autoAlpha: 0,
-    },{
-      autoAlpha: 1,
-      scrambleText: {
-        text: "{original}",
-        speed: 0.8,
-        revealDelay: 0.6,
-        delimiter: " ",
-        chars: "!@#$%^&*()TREY",
-      }
-    }, "<0.4")
-    timeline.from(detailItems,{ translateY: "100%", opacity: 0, duration: 1, stagger: 0.2 }, "<")
+    timeline.from(image,{ scale: 1.2, duration: 4 })
+    timeline.from(logo,{ translateY: "-100%" }, "<0.2")
+    timeline.from(description,{ translateY: "100%" }, "<0.4")
+    timeline.from(detailItems,{ translateY: "100%", opacity: 0, stagger: 0.2 }, "<")
   })
 
 </script>
@@ -94,6 +83,7 @@ const details = [...content.details, ...content.details]
   .home_hero {
     height: calc(100lvh - var(--header-height) );
     padding: var(--page-margin) var(--page-margin) 0;
+    /* padding: var(--space-3xs) var(--space-3xs) 0; */
     color: var(--color-background);
     display: flex;
     flex-direction: column;
@@ -109,7 +99,7 @@ const details = [...content.details, ...content.details]
     align-items: stretch;
     justify-content: space-between;
     flex-basis: 100%;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     overflow: hidden;
     width: 100%;
     /* width: 30vw; */
@@ -122,6 +112,7 @@ const details = [...content.details, ...content.details]
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    align-items: flex-start;
     gap: var(--space-sm);
   }
 
@@ -138,11 +129,12 @@ const details = [...content.details, ...content.details]
   }
 
   .description-wrapper {
-    /* overflow: hidden; */
+    overflow: hidden;
+    height: auto;
   }
 
   .description {
-    visibility: hidden;
+    /* visibility: hidden; */
     max-width: 40ch;
     word-wrap: break-word;
     text-align: justify;
