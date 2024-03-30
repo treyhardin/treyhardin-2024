@@ -13,7 +13,7 @@ const contentBlocks = (`
   _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
   _type == "sectionGlobal_Projects" => {..., projects[]->{..., "projectType": type->title }},
   _type == "sectionGlobal_ImagesLink" => {...},
-  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., "otherPosts": *[_type == "blogPost" && ^._id != _id ] | order(publishedAt desc)[0..2] } },
+  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
 `)
 
 

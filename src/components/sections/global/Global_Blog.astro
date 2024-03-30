@@ -1,6 +1,7 @@
 ---
 import Star from "../../../icons/Star.astro";
 import { urlFor } from "../../../utils/sanityClient";
+import Button from "../../global/Button.astro";
 
 const { content } = Astro.props;
 ---
@@ -10,10 +11,7 @@ const { content } = Astro.props;
     <div class="section-title">
       <span class="featured-post">
         <h2 class="post-title h1">{content.featuredPost.title}</h2>
-        <a href="#" class="button">
-          <Star />
-          <p>Read More</p>
-        </a>
+        <Button type="primary" url="#" text="Read More" />
       </span>
       <p class="caption">Musings</p>
     </div>
@@ -22,14 +20,12 @@ const { content } = Astro.props;
       <div class="posts">
         {content.featuredPost.otherPosts.map((post) => (
           <a href="#" class="related-post">
+            <p class="utility">{post.categoryName}</p>
             <p class="related-post-title h6">{post.title}</p>
           </a>
         ))}
       </div>
-      <a href="#" class="button">
-        <Star />
-        View All
-      </a>
+      <Button type="secondary" style="ticker" url="#" text="Read More" />
     </div>
 
     <img 
@@ -38,13 +34,13 @@ const { content } = Astro.props;
       height="100vh"
       sizes="100vw"
       srcset={`
-        ${urlFor(content.featuredPost.mainImage).width(600).height(600).auto('format').url()} 600w,
-        ${urlFor(content.featuredPost.mainImage).width(960).height(960).auto('format').url()} 960w,
-        ${urlFor(content.featuredPost.mainImage).width(1280).height(1280).auto('format').url()} 1280w,
-        ${urlFor(content.featuredPost.mainImage).width(1440).height(1440).auto('format').url()} 1440w,
-        ${urlFor(content.featuredPost.mainImage).width(1880).height(1880).auto('format').url()} 1880w,
-        ${urlFor(content.featuredPost.mainImage).width(2048).height(2048).auto('format').url()} 2048w,
-        ${urlFor(content.featuredPost.mainImage).width(2880).height(2880).auto('format').url()} 2880w,
+        ${urlFor(content.featuredPost.mainImage).width(600).height(1200).auto('format').url()} 600w,
+        ${urlFor(content.featuredPost.mainImage).width(960).height(1920).auto('format').url()} 960w,
+        ${urlFor(content.featuredPost.mainImage).width(1280).height(640).auto('format').url()} 1280w,
+        ${urlFor(content.featuredPost.mainImage).width(1440).height(720).auto('format').url()} 1440w,
+        ${urlFor(content.featuredPost.mainImage).width(1880).height(940).auto('format').url()} 1880w,
+        ${urlFor(content.featuredPost.mainImage).width(2048).height(1024).auto('format').url()} 2048w,
+        ${urlFor(content.featuredPost.mainImage).width(2880).height(1440).auto('format').url()} 2880w,
       `}
       src={urlFor(content.featuredPost.mainImage).url()} 
     />
@@ -55,8 +51,8 @@ const { content } = Astro.props;
   .blog {
     height: calc(100svh - var(--header-height));
     /* display: none; */
-    padding: 0 var(--page-margin);
-    margin: var(--space-md) 0;
+    padding: var(--page-margin);
+    /* margin: var(--space-md) 0; */
     display: flex;
     flex-direction: column;
     justify-content: stretch;
@@ -72,6 +68,7 @@ const { content } = Astro.props;
     flex-direction: column;
     align-items: stretch;
     justify-content: space-between;
+    color: var(--color-reverse);
   }
 
   .section-title {
@@ -82,6 +79,7 @@ const { content } = Astro.props;
     flex-direction: row;
     justify-content: space-between;
     gap: var(--space-lg);
+    /* mix-blend-mode: difference; */
   }
 
   .featured-post {
@@ -89,7 +87,7 @@ const { content } = Astro.props;
     flex-direction: column;
     gap: var(--space-2xs);
     align-items: flex-start;
-    max-width: 60ch;
+    max-width: 80ch;
   }
 
   .featured-post .post-title {
@@ -115,7 +113,10 @@ const { content } = Astro.props;
   }
 
   .related-post {
-    padding: var(--space-xs) 0;
+    padding: var(--space-2xs) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3xs);
   }
 
   .related-post::after {

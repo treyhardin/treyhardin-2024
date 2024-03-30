@@ -12,9 +12,9 @@ const details = [...content.details, ...content.details]
 
     <div class="section-title">
 
-      <a href="#" class="logo">
+      <span class="logo">
         <Icon name="logoTrey" />
-      </a>
+      </span>
       <span class="description-wrapper">
         <p class="description caption">{content.description}</p>
       </span>
@@ -83,6 +83,7 @@ const details = [...content.details, ...content.details]
   .home_hero {
     height: calc(100lvh - var(--header-height) );
     padding: var(--page-margin) var(--page-margin) 0;
+    /* padding: var(--space-3xs) var(--space-3xs) 0; */
     color: var(--color-background);
     display: flex;
     flex-direction: column;
@@ -98,7 +99,7 @@ const details = [...content.details, ...content.details]
     align-items: stretch;
     justify-content: space-between;
     flex-basis: 100%;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-md);
     overflow: hidden;
     width: 100%;
     /* width: 30vw; */

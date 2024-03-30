@@ -8,20 +8,19 @@ const { content } = Astro.props;
 
   <span class="section-title">
     <h2 class="heading">
-      <div class="section-video-text_heading h4">{content.headingLine1}</div>
-      <div class="section-video-text_heading h4">{content.headingLine2}</div>
+      <div class="h4">{content.headingLine1}</div>
+      <div class="h4">{content.headingLine2}</div>
     </h2>
     <div class="title-content">
       <p class="section-video-text_description description caption">{content.description}</p>
-      <Button text="Read More" url="/test" />
+      <Button type="secondary" text="Read More" url="/test" />
     </div>
   </span>
 
   <span class="media">
     {content.video ? 
-      <video 
-        id="section-video-text_media"
-        class="section-video-text_video video"
+      <video
+        class="asset video"
         src={content.videoURL}
         poster={urlFor(content.image).width(480).height(800).auto('format').url()}
         loop
@@ -31,6 +30,7 @@ const { content } = Astro.props;
       />
      : 
       <img 
+        class="asset image"
         id="section-video-text_media"
         sizes="(max-width: 768px): 100vw, 33vw"
         srcset={`
@@ -57,11 +57,15 @@ const { content } = Astro.props;
 <script>
   import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
 
-  const mediaTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_media", defaults: { ease: "power4.out", duration: 0.8 }})
+  const sectionVideoText = document.querySelector(".video-text")
+  const media = sectionVideoText.querySelector(".asset")
+  const heading = sectionVideoText.querySelector("")
+
+  const mediaTimeline = gsap.timeline({ scrollTrigger: media, defaults: { ease: "power4.out", duration: 0.8 }})
   const headingTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_heading", defaults: { ease: "power4.out", duration: 0.8 }})
   const descriptionTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_description", defaults: { ease: "power4.out", duration: 1.8 }})
 
-  mediaZoom("#section-video-text_media", mediaTimeline);
+  mediaZoom(media, mediaTimeline);
   scrambleIn(".section-video-text_heading", headingTimeline)
 
   descriptionTimeline.from(".section-video-text_description", { opacity: 0 })
@@ -74,11 +78,11 @@ const { content } = Astro.props;
 
 <style>
   .video-text {
-    padding: 0 var(--page-margin) var(--space-md);
+    /* padding: 0 var(--page-margin) var(--space-md); */
     display: flex;
     flex-direction: row;
     align-items: stretch;
-    padding: var(--space-lg) var(--page-margin);
+    padding: var(--space-lg) var(--page-margin-narrow);
     gap: var(--space-md);
     min-height: 80svh;
     /* width: 100%; */

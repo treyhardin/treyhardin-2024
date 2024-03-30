@@ -10,8 +10,9 @@
 :root {
   /* Global Sizes */
   --header-height: 80px;
-  --page-margin: var(--space-2xs);
-  --page-margin-narrow: var(--space-sm);
+  /* --page-margin: var(--space-2xs); */
+  --page-margin: var(--space-3xs);
+  --page-margin-narrow: var(--space-2xs);
 }
 
 @media screen and (max-width: 768px) {
