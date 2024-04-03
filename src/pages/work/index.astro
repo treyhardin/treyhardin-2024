@@ -1,25 +1,34 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getProjects } from '../../utils/sanityClient';
+import WorkHero from '../../components/sections/work/Work_Hero.astro';
+import WorkFilter from '../../components/sections/work/Work_Filter.astro';
+import ProjectCard from '../../components/global/ProjectCard.astro';
+import GlobalBlog from '../../components/sections/global/Global_Blog.astro';
+import { getWorkPageContent } from '../../utils/sanityClient';
+import WorkProjectGrid from '../../components/sections/work/Work_ProjectGrid.astro';
 
-const data = await getProjects()
-const content = data
+const data = await getWorkPageContent();
+
+const pageContent = data.pageContent;
+// const projects = data.projects;
+// const projectTypes = data.projectTypes;
+
 
 
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout 
+  title="Welcome to Astro."
+  theme="light"
+>
 	<main>
-		<h1>Work</h1>
-    <div class="projectsGrid">
-      {content.map((project) => (
-        <a href={`work/${project.slug.current}`}>
-          <p>{project.title}</p>
-        </a>
-      ))}
-    </div>
+    <WorkHero />
+    <WorkFilter/>
+    <WorkProjectGrid />
+    <!-- <GlobalBlog /> -->
 	</main>
 </Layout>
+
 
 <style>
 	main {

@@ -1,0 +1,53 @@
+---
+import { getProjects } from "../../../utils/sanityClient";
+import ProjectCard from "../../global/ProjectCard.astro";
+
+const projects = await getProjects();
+let filteredProjects;
+
+console.log(projects)
+
+const { category } = Astro.props
+
+if (category) {
+  filteredProjects = projects.filter((project) => project.projectTypeSlug.current == category)
+  console.log(filteredProjects)
+} else {
+  filteredProjects = projects
+}
+
+const projectCardVariation = (i) => {
+  if (i % 10 == 0) {
+    return "full-width";
+  }
+  if (i % 10 == 5) {
+    return "half-width";
+  }
+  return "default";
+}
+---
+<div class="work_project-grid">
+    {filteredProjects.map((project, i) => (
+        <ProjectCard 
+            title={project.title}
+            slug={project.slug}
+            subtitle={project.subtitle}
+            projectType={project.projectType}
+            projectTypeSlug={project.projectTypeSlug}
+            image={project.mainImage}
+            imageAlt={project.imageAlt}
+            excerpt={project.excerpt}
+            style={projectCardVariation(i)}
+        />
+    ))}
+</div>
+
+<style>
+  .work_project-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: var(--page-margin);
+    gap: var(--page-margin);
+  }
+</style>

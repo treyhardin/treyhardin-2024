@@ -39,6 +39,16 @@ export async function getHomePageContent() {
 }
 
 export async function getProjects() {
-  const content = await client.fetch('*[_type == "project"]')
+  const content = await client.fetch('*[_type == "project"]{..., "projectType": type->title, "projectTypeSlug": type->slug, "technologies": technology[]->{title, slug} } | order(launchDate desc) ')
   return content
+}
+
+export async function getProjectTypes() {
+  const projectTypes = await client.fetch('*[_type == "projectType"]')
+  return projectTypes
+}
+
+export async function getWorkPageContent() {
+  const pageContent = await client.fetch('*[_type == "workPage"]')
+  return pageContent
 }

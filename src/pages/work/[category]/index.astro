@@ -1,0 +1,32 @@
+---
+import WorkFilter from '../../../components/sections/work/Work_Filter.astro'
+import WorkHero from '../../../components/sections/work/Work_Hero.astro'
+import WorkProjectGrid from '../../../components/sections/work/Work_ProjectGrid.astro'
+import Layout from '../../../layouts/Layout.astro'
+import { getProjectTypes } from '../../../utils/sanityClient'
+
+export async function getStaticPaths() {
+    const data = await getProjectTypes()
+    return data.map((category) => {
+        return {
+            params: { category: category.slug.current },
+            props: { title: category.title }
+        }
+    })
+};
+
+const { category } = Astro.params;
+const { title } = Astro.props;
+
+---
+<Layout 
+  title="Welcome to Astro."
+  theme="light"
+>
+    <main>
+        <WorkHero />
+        <WorkFilter category={category} />
+        <WorkProjectGrid category={category} />
+    </main>
+
+</Layout>

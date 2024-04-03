@@ -1,0 +1,33 @@
+---
+import { getProjects } from "../../../utils/sanityClient";
+import { getWorkPageContent } from "../../../utils/sanityClient";
+
+const data = await getWorkPageContent();
+const projects = await getProjects();
+
+---
+<section class="work_hero">
+    <div class="section-title">
+        <h1>{data[0].title}</h1>
+        <p>({projects.length})</p>
+    </div>
+    <p class="caption">{data[0].subheading}</p>
+</section>
+
+<style>
+    .work_hero {
+        min-height: 60svh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        /* gap: var(--space-3xs); */
+    }
+
+    .section-title {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: var(--space-3xs);
+    }
+</style>

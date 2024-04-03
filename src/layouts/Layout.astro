@@ -1,9 +1,8 @@
 ---
 interface Props {
 	title: string;
-	theme: string;
+	theme?: string;
 	inlineHeader?: boolean;
-	barbaNamespace?: string; 
 }
 
 import Preloader from '../components/global/Preloader.astro'
@@ -22,7 +21,7 @@ import '../variables/buttons.css';
 import { string } from 'astro/zod';
 
 const data = await getSiteSettings()
-const { title, theme, inlineHeader = false, barbaNamespace } = Astro.props;
+const { title, theme = "light", inlineHeader = false } = Astro.props;
 ---
 
 <!doctype html>
