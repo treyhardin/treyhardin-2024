@@ -2,13 +2,13 @@
 import { urlFor } from "../../../utils/sanityClient";
 import Badge from "../../global/Badge.astro";
 
-const { title, subtitle, projectType, projectTypeSlug, image, imageAlt } = Astro.props;
+const { title, subtitle, projectType, image, imageAlt } = Astro.props;
 ---
 <section class="project_hero">
     <div class="section-intro">
         <span class="section-title">
             <h1 class="project-title">{title}</h1>
-            <Badge text={projectType} url={`/work/${projectTypeSlug.current}`} />
+            <Badge text={projectType.title} url={`/work/${projectType.slug.current}`} />
         </span>
         <h2 class="caption">{subtitle}</h2>
     </div>
@@ -17,16 +17,18 @@ const { title, subtitle, projectType, projectTypeSlug, image, imageAlt } = Astro
             class="image"
             sizes="100vw"
             srcset={`
-                ${urlFor(image).width(400).height(300).auto('format').url()} 400w,
-                ${urlFor(image).width(600).height(450).auto('format').url()} 600w,
-                ${urlFor(image).width(960).height(720).auto('format').url()} 960w,
-                ${urlFor(image).width(1280).height(960).auto('format').url()} 1280w,
-                ${urlFor(image).width(1440).height(1080).auto('format').url()} 1440w,
-                ${urlFor(image).width(1920).height(1440).auto('format').url()} 1920w,
-                ${urlFor(image).width(2048).height(1536).auto('format').url()} 2048w,
-                ${urlFor(image).width(2880).height(2160).auto('format').url()} 2880w,
+                ${urlFor(image).width(400).height(200).auto('format').url()} 400w,
+                ${urlFor(image).width(600).height(300).auto('format').url()} 600w,
+                ${urlFor(image).width(960).height(480).auto('format').url()} 960w,
+                ${urlFor(image).width(1280).height(640).auto('format').url()} 1280w,
+                ${urlFor(image).width(1440).height(720).auto('format').url()} 1440w,
+                ${urlFor(image).width(1920).height(960).auto('format').url()} 1920w,
+                ${urlFor(image).width(2048).height(1024).auto('format').url()} 2048w,
+                ${urlFor(image).width(2880).height(1440).auto('format').url()} 2880w,
             `}
             src={urlFor(image).width(400).height(300).auto('format').url()}
+            loading="eager"
+            alt={imageAlt}
         />
     </div>
 </section>
@@ -44,6 +46,8 @@ const { title, subtitle, projectType, projectTypeSlug, image, imageAlt } = Astro
         justify-content: space-between;
         align-items: flex-end;
         padding: 0 var(--page-margin-narrow);
+        flex-wrap: wrap;
+        gap: var(--space-3xs);
     }
 
     .section-title {
@@ -60,7 +64,7 @@ const { title, subtitle, projectType, projectTypeSlug, image, imageAlt } = Astro
     .media {
         border-radius: var(--radius-md);
         overflow: hidden;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 2 / 1;
         margin: 0 var(--page-margin);
     }
 

@@ -11,9 +11,14 @@ export const client = createClient({
 const contentBlocks = (`
   _type == "sectionHome_Hero" => {..., "imageURL": image.asset->url},
   _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
-  _type == "sectionGlobal_Projects" => {..., projects[]->{..., "projectType": type->title }},
+  _type == "sectionGlobal_Projects" => {..., projects[]->{..., "projectType": { "title": type->title, "slug": type->slug } }},
   _type == "sectionGlobal_ImagesLink" => {...},
   _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
+  _type == "sectionGlobal_TextVideoAutoplay" => {..., "videoURL": video.asset->url},
+  _type == "sectionGlobal_TextMedia" => {...},
+  _type == "sectionGlobal_ContentBlocks" => {...},
+  _type == "sectionProject_Info" => {...},
+  _type == "sectionGlobal_TickerLink" => {...},
 `)
 
 
@@ -28,8 +33,8 @@ export async function getSiteSettings() {
   return settings[0]
 }
 
-export async function getPosts() {
-  const posts = await client.fetch('*[_type == "post"]')
+export async function getBlogPosts() {
+  const posts = await client.fetch('*[_type == "blogPost"]{..., category->{...} } | order(publishedAt desc)')
   return posts
 }
 
@@ -39,8 +44,14 @@ export async function getHomePageContent() {
 }
 
 export async function getProjects() {
-  const content = await client.fetch('*[_type == "project"]{..., "projectType": type->title, "projectTypeSlug": type->slug, "technologies": technology[]->{title, slug} } | order(launchDate desc) ')
+  const content = await client.fetch(`*[_type == "project"]{..., "projectType": { "title": type->title, "slug": type->slug }, "technologies": technology[]->{title, slug}, content[]{${contentBlocks}} } | order(launchDate desc) `)
   return content
+}
+
+export async function getRelatedProjects(project) {
+  const relatedProjects = await client.fetch(`*[_type == "project" && type->slug.current == '${project.projectType.slug.current}' && slug.current != '${project.slug.current}']{..., "projectType": { "title": type->title, "slug": type->slug }} `)
+  const allProjects = await client.fetch(`*[_type == "project"]`)
+  return { relatedProjects, allProjects }
 }
 
 export async function getProjectTypes() {

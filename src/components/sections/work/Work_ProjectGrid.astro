@@ -5,13 +5,13 @@ import ProjectCard from "../../global/ProjectCard.astro";
 const projects = await getProjects();
 let filteredProjects;
 
-console.log(projects)
+// console.log(projects)
 
 const { category } = Astro.props
 
 if (category) {
-  filteredProjects = projects.filter((project) => project.projectTypeSlug.current == category)
-  console.log(filteredProjects)
+  filteredProjects = projects.filter((project) => project.projectType.slug.current == category)
+  // console.log(filteredProjects)
 } else {
   filteredProjects = projects
 }
@@ -25,19 +25,14 @@ const projectCardVariation = (i) => {
   }
   return "default";
 }
+
 ---
 <div class="work_project-grid">
     {filteredProjects.map((project, i) => (
         <ProjectCard 
-            title={project.title}
-            slug={project.slug}
-            subtitle={project.subtitle}
-            projectType={project.projectType}
-            projectTypeSlug={project.projectTypeSlug}
-            image={project.mainImage}
-            imageAlt={project.imageAlt}
-            excerpt={project.excerpt}
+            project={project}
             style={projectCardVariation(i)}
+            index={i}
         />
     ))}
 </div>

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import SectionBlock from '../components/sections/SectionBlock.astro';
 import { getHomePageContent } from '../utils/sanityClient';
 import Header from '../components/global/Header.astro';
+import Blog from '../components/sections/global/Global_Blog.astro';
 
 const data = await getHomePageContent()
 const content = data.content
@@ -13,7 +14,6 @@ const content = data.content
 	title="Creative Director & Developer"
 	theme="light"
 	inlineHeader={true}
-	barbaNamespace="home"
 >
 	{content.map((block, i) => (
 			<>
@@ -22,6 +22,7 @@ const content = data.content
 			</>
 		)
 	)}
+	<Blog />
 </Layout>
 
 

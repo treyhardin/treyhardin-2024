@@ -2,11 +2,15 @@
 import { urlFor } from "../../utils/sanityClient";
 import Badge from "./Badge.astro";
 import Button from "./Button.astro";
-const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, excerpt, style } = Astro.props;
+
+const { project, style, index } = Astro.props;
 ---
 <span class=`project-card ${style}`>
+    
+    {index >= 0 && index < 9 ? <p class="index utility">(0{index + 1})</p> : null}
+    {index >= 9 ? <p class="index utility">({index + 1})</p> : null}
 
-    <a class="media" href={`/work/${projectTypeSlug.current}/${slug.current}`}>
+    <a class="media" href={`/work/${project.slug.current}`}>
 
         {style == "default" && 
             <img 
@@ -15,13 +19,14 @@ const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, ex
                 width="50vw"
                 height="38vw"
                 srcset={`
-                ${urlFor(image).width(300).height(225).auto('format').url()} 300w,
-                ${urlFor(image).width(600).height(450).auto('format').url()} 600w,
-                ${urlFor(image).width(960).height(720).auto('format').url()} 960w,
-                ${urlFor(image).width(1280).height(960).auto('format').url()} 1280w,
-                ${urlFor(image).width(1440).height(1080).auto('format').url()} 1440w,
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
                 `}
-                src={urlFor(image).width(300).height(225).auto('format').url()} 
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
             />
         }
 
@@ -32,13 +37,14 @@ const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, ex
                 width="100vw"
                 height="75vw"
                 srcset={`
-                ${urlFor(image).width(300).height(225).auto('format').url()} 300w,
-                ${urlFor(image).width(600).height(450).auto('format').url()} 600w,
-                ${urlFor(image).width(960).height(720).auto('format').url()} 960w,
-                ${urlFor(image).width(1280).height(960).auto('format').url()} 1280w,
-                ${urlFor(image).width(1440).height(1080).auto('format').url()} 1440w,
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
                 `}
-                src={urlFor(image).width(300).height(225).auto('format').url()} 
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
             />
         }
 
@@ -49,13 +55,14 @@ const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, ex
                 width="50vw"
                 height="66.666666vw"
                 srcset={`
-                ${urlFor(image).width(300).height(225).auto('format').url()} 300w,
-                ${urlFor(image).width(600).height(450).auto('format').url()} 600w,
-                ${urlFor(image).width(960).height(720).auto('format').url()} 960w,
-                ${urlFor(image).width(1280).height(960).auto('format').url()} 1280w,
-                ${urlFor(image).width(1440).height(1080).auto('format').url()} 1440w,
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
                 `}
-                src={urlFor(image).width(300).height(225).auto('format').url()} 
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
             />
         }
     </a>
@@ -63,17 +70,17 @@ const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, ex
     <div class="content">
         <div class="details">
             <div class="project-title">
-                <a class="h3" href={`/work/${projectTypeSlug.current}/${slug.current}`}>{title}</a>
-                <Badge text={projectType} url={`/work/${projectTypeSlug.current}`} />
+                <a class="h3" href={`/work/${project.slug.current}`}>{project.title}</a>
+                <Badge text={project.projectType.title} url={`/work/${project.projectType.slug.current}`} />
             </div>
-            <p class="caption">{subtitle}</p>
+            <p class="caption">{project.subtitle}</p>
         </div>
 
         {style != "default" &&
         <span class="excerpt">
-            <p class="caption">{excerpt}</p>
+            <p class="caption">{project.excerpt}</p>
             <Button 
-                url={`/work/${slug.current}`} 
+                url={`/work/${project.slug.current}`} 
                 text="View Project" 
                 style="ticker"
                 type="secondary"
@@ -91,6 +98,16 @@ const { title, slug, image, imageAlt, projectType, projectTypeSlug, subtitle, ex
         align-items: stretch;
         flex: 0 0 calc(50% - var(--page-margin) / 2);
         gap: var(--space-3xs);
+        position: relative;
+    }
+
+    .index {
+        position: absolute;
+        top: var(--space-2xs);
+        right: var(--space-2xs);
+        z-index: 2;
+        color: var(--color-reverse);
+        mix-blend-mode: difference;
     }
 
     .project-card.default,

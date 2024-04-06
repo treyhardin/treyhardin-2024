@@ -1,0 +1,80 @@
+---
+import { Icon } from "astro-icon/components";
+
+const { content } = Astro.props;
+// console.log(content)
+---
+<section class="project-info">
+
+    {content.heading && <h2 class="section-title h1">{content.heading}</h2>}
+    <div class="content">
+        {content.description && <h3 class="description h5">{content.description}</h3>}
+        {content.details ? 
+            <ul class="details">
+                {content.details.map((detail) => (
+                    <li class="detail">
+                        <Icon name="star" />
+                        <p class="caption">{detail}</p>
+                    </li>
+                ))}
+            </ul>
+        : null}
+    </div>
+</section>
+
+<style>
+    .project-info {
+        padding: var(--space-md) 8vw;
+        display: flex;
+        flex-direction: column;
+        /* align-items: stretch; */
+        align-items: flex-end;
+        justify-content: center;
+        min-height: 80svh;
+        gap: var(--space-sm);
+    }
+
+    .section-title {
+        max-width: 24ch;
+        align-self: flex-start;
+    }
+
+    .content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        /* align-self: flex-end; */
+        /* align-self: stretch; */
+        width: 90%;
+    }
+
+    .description {
+        max-width: 40ch;
+    }
+
+    .details {
+        padding: 0;
+        list-style: none;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .detail {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-3xs);
+        padding: var(--space-3xs) var(--space-2xs) var(--space-3xs) 0;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    @media screen and (max-width: 960px) {
+        .content {
+            flex-direction: column;
+            max-width: 60ch;
+        }
+
+        .description {
+            max-width: unset;
+        }
+    }
+</style>

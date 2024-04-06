@@ -4,16 +4,25 @@ import VideoText from './global/Global_Video-Text.astro'
 import Projects from './global/Global_Projects.astro'
 import ImagesLink from './global/Global_Images-Link.astro'
 import Blog from './global/Global_Blog.astro'
+import TextMedia from './global/Global_Text-Media.astro'
+import TextVideoAutoplay from './global/Global_Text-Video-Autoplay.astro'
+import ContentBlocks from './global/Global_ContentBlocks.astro'
+import ProjectInfo from './project/Project_Info.astro'
+import TickerLink from './global/Global_Ticker-Link.astro'
 import About from './About.astro'
-import Work from './Work.astro'
 import Clients from './Clients.astro'
-const { type, content } = Astro.props
+const { type, content, block } = Astro.props
 ---
-{type == 'sectionHome_Hero' && <HomeHero content={content} /> }
-{type == 'sectionGlobal_VideoText' && <VideoText content={content} /> }
-{type == 'sectionGlobal_Projects' && <Projects content={content} /> }
-{type == 'sectionGlobal_ImagesLink' && <ImagesLink content={content} /> }
-{type == 'sectionGlobal_Blog' && <Blog content={content} /> }
+{content._type == 'sectionHome_Hero' && <HomeHero content={content} /> }
+{content._type == 'sectionGlobal_VideoText' && <VideoText content={content} /> }
+{content._type == 'sectionGlobal_Projects' && <Projects content={content} /> }
+{content._type == 'sectionGlobal_ImagesLink' && <ImagesLink content={content} /> }
+{content._type == 'sectionGlobal_Blog' && <Blog content={content} /> }
+{content._type == 'sectionGlobal_TextMedia' && <TextMedia content={content} /> }
+{content._type == 'sectionGlobal_TextVideoAutoplay' && <TextVideoAutoplay content={content} /> }
+{content._type == 'sectionGlobal_ContentBlocks' && <ContentBlocks content={content} /> }
+{content._type == 'sectionProject_Info' && <ProjectInfo content={content} /> }
+{content._type == 'sectionGlobal_TickerLink' && <TickerLink content={content} /> }
 <!-- {type == 'aboutSection' && <About /> }
 {type == 'workSection' && <Work /> }
 {type == 'clientsSection' && <Clients /> } -->

@@ -7,12 +7,12 @@ const { title, excerpt, technologies } = Astro.props;
         <p class="caption">(02)</p>
     </div>
     <div class="section-title">
-        <h2 class="utility">{title}</h2>
-        <h3 class="h4">{excerpt}</h3>
+        <h2 class="caption">{title}</h2>
+        <h3 class="h3">{excerpt}</h3>
         <ul class="technologies">
-        {technologies.map((technology) => (
-            <li class="technology">{technology.title}</li>
-        ))}
+            {technologies.map((technology) => (
+                <li class="technology utility">{technology.title}</li>
+            ))}
         </ul>
     </div>
 </section>
@@ -23,10 +23,11 @@ const { title, excerpt, technologies } = Astro.props;
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        min-height: 80svh;
+        /* min-height: 50svh; */
         border-bottom: 1px solid var(--color-border);
         margin: 0 var(--page-margin);
-        padding: var(--space-2xs) 0;
+        padding: var(--space-2xs) 0 var(--space-xl);
+        gap: var(--space-lg);
     }
 
     .section-intro {
@@ -44,7 +45,7 @@ const { title, excerpt, technologies } = Astro.props;
         align-items: stretch;
         max-width: 80ch;
         text-align: center;
-        gap: var(--space-3xs);
+        gap: var(--space-2xs);
     }
 
     .technologies {
@@ -54,6 +55,7 @@ const { title, excerpt, technologies } = Astro.props;
         border: 1px solid var(--color-border);
         border-radius: var(--radius-sm);
         padding: 0;
+        margin: 0 var(--space-xs);
     }
 
     .technology {
