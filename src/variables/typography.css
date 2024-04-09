@@ -129,7 +129,7 @@ a {
   --min-size: 12;
   --base-size: 14;
   letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.25;
   margin: 0;
   text-transform: uppercase;
 }
