@@ -2,12 +2,16 @@
 import type { GetStaticPaths } from "astro";
 import Layout from '../../layouts/Layout.astro';
 import { getProjects } from '../../utils/sanityClient';
+import ProjectHero from "../../components/sections/project/Project_Hero.astro";
+import ProjectDetails from "../../components/sections/project/Project_Details.astro";
+import SectionBlock from "../../components/sections/SectionBlock.astro";
+import RelatedProjects from "../../components/sections/project/Project_RelatedProjects.astro";
+import Blog from "../../components/sections/global/Global_Blog.astro";
 
 
 export async function getStaticPaths() {
 
   const data = await getProjects()
-  console.log(data)
 
   interface Props {
     title: string
@@ -15,17 +19,38 @@ export async function getStaticPaths() {
   
   return data.map((project) => {
     return {
-      params: { slug: project.slug.current },
-      props: { project}
+      params: { category: project.projectType.slug.current, slug: project.slug.current },
+      props: { project }
     }
   })
 };
 
 const { slug } = Astro.params;
 const { project } = Astro.props;
-
+// console.log(project)
 
 ---
-<Layout title={project.title}>
-  <h1>{project.title}</h1>
+<Layout 
+  title={project.title}
+>
+  <ProjectHero
+    title={project.title}
+    subtitle={project.subtitle}
+    projectType={project.projectType}
+    image={project.mainImage}
+    imageAlt={project.imageAlt}
+  />
+  <ProjectDetails
+    title={project.title}
+    excerpt={project.excerpt}
+    technologies={project.technologies}
+  />
+  {project.content ? 
+    project.content.map((block, i) => (
+      <SectionBlock type={block._type} content={block} block={block} />
+    )
+  ): null}
+
+  <RelatedProjects project={project} />
+  <Blog />
 </Layout>

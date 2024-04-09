@@ -1,0 +1,114 @@
+---
+import { Icon } from "astro-icon/components";
+import { urlFor } from "../../../utils/sanityClient";
+
+const { content } = Astro.props;
+// console.log(content)
+---
+<section class="text-video">
+    <span class="section-title">
+        <h2 class="utility">{content.heading}</h2>
+        <span class="title-border" />
+        <Icon name="star" />
+    </span>
+    <span class="media">
+        {content.video ? (
+            <video
+                class="video"
+                width="33vw"
+                height="66vw"
+                src={content.videoURL}
+                poster={urlFor(content.image).width(400).height(400).auto('format').url()}
+                loop
+                autoplay
+                muted
+                playsinline
+            />
+        ):
+            <img 
+                class="image"
+                width="33vw"
+                height="66vw"
+                sizes="100vw, (min-width: 960px) 33vw"
+                srcset={`
+                    ${urlFor(content.image).width(400).height(800).auto('format').url()} 400w,
+                    ${urlFor(content.image).width(600).height(1200).auto('format').url()} 600w,
+                    ${urlFor(content.image).width(960).height(1920).auto('format').url()} 960w,
+                    ${urlFor(content.image).width(1280).height(2560).auto('format').url()} 1280w,
+                `}
+                src={urlFor(content.image).width(600).height(1200).auto('format').url()}
+                loading="lazy"
+                alt={content.imageAlt}
+
+            />
+        }
+    </span>
+    <p class="description caption">{content.description}</p>
+</section>
+
+<style>
+    .text-video {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: var(--space-2xs);
+        align-items: center;
+        padding: var(--space-lg) var(--page-margin);
+    }
+
+    .section-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: stretch;
+        gap: var(--space-3xs);
+    }
+
+    .title-border {
+        height: 1px;
+        flex-grow: 1;
+        background: var(--color-border);
+        /* min-width: 10vw; */
+    }
+
+    .description {
+        /* flex: 1 0 20%; */
+        text-align: justify;
+    }
+
+    .media {
+        aspect-ratio: 3 / 4;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        max-height: 90svh;
+    }
+
+    .video,
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    @media screen and (max-width: 960px) {
+        .text-video {
+            grid-template-columns: 1fr;
+            justify-items: center;
+        }
+
+        .section-title,
+        .description {
+            width: 100%;
+            max-width: 60ch;
+        }
+
+        .section-title {
+            grid-row-start: 2;
+            /* width: 100%; */
+        }
+
+        .description {
+            /* flex: 1 0 20%; */
+            /* max-width: 60ch; */
+        }
+    }
+</style>

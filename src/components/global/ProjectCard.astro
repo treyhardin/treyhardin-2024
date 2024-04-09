@@ -1,0 +1,195 @@
+---
+import { urlFor } from "../../utils/sanityClient";
+import Badge from "./Badge.astro";
+import Button from "./Button.astro";
+
+const { project, style, index } = Astro.props;
+---
+<span class=`project-card ${style}`>
+    
+    {index >= 0 && index < 9 ? <p class="index utility">(0{index + 1})</p> : null}
+    {index >= 9 ? <p class="index utility">({index + 1})</p> : null}
+
+    <a class="media" href={`/work/${project.slug.current}`}>
+
+        {style == "default" && 
+            <img 
+                class="image"
+                sizes="50vw"
+                width="50vw"
+                height="38vw"
+                srcset={`
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
+                `}
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
+            />
+        }
+
+        {style == "full-width" && 
+            <img 
+                class="image"
+                sizes="100vw"
+                width="100vw"
+                height="75vw"
+                srcset={`
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
+                `}
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
+            />
+        }
+
+        {style == "half-width" && 
+            <img 
+                class="image"
+                sizes="50vw"
+                width="50vw"
+                height="66.666666vw"
+                srcset={`
+                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
+                `}
+                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                alt={project.imageAlt}
+            />
+        }
+    </a>
+
+    <div class="content">
+        <div class="details">
+            <div class="project-title">
+                <a class="h3" href={`/work/${project.slug.current}`}>{project.title}</a>
+                <Badge text={project.projectType.title} url={`/work/${project.projectType.slug.current}`} />
+            </div>
+            <p class="caption">{project.subtitle}</p>
+        </div>
+
+        {style != "default" &&
+        <span class="excerpt">
+            <p class="caption">{project.excerpt}</p>
+            <Button 
+                url={`/work/${project.slug.current}`} 
+                text="View Project" 
+                style="ticker"
+                type="secondary"
+            />
+        </span>
+    }
+    </div>
+
+</span>
+
+<style>
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        flex: 0 0 calc(50% - var(--page-margin) / 2);
+        gap: var(--space-3xs);
+        position: relative;
+    }
+
+    .index {
+        position: absolute;
+        top: var(--space-2xs);
+        right: var(--space-2xs);
+        z-index: 2;
+        color: var(--color-reverse);
+        mix-blend-mode: difference;
+    }
+
+    .project-card.default,
+    .project-card.full-width {
+        padding: 0 0 var(--space-2xs);
+    }
+
+    .project-card.full-width,
+    .project-card.half-width {
+        flex: 0 0 100%;
+    }
+
+    .project-card.project-card.half-width {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2xs);
+    }
+
+    .project-card.project-card.full-width .content {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .project-card.project-card.half-width .content {
+        display: flex;
+        flex-direction: column;
+        /* justify-content: space-between; */
+    }
+
+    .media {
+        aspect-ratio: 4 / 3;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .project-card.project-card.half-width .media {
+        aspect-ratio: 3 / 4;
+        flex: 0 0 calc(50% - var(--page-margin) / 2)
+    }
+
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .content {
+        display: flex;
+    }
+
+    .project-card.project-card.half-width .content {
+        gap: var(--space-sm);
+    }
+
+    .excerpt {
+        max-width: 50ch;
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2xs);
+    }
+
+    .project-card.project-card.half-width .excerpt {
+        margin-left: var(--space-sm);
+    }
+
+    .details {
+        display: flex;
+        flex-direction: column;
+        /* gap: var(--space-3xs); */
+    }
+
+    .project-title {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: var(--space-3xs);
+    }
+
+    .project-title a::after {
+        /* display: none; */
+        visibility: hidden;
+    }
+
+</style>

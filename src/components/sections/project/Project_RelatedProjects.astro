@@ -1,0 +1,61 @@
+---
+import { getRelatedProjects } from '../../../utils/sanityClient'
+import ProjectCard from '../../global/ProjectCard.astro';
+
+const { project } = Astro.props;
+
+const data = await getRelatedProjects(project);
+
+const projectCardVariation = () => {
+  if (data.relatedProjects.length < 2 ) {
+    return "full-width";
+  }
+  return "default";
+}
+
+---
+<section class="related-projects">
+    <div class="section-title">
+        <h2 class="caption">Related Projects</h2>
+        <span class="title-border"></span>
+        <p>({data.allProjects.length})</p>
+    </div>
+    <div class="projects">
+        {data.relatedProjects.map((project, i) => (
+            <ProjectCard 
+                project={project} 
+                style={projectCardVariation()}
+                index={i}
+            />
+        ))}
+    </div>
+</section>
+
+<style>
+
+    .related-projects {
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-sm) var(--page-margin);
+        gap: var(--space-3xs);
+    }
+
+    .section-title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2xs);
+    }
+
+    .title-border {
+        height: 1px;
+        background: var(--color-border);
+        flex-grow: 1;
+    }
+
+    .projects {
+        display: flex;
+        flex-direction: row;
+        gap: var(--page-margin);
+    }
+</style>

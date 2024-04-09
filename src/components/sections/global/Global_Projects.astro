@@ -1,117 +1,26 @@
 ---
 import { urlFor } from "../../../utils/sanityClient";
 import Button from "../../global/Button.astro";
+import ProjectCard from "../../global/ProjectCard.astro";
 
 const buttonContentIterations = 10;
 
 const { content } = Astro.props;
+console.log(content)
 ---
 <section class="section-projects">
-  {content.projects.map((project, i) => (
-    <div class="section-projects-card project-card">
-      <div class="media">
-        {i < 1 ?
-        <img 
-          class="section-projects-image image"
-          sizes="100vw"
-          width="50vw"
-          height="67vw"
-          srcset={`
-            ${urlFor(project.mainImage).width(600).height(800).auto('format').url()} 600w,
-            ${urlFor(project.mainImage).width(960).height(1280).auto('format').url()} 960w,
-            ${urlFor(project.mainImage).width(1280).height(1706).auto('format').url()} 1280w,
-            ${urlFor(project.mainImage).width(1440).height(1920).auto('format').url()} 1440w,
-          `}
-          src={urlFor(project.mainImage).width(600).height(800).auto('format').url()} 
-        /> :
-        <img 
-          class="image"
-          sizes="50vw"
-          width="50vw"
-          height="38vw"
-          srcset={`
-            ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
-            ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
-            ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
-            ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
-            ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
-          `}
-          src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
-        />
-        }
-      </div>
-      <div class="content">
-        <div class="section-intro">
-          <p class="utility">Work</p>
-          <p class="utility">{`(0${i + 1})`}</p>
-        </div>
-        <div class="info">
-          <div class="section-title">
-            <div class="title-wrapper">
-              <a class={`title ${i < 1 ? 'h1' : 'h3'}`}>{project.title}</a>
-              <p class="project-type utility">{project.projectType}</p>
-            </div>
-            <p class="subtitle utility">{project.subtitle}</p>
-          </div>
-          {i < 1 && 
-            <div class="details">
-              <p class="excerpt h5">{project.excerpt}</p>  
-              <Button 
-                type="primary"
-                style="ticker"
-                text="View Project" 
-                url="/"
-              />
+  {content.projects.map((project, i) => {
 
-            </div>
-          }
-        </div>
-      </div>
-    </div>
-  ))}
+    if (i < 1) return (
+      <ProjectCard project={project} style="half-width" index={i} />
+    )
+
+    if (i >= 1) return (
+      <ProjectCard project={project} style="default" index={i} />
+    )
+          
+  })}
 </section>
-
-<script>
-  import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
-
-  const projectCards = document.querySelectorAll(".section-projects-card")
-  
-  projectCards.forEach((projectCard) => {
-
-    const image = projectCard.querySelector(".image")
-    const introText = projectCard.querySelectorAll(".section-intro-text")
-    const title = projectCard.querySelectorAll(".title")
-    const badge = projectCard.querySelectorAll(".project-type")
-    const subtitle = projectCard.querySelectorAll(".subtitle")
-    const details = projectCard.querySelectorAll(".details")
-    const excerpt = projectCard.querySelectorAll(".excerpt")
-
-    const timeline = gsap.timeline({ scrollTrigger: projectCard, defaults: {ease: "power4.out", duration: 0.6}});
-    mediaZoom(image, timeline, "<")
-    // scrambleIn(excerpt, timeline, "<")
-    timeline.from(title, {
-      translateY: "-100%",
-      delay: 0,
-    }, "<0.4")
-    timeline.from(introText, {
-      translateY: "100%",
-      stagger: 0.3,
-    }, "<")
-    timeline.from(badge, {
-      translateY: "-100%",
-    }, "<0.3")
-    timeline.from(subtitle, {
-      translateY: "100%",
-    }, "<0.3")
-    timeline.from(details, {
-      translateY: "30",
-      opacity: 0,
-      duration: 1
-    }, "<0.3")
-    
-  })
-
-</script>
 
   <style>
     .section-projects {
@@ -132,12 +41,12 @@ const { content } = Astro.props;
       gap: var(--space-2xs);
     }
 
-    .project-card:nth-child(1) {
+    /* .project-card:nth-child(1) {
       /* min-height: calc(100svh - var(--header-height)); */
       flex-direction: row;
       flex: 0 0 100%;
       gap: var(--page-margin);
-    }
+    } */
 
     .project-card:nth-child(1) .media {
       /* min-height: calc(100svh - var(--header-height)); */
