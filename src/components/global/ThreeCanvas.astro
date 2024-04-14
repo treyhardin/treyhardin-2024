@@ -24,7 +24,6 @@
     import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-    import { LoopSubdivision } from 'three-subdivide';
 
 
     import { lenis } from '../../utils/lenis';
@@ -46,6 +45,7 @@
     let scrollPosition = 0
     let initialScroll = lenis.actualScroll
     let mousePosition = new Vector2(0.5, 0.5)
+    let mouseSpeed = new Vector2(0, 0)
 
     let shouldRender = false;
 
@@ -129,16 +129,18 @@
     const baseMaterial = new THREE.ShaderMaterial({
         uniforms: {
             uImage: { value: null },
-            uTime: { value: 0 },
+            uTime: { value: 0.0 },
             uHover: { value: new THREE.Vector2(0.5, 0.5)},
-            uHoverState: { value: 0 },
+            uHoverState: { value: 0.0 },
             uMousePosition: { value: mousePosition },
+            uMouseSpeed: { value: new THREE.Vector2(0.0, 0.0) }
         },
         vertexShader: `
             varying vec2 vUv;
             varying float vDistance;
             varying vec2 vPosition;
             uniform vec2 uMousePosition;
+            uniform vec2 uMouseSpeed;
             uniform float uHoverState;
             uniform float uTime;
 
@@ -160,19 +162,29 @@
 
             uniform sampler2D uImage;
             uniform vec2 uMousePosition;
+            uniform vec2 uMouseSpeed;
             uniform float uHoverState;
 
             void main() {
 
                 vec2 newUV = vUv;
 
-                float pixelCount = 16.0;
-                float divisionsX =  (1.0 / pixelCount);
+                float pixelCount = 30.;
+                float intensity = 100.;
+                float cursorSize = 0.3;
+
+                // float divisionsX =  (1.0 / pixelCount) * (abs(uMouseSpeed.x / 2.));
+                // float divisionsY =  (1.0 / pixelCount) * (abs(uMouseSpeed.y / 2.));
+                float divisionsX = (1.0 / pixelCount);
                 float divisionsY =  (1.0 / pixelCount);
 
-                vec2 pixelatedCoordinates = vec2(divisionsX * floor(vUv.x / divisionsX), divisionsY * floor(vUv.y / divisionsY));
+                // vec2 smoothDistance = smoothStep(0.001, 0.2, vDistance.x), smoothStep(0.001, 0.2, vDistance.y);
 
-                vec4 imageTexture = texture2D(uImage, mix(vUv, pixelatedCoordinates, uHoverState * (1.0 - smoothstep(0.001, 0.4, vDistance) ) ) );
+                vec2 pixelatedCoordinates = vec2(divisionsX * floor(vUv.x / divisionsX), divisionsY * floor(vUv.y / divisionsY));
+                vec2 effectScale = uHoverState * abs(uMouseSpeed) * intensity * (1.0 - smoothstep(0.01, cursorSize, vDistance) ) ;
+
+                // vec4 imageTexture = texture2D(uImage, mix(vUv, pixelatedCoordinates, uHoverState * (1.0 - smoothstep(0.001, 0.2, vDistance * (1.0 - uMouseSpeed.x) ) ) ) );
+                vec4 imageTexture = texture2D(uImage, mix(vUv, pixelatedCoordinates, effectScale));
 
                 gl_FragColor = vec4(imageTexture);
             }
@@ -235,15 +247,33 @@
 
                     float density = 300.0;
                     float speed = 0.05;
+                    float noiseIntensity = 0.05;
+                    float contrast = 1.0;
+                    float cutoff = 0.01;
 
                     float noise = 10. * ( cnoise(vec3( vUv * density , time * speed)) );
                     float detailNoise = cnoise(vec3(vUv * density * 2.0, noise));
 
+                    float pixelCount = 20.;
+                    float pixelationIntensity = 1.0;
+                    float divisionsX = (1.0 / pixelCount);
+                    float divisionsY =  (1.0 / pixelCount);
 
-                    vec4 diffuse = texture2D( tDiffuse, vUv);
+                    float mask = 1.0 - smoothstep(-0.00, 0.3, newUV.y);
+                    // newUV.x -= (newUV.x - 0.5) * (mask) * sin(noise * 0.5) * 0.01;
+
+
+                    vec2 pixelatedCoordinates = vec2(divisionsX * floor(newUV.x / divisionsX), divisionsY * floor(newUV.y / divisionsY)) * pixelationIntensity;
+
+                    // vec4 diffuse = texture2D( tDiffuse, mix(newUV, pixelatedCoordinates, mask ));
+                    vec4 diffuse = texture2D( tDiffuse, newUV);
+                    diffuse.w = mix(diffuse.w, 0.0, clamp(detailNoise * mask, 0.0, 0.3) * detailNoise);
+                    // vec4 mixedDiffuse = vec4( mix(diffuse.xy, pixelatedCoordinates, newUV.y), newUV);
 
                     // gl_FragColor = texture2D( tDiffuse, newUV);
-                    gl_FragColor = vec4( mix(diffuse, vec4(0.0, 0.0, 0.0, 0.5), step(detailNoise, 0.001) * 0.2 ) );
+                    vec4 noisyDiffuse = vec4( mix(diffuse, vec4(0.0, 0.0, 0.0, contrast), step(detailNoise, cutoff) * noiseIntensity ) );
+                    // gl_FragColor = vec4(mask, mask, mask, 1.0);
+                    gl_FragColor = noisyDiffuse;
                 }
             `
         }
@@ -449,12 +479,22 @@
                     duration: 0.1,
                     x: intersects[0].uv.x,
                     y: intersects[0].uv.y
+                }) 
+                gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
+                    duration: 0.1,
+                    x: mouseSpeed.x,
+                    y: mouseSpeed.y
                 })
             }
 
             imageMeshes.map((mesh) => {
                 mesh.material.uniforms.uTime.value += 1
                 // mesh.material.uniforms.uMousePosition.value = mousePosition
+                // mesh.material.uniforms.uMouseSpeed.value = mouseSpeed
+                // gsap.to(mesh.material.uniforms.uMouseSpeed, {
+                //     duration: 0.1,
+                //     value: mouseSpeed
+                // })
                 mesh.material.needsUpdate = true;
             })
 
@@ -480,11 +520,28 @@
     document.addEventListener("mousemove", (e) => {
         // console.log(e)
         shouldRender = true
+
+
+        const positionX = (e.clientX / width) * 2 - 1
+        const positionY = -(e.clientY / height) * 2 + 1
+
+        let newSpeed = new Vector2(mousePosition.x - positionX, mousePosition.y - positionY)
+
         gsap.to(mousePosition, {
             duration: 0.1,
-            x: (e.clientX / width) * 2 - 1,
-            y: -(e.clientY / height) * 2 + 1
+            x: positionX,
+            y: positionY
         })
+
+        gsap.to(mouseSpeed, {
+            duration: 1,
+            x: newSpeed.x,
+            y: newSpeed.y
+        })
+
+        // mouseSpeed = newSpeed
+
+        console.log(mouseSpeed)
         
     })
     
