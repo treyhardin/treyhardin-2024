@@ -44,7 +44,7 @@ export async function getHomePageContent() {
 }
 
 export async function getProjects() {
-  const content = await client.fetch(`*[_type == "project"]{..., "projectType": { "title": type->title, "slug": type->slug }, "technologies": technology[]->{title, slug}, content[]{${contentBlocks}} } | order(launchDate desc) `)
+  const content = await client.fetch(`*[_type == "project"]{..., mainImage{..., asset->{_id, metadata, altText} }, "projectType": { "title": type->title, "slug": type->slug }, "technologies": technology[]->{title, slug}, content[]{${contentBlocks}} } | order(launchDate desc) `)
   return content
 }
 

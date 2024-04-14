@@ -1,10 +1,14 @@
 import Lenis from '@studio-freight/lenis'
 
-export const lenis = new Lenis()
+export let lenis = new Lenis()
 
-// lenis.on('scroll', (e) => {
-//   console.log(e)
-// })
+document.addEventListener("astro:before-preparation", (e) => {
+  lenis.stop()
+})
+
+document.addEventListener("astro:page-load", (e) => {
+  lenis.start()
+})
 
 function raf(time) {
   lenis.raf(time)

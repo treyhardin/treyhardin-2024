@@ -10,6 +10,7 @@ import Header from '../components/global/Header.astro';
 import Footer from '../components/global/Footer.astro';
 import { ViewTransitions } from "astro:transitions";
 import { getSiteSettings, urlFor } from '../utils/sanityClient';
+import ThreeCanvas from '../components/global/ThreeCanvas.astro'
 
 import '../variables/globals.css';
 import '../variables/animation.css';
@@ -18,7 +19,6 @@ import '../variables/spacing.css';
 import '../variables/colors.css';
 import '../variables/forms.css';
 import '../variables/buttons.css';
-import { string } from 'astro/zod';
 
 const data = await getSiteSettings()
 const { title, theme = "light", inlineHeader = false } = Astro.props;
@@ -52,25 +52,27 @@ const { title, theme = "light", inlineHeader = false } = Astro.props;
 		<meta name="twitter:image" content={urlFor(data.twitterImage).url()}>
 
 		<meta name="generator" content={Astro.generator} />
-    <ViewTransitions />
+		<script src="../utils/lenis.jsx"></script>
+    	<ViewTransitions />
 	</head>
 	<body>
-		<Preloader content={data} />
+		<!-- <Preloader content={data} /> -->
+		<ThreeCanvas />
 		{!inlineHeader && <Header /> }
-		<main>
-			<slot />
-			<Footer />
+		<main id="smooth-wrapper">
+			<div id="smooth-content">
+				<slot />
+				<Footer />
+			</div>
 		</main>
 	</body>
 </html>
 
-<script src="../utils/lenis.jsx"></script>
 
+<!-- Handle site loader -->
 <script>
 
 	document.addEventListener("DOMContentLoaded", () => {
-
-		console.log("DOM Loaded")
 
 		if (window != undefined) {
 
@@ -86,8 +88,6 @@ const { title, theme = "light", inlineHeader = false } = Astro.props;
 		}
   })
 
-	
 </script>
-
 
 <!-- <script src="../utils/barba.jsx"></script> -->

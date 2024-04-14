@@ -17,6 +17,18 @@ export const mediaZoom = (element, timeline, timing) => {
   }, timing)
 }
 
+// let scroll
+
+// document.addEventListener("astro:page-load", () => {
+//   console.log('scrooool')
+//   if (scroll) scroll.kill()
+//   scroll = ScrollSmoother.create({
+//     smooth: 1,
+//     effects: true,
+//   });
+// })
+
+
 export const scrambleIn = ( element, timeline, timing) => {
   timeline.to(element, {
     autoAlpha: 1,

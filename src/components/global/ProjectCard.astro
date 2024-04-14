@@ -70,7 +70,7 @@ const { project, style, index } = Astro.props;
     <div class="content">
         <div class="details">
             <div class="project-title">
-                <a class="h3" href={`/work/${project.slug.current}`}>{project.title}</a>
+                <a class={`${style == "half-width" ? 'h1' : style == "full-width" ? 'h2' : 'h3'}`} href={`/work/${project.slug.current}`}>{project.title}</a>
                 <Badge text={project.projectType.title} url={`/work/${project.projectType.slug.current}`} />
             </div>
             <p class="caption">{project.subtitle}</p>
