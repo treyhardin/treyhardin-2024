@@ -55,13 +55,13 @@ const { project, style, index } = Astro.props;
                 width="50vw"
                 height="66.666666vw"
                 srcset={`
-                ${urlFor(project.mainImage).width(300).height(225).auto('format').url()} 300w,
-                ${urlFor(project.mainImage).width(600).height(450).auto('format').url()} 600w,
-                ${urlFor(project.mainImage).width(960).height(720).auto('format').url()} 960w,
-                ${urlFor(project.mainImage).width(1280).height(960).auto('format').url()} 1280w,
-                ${urlFor(project.mainImage).width(1440).height(1080).auto('format').url()} 1440w,
+                ${urlFor(project.mainImage).width(300).height(400).auto('format').url()} 300w,
+                ${urlFor(project.mainImage).width(600).height(800).auto('format').url()} 600w,
+                ${urlFor(project.mainImage).width(960).height(1280).auto('format').url()} 960w,
+                ${urlFor(project.mainImage).width(1280).height(1706).auto('format').url()} 1280w,
+                ${urlFor(project.mainImage).width(1440).height(1920).auto('format').url()} 1440w,
                 `}
-                src={urlFor(project.mainImage).width(300).height(225).auto('format').url()} 
+                src={urlFor(project.mainImage).width(300).height(400).auto('format').url()} 
                 alt={project.imageAlt}
             />
         }

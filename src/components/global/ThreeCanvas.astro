@@ -24,6 +24,7 @@
     import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { LoopSubdivision } from 'three-subdivide';
 
 
     import { lenis } from '../../utils/lenis';
@@ -47,7 +48,7 @@
     let mousePosition = new Vector2(0.5, 0.5)
     let mouseSpeed = new Vector2(0, 0)
 
-    let shouldRender = false;
+    let shouldRender = true;
 
     const noise = `
         //	Classic Perlin 3D Noise 
@@ -125,6 +126,74 @@
             return 2.2 * n_xyz;
         }
     `
+
+    const RoundedRectangle = ( w, h, r, s ) => { // width, height, radius corner, smoothness  
+	
+        // helper const's
+        const wi = w / 2 - r;		// inner width
+        const hi = h / 2 - r;		// inner height
+        const w2 = w / 2;			// half width
+        const h2 = h / 2;			// half height
+        const ul = r / w;			// u left
+        const ur = ( w - r ) / w;	// u right
+        const vl = r / h;			// v low
+        const vh = ( h - r ) / h;	// v high
+        
+        let positions = [
+        
+            -wi, -h2, 0,  wi, -h2, 0,  wi, h2, 0,
+            -wi, -h2, 0,  wi,  h2, 0, -wi, h2, 0,
+            -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
+            -w2, -hi, 0, -wi,  hi, 0, -w2, hi, 0,
+            wi, -hi, 0,  w2, -hi, 0,  w2, hi, 0,
+            wi, -hi, 0,  w2,  hi, 0,  wi, hi, 0
+            
+        ];
+        
+        let uvs = [
+            
+            ul,  0, ur,  0, ur,  1,
+            ul,  0, ur,  1, ul,  1,
+            0, vl, ul, vl, ul, vh,
+            0, vl, ul, vh,  0, vh,
+            ur, vl,  1, vl,  1, vh,
+            ur, vl,  1, vh,	ur, vh 
+            
+        ];
+        
+        let phia = 0; 
+        let phib, xc, yc, uc, vc, cosa, sina, cosb, sinb;
+        
+        for ( let i = 0; i < s * 4; i ++ ) {
+        
+            phib = Math.PI * 2 * ( i + 1 ) / ( 4 * s );
+            
+            cosa = Math.cos( phia );
+            sina = Math.sin( phia );
+            cosb = Math.cos( phib );
+            sinb = Math.sin( phib );
+            
+            xc = i < s || i >= 3 * s ? wi : - wi;
+            yc = i < 2 * s ? hi : -hi;
+        
+            positions.push( xc, yc, 0, xc + r * cosa, yc + r * sina, 0,  xc + r * cosb, yc + r * sinb, 0 );
+            
+            uc =  i < s || i >= 3 * s ? ur : ul;
+            vc = i < 2 * s ? vh : vl;
+            
+            uvs.push( uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb );
+            
+            phia = phib;
+                
+        }
+        
+        const geometry = new THREE.BufferGeometry( );
+        geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( positions ), 3 ) );
+        geometry.setAttribute( 'uv', new THREE.BufferAttribute( new Float32Array( uvs ), 2 ) );
+        
+        return geometry;
+        
+    }
 
     const baseMaterial = new THREE.ShaderMaterial({
         uniforms: {
@@ -295,28 +364,22 @@
         canvas.appendChild( renderer.domElement );
     }
 
-    const handleResize = () => {
-
-        width = canvas.offsetWidth
-        height = canvas.offsetHeight
-
-        renderer.setSize( width, height );
-
-        camera.aspectRatio = width / height
-        camera.fov = Math.atan( (height/2)/cameraDistance ) * 2 * (180/Math.PI)
-        camera.updateProjectionMatrix();
-
-        // positionImages()
-    }
+    
 
     const addImagePlanes = () => {
+        
 
         return images.forEach((image, i) => {
             image.dataset.meshIndex = `${i}`
-            const resolution = 50
             const boundingBox = image.getBoundingClientRect()
 
-            const geometry = new PlaneGeometry(boundingBox.width, boundingBox.height, resolution, resolution);
+            const geometry = LoopSubdivision.modify(RoundedRectangle(boundingBox.width, boundingBox.height, 15.0, 5.0), 3, {
+                flatOnly: true,
+                // uvSmooth: true,
+                preserveEdges: true,
+                maxTriangles: 2000,
+            })
+            // const geometry = new PlaneGeometry(boundingBox.width, boundingBox.height, resolution, resolution);
             let imageTexture = textureLoader.load(image.currentSrc, (texture) => {
                 texture.colorSpace = SRGBColorSpace
                 texture.needsUpdate = true
@@ -328,86 +391,9 @@
             // material.wireframe = true;
             const plane = new Mesh( geometry, material );
 
-            // positionImage()
+            positionImage(plane, boundingBox)
 
-            plane.position.x = boundingBox.left - width / 2 + boundingBox.width / 2
-            plane.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition
             scene.add( plane )
-
-            function RoundedRectangle( w: number, h: number, r: number, s: number ) { // width, height, radius corner, smoothness
-	
-                // helper const's
-                const wi = w / 2 - r;		// inner width
-                const hi = h / 2 - r;		// inner height
-                const w2 = w / 2;			// half width
-                const h2 = h / 2;			// half height
-                const ul = r / w;			// u left
-                const ur = ( w - r ) / w;	// u right
-                const vl = r / h;			// v low
-                const vh = ( h - r ) / h;	// v high
-                
-                let positions = [
-                
-                    -wi, -h2, 0,  wi, -h2, 0,  wi, h2, 0,
-                    -wi, -h2, 0,  wi,  h2, 0, -wi, h2, 0,
-                    -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
-                    -w2, -hi, 0, -wi,  hi, 0, -w2, hi, 0,
-                    wi, -hi, 0,  w2, -hi, 0,  w2, hi, 0,
-                    wi, -hi, 0,  w2,  hi, 0,  wi, hi, 0
-                    
-                ];
-                
-                let uvs = [
-                    
-                    ul,  0, ur,  0, ur,  1,
-                    ul,  0, ur,  1, ul,  1,
-                    0, vl, ul, vl, ul, vh,
-                    0, vl, ul, vh,  0, vh,
-                    ur, vl,  1, vl,  1, vh,
-                    ur, vl,  1, vh,	ur, vh 
-                    
-                ];
-                
-                let phia = 0; 
-                let phib, xc, yc, uc, vc, cosa, sina, cosb, sinb;
-                
-                for ( let i = 0; i < s * 4; i ++ ) {
-                
-                    phib = Math.PI * 2 * ( i + 1 ) / ( 4 * s );
-                    
-                    cosa = Math.cos( phia );
-                    sina = Math.sin( phia );
-                    cosb = Math.cos( phib );
-                    sinb = Math.sin( phib );
-                    
-                    xc = i < s || i >= 3 * s ? wi : -wi;
-                    yc = i < 2 * s ? hi : -hi;
-                
-                    positions.push( xc, yc, 0, xc + r * cosa, yc + r * sina, 0,  xc + r * cosb, yc + r * sinb, 0 );
-                    
-                    uc = i < s || i >= 3 * s ? ur : ul;
-                    vc = i < 2 * s ? vh : vl;
-                    
-                    uvs.push( uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb );
-                    
-                    phia = phib;
-                        
-                }
-	
-                const geometry = new THREE.BufferGeometry( );
-                geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( positions ), 3 ) );
-                geometry.setAttribute( 'uv', new THREE.BufferAttribute( new Float32Array( uvs ), 2 ) );
-                
-                return geometry;
-                
-            }
-
-            // let geometry = LoopSubdivision.modify(RoundedRectangle(boundingBox.width, boundingBox.height, 15, 5), 5, { uvSmooth: true });
-            // const plane = new Mesh(geometry, material)
-
-            // plane.position.x = boundingBox.left - width / 2 + boundingBox.width / 2
-            // plane.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition
-            // scene.add(plane)
 
             image.addEventListener("mouseenter", () => {
                 // material.uniforms.uHoverState.value = 1;
@@ -431,7 +417,17 @@
                 plane.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition - initialScroll
             })
 
-            imageMeshes.push(plane)
+            imageMeshes.push({
+                plane,
+                index: i,
+                initialWidth: boundingBox.width,
+                initialHeight: boundingBox.height,
+                element: image,
+                initialCanvasSize: {
+                    width,
+                    height
+                }
+            })
 
             image.style.opacity = '0'
 
@@ -444,13 +440,48 @@
         
     }
 
-    const placeImages = () => {
-        
+    const positionImage = (mesh, boundingBox) => {
+        mesh.position.x = (boundingBox.left - width / 2 + boundingBox.width / 2) * mesh.scale.x
+        mesh.position.y = -boundingBox.top + height / 2 * mesh.scale.y - boundingBox.height / 2 + scrollPosition
+        // mesh.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition - initialScroll
     }
 
-    const positionImage = (mesh) => {
-        mesh.plane.position.x = mesh.boundingBox.left - width / 2 + mesh.boundingBox.width / 2
-        mesh.plane.position.y = -mesh.boundingBox.top + height / 2 - mesh.boundingBox.height / 2 + scrollPosition
+    const handleResize = (e) => {
+
+        // console.log(e)
+
+        width = canvas.offsetWidth
+        height = canvas.offsetHeight
+
+        renderer.setSize( width, height );
+
+        camera.aspectRatio = width / height
+        camera.fov = Math.atan( (height/2)/cameraDistance ) * 2 * (180/Math.PI)
+        camera.updateProjectionMatrix();
+
+        scrollPosition = lenis.actualScroll
+
+        reflowImages()
+    }
+
+    const reflowImages = () => {
+        imageMeshes.forEach((mesh) => {
+            
+            // console.log(mesh)
+            const newBoundingBox = mesh.element.getBoundingClientRect();
+            // console.log(newBoundingBox.width / mesh.initialWidth)
+
+
+            if (width != mesh.initialCanvasSize.width) {
+                mesh.plane.scale.y = newBoundingBox.height / mesh.initialHeight
+            }
+
+            if (height != mesh.initialCanvasSize.height) {
+                // mesh.plane.scale.x = newBoundingBox.width / mesh.initialWidth
+            }
+
+            positionImage(mesh.plane, newBoundingBox)
+        })
     }
 
     const destroyScene = () => {
@@ -488,14 +519,14 @@
             }
 
             imageMeshes.map((mesh) => {
-                mesh.material.uniforms.uTime.value += 1
+                mesh.plane.material.uniforms.uTime.value += 1
                 // mesh.material.uniforms.uMousePosition.value = mousePosition
                 // mesh.material.uniforms.uMouseSpeed.value = mouseSpeed
                 // gsap.to(mesh.material.uniforms.uMouseSpeed, {
                 //     duration: 0.1,
                 //     value: mouseSpeed
                 // })
-                mesh.material.needsUpdate = true;
+                // mesh.plane.material.needsUpdate = true;
             })
 
             effectsPass.uniforms.time.value += 1
@@ -541,7 +572,7 @@
 
         // mouseSpeed = newSpeed
 
-        console.log(mouseSpeed)
+        // console.log(mouseSpeed)
         
     })
     
