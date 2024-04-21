@@ -22,7 +22,7 @@ const contentBlocks = (`
   _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
   _type == "sectionGlobal_Projects" => {..., projects[]->{${projectCardFields}}},
   _type == "sectionGlobal_ImagesLink" => {...},
-  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
+  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., mainImage{..., ${imageFields} }, "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
   _type == "sectionGlobal_TextVideoAutoplay" => {..., "videoURL": video.asset->url},
   _type == "sectionGlobal_TextMedia" => {...},
   _type == "sectionGlobal_ContentBlocks" => {...},
@@ -38,7 +38,7 @@ export async function getSiteSettings() {
 }
 
 export async function getBlogPosts() {
-  const posts = await client.fetch('*[_type == "blogPost"]{..., category->{...} } | order(publishedAt desc)')
+  const posts = await client.fetch(`*[_type == "blogPost"]{..., mainImage{${imageFields}}, category->{...} } | order(publishedAt desc)`)
   return posts
 }
 

@@ -20,6 +20,7 @@
         BufferGeometry,
         BufferAttribute,
         ShapeGeometry,
+        RepeatWrapping,
     } from 'three';
 
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
@@ -27,6 +28,8 @@
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     import { LoopSubdivision } from 'three-subdivide';
+
+    import imagesLoaded from 'imagesloaded'
 
     import imageVertex from '../../shaders/imageVertex.glsl'
     import imageFragment from '../../shaders/imageFragment.glsl'
@@ -50,12 +53,13 @@
 
     let width : number
     let height : number
-    let scrollPosition = 0
+    let scrollPosition = lenis.actualScroll
     let initialScroll = lenis.actualScroll
     let mousePosition = new Vector2(0.5, 0.5)
     let mouseSpeed = new Vector2(0, 0)
 
     let shouldRender = true
+
 
     const isMobile = () => {
         const minWidth = 768; // Minimum width for desktop devices
@@ -72,7 +76,7 @@
 
         // DOM Elements
         canvas = document.querySelector('.three-canvas')
-        images = document.querySelectorAll('img')
+        // images = document.querySelectorAll('img')
         width = canvas.offsetWidth
         height = canvas.offsetHeight
 
@@ -195,6 +199,10 @@
         const baseMaterial = new ShaderMaterial({
             uniforms: {
                 uImage: { value: null },
+                // uImageSize: { value: new Vector2(width, height)},
+                uImageSize: { value: new Vector2(image.naturalWidth, image.naturalHeight)},
+                uImageScale: { value: new Vector2(1.0, 1.0)},
+                uElementSize: { value: new Vector2(width, height) },
                 uTime: { value: 0.0 },
                 uHover: { value: new Vector2(0.5, 0.5)},
                 uHoverState: { value: 0.0 },
@@ -211,15 +219,12 @@
             texture.needsUpdate = true
         })
 
+
         const material = baseMaterial.clone()
         material.uniforms.uImage.value = imageTexture
-        // material.needsUpdate = true;
-        // material.color = '0xff00ff'
-        // material.wireframe = true;
         const mesh = new Mesh( geometry, material );
 
         image.addEventListener("mouseenter", () => {
-            // material.uniforms.uHoverState.value = 1;
             gsap.to(material.uniforms.uHoverState, {
                 duration: 1,
                 value: 1
@@ -227,7 +232,6 @@
         })
 
         image.addEventListener("mouseleave", () => {
-            // material.uniforms.uHoverState.value = 0;
             gsap.to(material.uniforms.uHoverState, {
                 duration: 1,
                 value: 0
@@ -284,6 +288,9 @@
         width = canvas.offsetWidth
         height = canvas.offsetHeight
 
+        // console.log(height)
+        // console.log(canvas.innerHeight)
+
         renderer.setSize( width, height );
 
         camera.aspect = width / height
@@ -311,6 +318,14 @@
             const scaleY = newBoundingBox.height / mesh.initialPlaneSize.height
             mesh.plane.scale.set(scaleX, scaleY, 1.0)
 
+            mesh.plane.material.uniforms.uElementSize.value.x = newBoundingBox.width
+            mesh.plane.material.uniforms.uElementSize.value.y = newBoundingBox.height
+            // mesh.plane.material.uniforms.uImageSize.value = new Vector2(newBoundingBox.width, newBoundingBox.height * 1.0)
+            mesh.plane.material.uniforms.uImageSize.value = new Vector2(mesh.element.naturalWidth, mesh.element.naturalHeight * 1.0)
+            // mesh.plane.material.uniforms.uImageScale.value = new Vector2(scaleX, scaleY)
+
+            mesh.plane.material.needsUpdate = true
+
             positionImage(mesh.plane, newBoundingBox)
         })
     }
@@ -326,42 +341,42 @@
         requestAnimationFrame( render );
         // renderer.render( scene, camera );
 
-        if (shouldRender) {
-            composer.render();
+        composer.render();
 
-            // console.log(mousePosition)
-            raycaster.setFromCamera( mousePosition, camera );
+        shouldRender = false
 
-            // calculate objects intersecting the picking ray
-            const intersects = raycaster.intersectObjects( scene.children );
+        // console.log(mousePosition)
+        raycaster.setFromCamera( mousePosition, camera );
 
-            for ( let i = 0; i < intersects.length; i ++ ) {
-                gsap.to(intersects[0].object.material.uniforms.uMousePosition.value, {
-                    duration: 0.1,
-                    x: intersects[0].uv.x,
-                    y: intersects[0].uv.y
-                }) 
-                gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
-                    duration: 0.1,
-                    x: mouseSpeed.x,
-                    y: mouseSpeed.y
-                })
-            }
+        // calculate objects intersecting the picking ray
+        const intersects = raycaster.intersectObjects( scene.children );
 
-            imageMeshes.map((mesh) => {
-                mesh.plane.material.uniforms.uTime.value += 1
-            })
-
-            effectsPass.uniforms.time.value += 1
-            gsap.to(effectsPass.uniforms.uMousePosition, {
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            gsap.to(intersects[0].object.material.uniforms.uMousePosition.value, {
                 duration: 0.1,
-                value: {
-                    x: mousePosition.x,
-                    y: mousePosition.y
-                }
+                x: intersects[0].uv.x,
+                y: intersects[0].uv.y
+            }) 
+            gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
+                duration: 0.1,
+                x: mouseSpeed.x,
+                y: mouseSpeed.y
             })
-            // shouldRender = false
         }
+
+        imageMeshes.map((mesh) => {
+            mesh.plane.material.uniforms.uTime.value += 1
+        })
+
+        effectsPass.uniforms.time.value += 1
+        gsap.to(effectsPass.uniforms.uMousePosition, {
+            duration: 0.1,
+            value: {
+                x: mousePosition.x,
+                y: mousePosition.y
+            }
+        })
+        // shouldRender = false
     }
 
 
@@ -385,19 +400,24 @@
             x: newSpeed.x,
             y: newSpeed.y
         })
-
-        // mouseSpeed = newSpeed
-        // console.log(mouseSpeed)
     })
     
     document.addEventListener("astro:page-load", () => {
 
-        if (!isMobile() && !hasTouchSupport()) {
-            window.addEventListener("resize", handleResize)
-            initScene()
-            addImagePlanes()
-            render()
-        }
+        imagesLoaded(document.body, () => {
+            images = document.querySelectorAll('[data-three-image="true"]')
+
+            initialScroll = lenis.actualScroll
+            scrollPosition = lenis.actualScroll
+
+            if (!isMobile() && !hasTouchSupport() && images) {
+                window.addEventListener("resize", handleResize)
+                initScene()
+                addImagePlanes()
+                render()
+            }
+        })
+
     })
     
 

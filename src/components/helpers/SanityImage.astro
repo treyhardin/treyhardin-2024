@@ -31,9 +31,10 @@ interface Props {
   eager?: boolean,
   aspectRatio?: number,
   alt?: string,
+  threeImage?: boolean
 }
 
-const { image, sizes, eager, aspectRatio, alt } = Astro.props;
+const { image, sizes, eager, aspectRatio, alt, threeImage = false } = Astro.props;
 
 const srcWidth = image.asset.metadata.dimensions.width;
 const srcHeight = image.asset.metadata.dimensions.height;
@@ -54,82 +55,12 @@ const generateSrcSets = () => {
   for (let i = 1; i <=6; i+= 0.5) {
 
     let displayWidth = Math.floor(width / i)
-    // let ratio : number;
-
-    // if (aspectRatio) {
-    //     if (typeof aspectRatio == 'number') {
-    //         ratio = aspectRatio
-    //     } else {
-    //         let ratioWidth
-    //         aspectRatio.forEach((responsiveRatio) => {
-    //             if (displayWidth < responsiveRatio.width) return
-    //             if (!ratio) {
-    //                 ratioWidth = responsiveRatio.width
-    //                 ratio = responsiveRatio.ratio
-    //                 return
-    //             }
-    //             if (responsiveRatio.width > ratioWidth) {
-    //                 ratioWidth = responsiveRatio.width
-    //                 ratio = responsiveRatio.ratio
-    //                 return
-    //             }
-    //             return
-    //         })
-    //         console.log(`Display: ${displayWidth}, Ratio: ${ratio}`)
-    //     }
-    // } else {
-    //     ratio = width / height
-    // }
 
     sources.push( `${urlFor(image).width(displayWidth).height(Math.floor(displayWidth / ratio) ).auto('format').url()} ${displayWidth}w`)
   }
 //   console.log(sources)
   return sources.toString()
 }
-
-// const generateSources = () => {
-    
-//   const sources = []
-
-//   for (let i = 1; i <=6; i+= 0.5) {
-
-//     let ratio : number = 0;
-//     let ratioWidth
-//     let displayWidth = Math.floor(width / i)
-
-//     if (aspectRatio) {
-//         if (typeof aspectRatio == 'number') {
-//             ratio = aspectRatio
-//         } else {
-//             aspectRatio.forEach((responsiveRatio) => {
-//                 if (displayWidth < responsiveRatio.width) return
-//                 if (!ratio) {
-//                     ratioWidth = responsiveRatio.width
-//                     ratio = responsiveRatio.ratio
-//                     return
-//                 }
-//                 if (responsiveRatio.width > ratioWidth) {
-//                     ratioWidth = responsiveRatio.width
-//                     ratio = responsiveRatio.ratio
-//                     return
-//                 }
-//                 return
-//             })
-//             console.log(`Display: ${displayWidth}, Ratio: ${ratio}`)
-//         }
-//     } else {
-//         ratio = width / height
-//     }
-
-//     sources.push( {
-//         url: urlFor(image).width(displayWidth).height(Math.floor(displayWidth / ratio) ).auto('format').url(),
-//         width: displayWidth,
-//         height: Math.floor(displayWidth / ratio),
-//         minWidth: width / (i - 1)
-//     })
-//   }
-//   return sources
-// }
 
 ---
 <img
@@ -141,23 +72,10 @@ const generateSrcSets = () => {
   srcset={generateSrcSets()}
   src={urlFor(image).width(width).height(height).auto('format').url()}
   decoding={eager ? 'sync' : 'async'}
-  loading={eager ? 'eager' : 'lazy'}
+  loading={eager || threeImage ? 'eager' : 'lazy'}
   alt={alt ? alt : image.alt}
+  data-three-image={threeImage ? 'true' : 'false'}
 />
-<!-- <picture class="sanity-image">
-    {generateSources().map((source) => (
-        <source srcset={source.url} media={`(min-width: ${source.width * 2}px)`} width={source.width} height={source.height} />
-    ))}
-    <img
-        id={image.asset._id}
-        width={width}
-        height={height}
-        src={urlFor(image).width(width).height(height).auto('format').url()}
-        decoding={eager ? 'sync' : 'async'}
-        loading={eager ? 'eager' : 'lazy'}
-        alt={alt ? alt : image.alt}
-    />
-</picture> -->
 
 
 <style>
