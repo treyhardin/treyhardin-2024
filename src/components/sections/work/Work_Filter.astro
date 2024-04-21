@@ -8,38 +8,36 @@ const content = await getWorkPageContent();
 
 ---
 <section class="work_filter">
-    <span class="filters">
     <a href="/work" data-active={!category ? "true" : "false" } class="filter-tab utility">All Projects</a>
     {projectTypes.map((type) => (
         <a href={`/work/${type.slug.current}`} data-active={category == type.slug.current ? "true" : "false" } class="filter-tab utility">
             {type.title}
         </a>
     ))}
-    </span>
-    <p class="utility">{content[0].filterText}</p>
 </section>
 
 <style>
     .work_filter {
-        margin: 0 var(--page-margin);
-        padding: var(--space-2xs) 0;
-        border-bottom: 1px solid var(--color-border);
+        /* margin: 0 var(--page-margin); */
+        padding: var(--space-2xs) var(--page-margin);
+        /* border-bottom: 1px solid var(--color-border); */
         display: flex;
         flex-direction: row;
+        justify-content: stretch;
         align-items: center;
-        justify-content: space-between;
-    }
-
-    .filters {
-        display: flex;
-        flex-direction: row;
         gap: var(--space-3xs);
+        overflow-x: auto;
+        /* justify-content: space-between; */
     }
 
     .filter-tab {
         border: 1px solid var(--color-foreground);
         border-radius: var(--radius-rounded);
-        padding: var(--space-3xs) var(--space-2xs);
+        padding: var(--space-2xs) var(--space-xs);
+        flex: 1 0 auto;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .filter-tab[data-active="true"] {

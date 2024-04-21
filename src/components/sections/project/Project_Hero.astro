@@ -1,6 +1,7 @@
 ---
 import { urlFor } from "../../../utils/sanityClient";
 import Badge from "../../global/Badge.astro";
+import SanityImage from "../../helpers/SanityImage.astro";
 
 const { title, subtitle, projectType, image, imageAlt } = Astro.props;
 // console.log(image)
@@ -14,22 +15,10 @@ const { title, subtitle, projectType, image, imageAlt } = Astro.props;
         <h2 class="caption">{subtitle}</h2>
     </div>
     <div class="media">
-        <img 
-            class="image"
+        <SanityImage 
             sizes="100vw"
-            srcset={`
-                ${urlFor(image).width(400).height(200).auto('format').url()} 400w,
-                ${urlFor(image).width(600).height(300).auto('format').url()} 600w,
-                ${urlFor(image).width(960).height(480).auto('format').url()} 960w,
-                ${urlFor(image).width(1280).height(640).auto('format').url()} 1280w,
-                ${urlFor(image).width(1440).height(720).auto('format').url()} 1440w,
-                ${urlFor(image).width(1920).height(960).auto('format').url()} 1920w,
-                ${urlFor(image).width(2048).height(1024).auto('format').url()} 2048w,
-                ${urlFor(image).width(2880).height(1440).auto('format').url()} 2880w,
-            `}
-            src={urlFor(image).width(400).height(300).auto('format').url()}
-            loading="eager"
-            alt={imageAlt}
+            image={image}
+            threeImage={true}
         />
     </div>
 </section>

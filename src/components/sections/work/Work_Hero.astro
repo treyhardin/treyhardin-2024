@@ -8,26 +8,38 @@ const projects = await getProjects();
 ---
 <section class="work_hero">
     <div class="section-title">
-        <h1>{data[0].title}</h1>
-        <p>({projects.length})</p>
+        <h1 class="heading">{data[0].title}</h1>
+        <p class="h5">({projects.length})</p>
     </div>
-    <p class="caption">{data[0].subheading}</p>
+    <!-- <p class="h3">{data[0].subheading}</p> -->
 </section>
 
 <style>
     .work_hero {
-        min-height: 60svh;
+        /* min-height: 60svh; */
         display: flex;
         flex-direction: column;
         justify-content: center;
-        align-items: center;
-        /* gap: var(--space-3xs); */
+        padding-inline: var(--page-margin-narrow);
+        padding-bottom: var(--space-xs);
+        align-items: stretch;
+        /* align-items: center; */
+        gap: var(--space-xs);
     }
 
     .section-title {
         display: flex;
         flex-direction: row;
         align-items: flex-start;
-        gap: var(--space-3xs);
+        justify-content: space-between;
+        gap: var(--space-xs);
+    }
+
+    .heading {
+        font-size: 50vw;
+        padding-inline: 0.02em;
+        padding-top: 0.04em;
+        margin: 0;
+        line-height: 0.7;
     }
 </style>
