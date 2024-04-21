@@ -6,7 +6,7 @@ import ProjectCard from "../../global/ProjectCard.astro";
 const buttonContentIterations = 10;
 
 const { content } = Astro.props;
-console.log(content)
+// console.log(content)
 ---
 <section class="section-projects">
   {content.projects.map((project, i) => {
@@ -28,7 +28,7 @@ console.log(content)
       flex-direction: row;
       flex-wrap: wrap;
       padding: var(--page-margin) var(--page-margin) var(--space-xl);
-      gap: var(--page-margin);
+      gap: var(--grid-gap);
     }
 
     .project-card {
@@ -41,12 +41,6 @@ console.log(content)
       gap: var(--space-2xs);
     }
 
-    /* .project-card:nth-child(1) {
-      /* min-height: calc(100svh - var(--header-height)); */
-      flex-direction: row;
-      flex: 0 0 100%;
-      gap: var(--page-margin);
-    } */
 
     .project-card:nth-child(1) .media {
       /* min-height: calc(100svh - var(--header-height)); */

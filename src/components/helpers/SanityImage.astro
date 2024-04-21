@@ -1,0 +1,180 @@
+---
+import type { SanityAsset } from '@sanity/image-url/lib/types/types';
+import { urlFor } from '../../utils/sanityClient';
+
+interface ImageRatios {
+    width: number,
+    ratio: number
+}
+
+interface Props {
+  image: { 
+    asset: {
+      _id: 'string',
+      metadata: {
+        dimensions: {
+          width: number,
+          height: number,
+          aspectRatio: number,
+        },
+      }
+    },
+    crop: {
+      top: number,
+      right: number,
+      bottom: number,
+      left: number
+    },
+    alt: string
+  },
+  sizes: string,
+  eager?: boolean,
+  aspectRatio?: number,
+  alt?: string,
+}
+
+const { image, sizes, eager, aspectRatio, alt } = Astro.props;
+
+const srcWidth = image.asset.metadata.dimensions.width;
+const srcHeight = image.asset.metadata.dimensions.height;
+
+const crop = image.crop
+const cropTop = crop ? crop.top : 0
+const cropRight = crop ? crop.right : 0
+const cropBottom = crop ? crop.bottom : 0
+const cropLeft = crop ? crop.left : 0
+
+const width = srcWidth - (srcWidth * cropLeft) - (srcWidth * cropRight)
+const height = srcHeight - (srcHeight * cropTop) - (srcHeight * cropBottom)
+const ratio = aspectRatio ? aspectRatio : width / height 
+
+const generateSrcSets = () => {
+  const sources = []
+
+  for (let i = 1; i <=6; i+= 0.5) {
+
+    let displayWidth = Math.floor(width / i)
+    // let ratio : number;
+
+    // if (aspectRatio) {
+    //     if (typeof aspectRatio == 'number') {
+    //         ratio = aspectRatio
+    //     } else {
+    //         let ratioWidth
+    //         aspectRatio.forEach((responsiveRatio) => {
+    //             if (displayWidth < responsiveRatio.width) return
+    //             if (!ratio) {
+    //                 ratioWidth = responsiveRatio.width
+    //                 ratio = responsiveRatio.ratio
+    //                 return
+    //             }
+    //             if (responsiveRatio.width > ratioWidth) {
+    //                 ratioWidth = responsiveRatio.width
+    //                 ratio = responsiveRatio.ratio
+    //                 return
+    //             }
+    //             return
+    //         })
+    //         console.log(`Display: ${displayWidth}, Ratio: ${ratio}`)
+    //     }
+    // } else {
+    //     ratio = width / height
+    // }
+
+    sources.push( `${urlFor(image).width(displayWidth).height(Math.floor(displayWidth / ratio) ).auto('format').url()} ${displayWidth}w`)
+  }
+//   console.log(sources)
+  return sources.toString()
+}
+
+// const generateSources = () => {
+    
+//   const sources = []
+
+//   for (let i = 1; i <=6; i+= 0.5) {
+
+//     let ratio : number = 0;
+//     let ratioWidth
+//     let displayWidth = Math.floor(width / i)
+
+//     if (aspectRatio) {
+//         if (typeof aspectRatio == 'number') {
+//             ratio = aspectRatio
+//         } else {
+//             aspectRatio.forEach((responsiveRatio) => {
+//                 if (displayWidth < responsiveRatio.width) return
+//                 if (!ratio) {
+//                     ratioWidth = responsiveRatio.width
+//                     ratio = responsiveRatio.ratio
+//                     return
+//                 }
+//                 if (responsiveRatio.width > ratioWidth) {
+//                     ratioWidth = responsiveRatio.width
+//                     ratio = responsiveRatio.ratio
+//                     return
+//                 }
+//                 return
+//             })
+//             console.log(`Display: ${displayWidth}, Ratio: ${ratio}`)
+//         }
+//     } else {
+//         ratio = width / height
+//     }
+
+//     sources.push( {
+//         url: urlFor(image).width(displayWidth).height(Math.floor(displayWidth / ratio) ).auto('format').url(),
+//         width: displayWidth,
+//         height: Math.floor(displayWidth / ratio),
+//         minWidth: width / (i - 1)
+//     })
+//   }
+//   return sources
+// }
+
+---
+<img
+  id={image.asset._id}
+  class="sanity-image"
+  width={width}
+  height={height}
+  sizes={sizes}
+  srcset={generateSrcSets()}
+  src={urlFor(image).width(width).height(height).auto('format').url()}
+  decoding={eager ? 'sync' : 'async'}
+  loading={eager ? 'eager' : 'lazy'}
+  alt={alt ? alt : image.alt}
+/>
+<!-- <picture class="sanity-image">
+    {generateSources().map((source) => (
+        <source srcset={source.url} media={`(min-width: ${source.width * 2}px)`} width={source.width} height={source.height} />
+    ))}
+    <img
+        id={image.asset._id}
+        width={width}
+        height={height}
+        src={urlFor(image).width(width).height(height).auto('format').url()}
+        decoding={eager ? 'sync' : 'async'}
+        loading={eager ? 'eager' : 'lazy'}
+        alt={alt ? alt : image.alt}
+    />
+</picture> -->
+
+
+<style>
+  .sanity-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    /* min-height: 100%; */
+    object-fit: cover;
+    /* max-height: 100%; */
+    margin: 0;
+    /* opacity: 0; */
+  }
+
+  .sanity-image img {
+    width: 100%;
+  }
+
+
+</style>

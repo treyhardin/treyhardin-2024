@@ -57,6 +57,15 @@
 
     let shouldRender = true
 
+    const isMobile = () => {
+        const minWidth = 768; // Minimum width for desktop devices
+        return window.innerWidth < minWidth || screen.width < minWidth;
+    }
+
+    function hasTouchSupport() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
     const cameraDistance = 600
 
     const initScene = () => {
@@ -113,6 +122,9 @@
     }
 
     const createImagePlane = (width, height, image) => {
+
+        const cornerRadius = 15
+        const smoothness = 5
 
         const RoundedRectangle = ( w, h, r, s ) => { // width, height, radius corner, smoothness  
 	
@@ -171,7 +183,9 @@
             return geometry;
         }
 
-        const geometry = LoopSubdivision.modify(RoundedRectangle(width, height, 15.0, 5.0), 3, {
+        // const geometry = new PlaneGeometry(1, 1, 10, 10)
+
+        const geometry = LoopSubdivision.modify(RoundedRectangle(width, height, cornerRadius, smoothness), 3, {
             flatOnly: true,
             // uvSmooth: true,
             preserveEdges: true,
@@ -200,6 +214,7 @@
         const material = baseMaterial.clone()
         material.uniforms.uImage.value = imageTexture
         // material.needsUpdate = true;
+        // material.color = '0xff00ff'
         // material.wireframe = true;
         const mesh = new Mesh( geometry, material );
 
@@ -234,32 +249,32 @@
             positionImage(plane, boundingBox)
             scene.add( plane )
 
-            lenis.on("scroll", (e) => {
-                // shouldRender = true
-                scrollPosition = lenis.actualScroll
-                plane.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition - initialScroll
-            })
-
-            imageMeshes.push({
+            const meshObject = {
                 plane,
                 index: i,
-                initialWidth: boundingBox.width,
-                initialHeight: boundingBox.height,
+                boundingBox,
                 element: image,
+                initialPlaneSize: {
+                    width: boundingBox.width,
+                    height: boundingBox.height
+                },
                 initialCanvasSize: {
                     width,
                     height
                 }
-            })
+            }
+
+            imageMeshes.push(meshObject)
             image.style.opacity = '0'
         })
         
     }
 
     const positionImage = (mesh, boundingBox) => {
+
+        // mesh.scale.set(boundingBox.width, boundingBox.height);
         mesh.position.x = (boundingBox.left - width / 2 + boundingBox.width / 2)
-        mesh.position.y = (-boundingBox.top + height / 2  - (boundingBox.height * mesh.scale.y) / 2)  + scrollPosition - initialScroll
-        // mesh.position.y = -boundingBox.top + height / 2 - boundingBox.height / 2 + scrollPosition - initialScroll
+        mesh.position.y = (-boundingBox.top + height / 2  - (boundingBox.height) / 2 ) + scrollPosition - initialScroll
     }
 
     const handleResize = (e) => {
@@ -271,34 +286,31 @@
 
         renderer.setSize( width, height );
 
-        // camera.aspectRatio = width / height
         camera.aspect = width / height
         camera.fov = Math.atan( (height/2)/cameraDistance ) * 2 * (180/Math.PI)
         camera.updateProjectionMatrix();
-
-        console.log(camera)
-
-        scrollPosition = lenis.actualScroll
-        // console.log(lenis)
-
-        reflowImages()
+        
+        initialScroll = lenis.actualScroll
+        repositionImages()
     }
 
-    const reflowImages = () => {
+    lenis.on("scroll", (e) => {
+        scrollPosition = lenis.actualScroll
         imageMeshes.forEach((mesh) => {
-            
-            // console.log(mesh)
+            positionImage(mesh.plane, mesh.boundingBox)
+        })
+    })
+
+    const repositionImages = () => {
+        // scrollPosition = lenis.actualScroll
+        imageMeshes.forEach((mesh) => {
             const newBoundingBox = mesh.element.getBoundingClientRect();
-            const scaleFactorX = newBoundingBox.width / mesh.initialWidth
-            const scaleFactorY = newBoundingBox.height / mesh.initialHeight
+            mesh.boundingBox = newBoundingBox
 
-            // mesh.plane.position.x *= scaleFactorX
-            // mesh.plane.position.y = (mesh.plane.position.y) * scaleFactorY
+            const scaleX = newBoundingBox.width / mesh.initialPlaneSize.width
+            const scaleY = newBoundingBox.height / mesh.initialPlaneSize.height
+            mesh.plane.scale.set(scaleX, scaleY, 1.0)
 
-            // mesh.plane.scale.y = newBoundingBox.height / mesh.initialHeight
-            // mesh.plane.scale.x =  width / height
-            // mesh.plane.scale.y = newBoundingBox.width / mesh.initialWidth
-            mesh.plane.scale.set(scaleFactorX, scaleFactorY, 1)
             positionImage(mesh.plane, newBoundingBox)
         })
     }
@@ -317,7 +329,6 @@
         if (shouldRender) {
             composer.render();
 
-            
             // console.log(mousePosition)
             raycaster.setFromCamera( mousePosition, camera );
 
@@ -339,13 +350,6 @@
 
             imageMeshes.map((mesh) => {
                 mesh.plane.material.uniforms.uTime.value += 1
-                // mesh.material.uniforms.uMousePosition.value = mousePosition
-                // mesh.material.uniforms.uMouseSpeed.value = mouseSpeed
-                // gsap.to(mesh.material.uniforms.uMouseSpeed, {
-                //     duration: 0.1,
-                //     value: mouseSpeed
-                // })
-                // mesh.plane.material.needsUpdate = true;
             })
 
             effectsPass.uniforms.time.value += 1
@@ -356,16 +360,10 @@
                     y: mousePosition.y
                 }
             })
-
-
             // shouldRender = false
         }
     }
-    
 
-    document.addEventListener("astro:before-swap", () => {
-        destroyScene()
-    })
 
     document.addEventListener("mousemove", (e) => {
         // console.log(e)
@@ -389,17 +387,17 @@
         })
 
         // mouseSpeed = newSpeed
-
         // console.log(mouseSpeed)
-        
     })
     
     document.addEventListener("astro:page-load", () => {
-        window.addEventListener("resize", handleResize)
-        initialScroll = lenis.actualScroll
-        initScene()
-        addImagePlanes()
-        render()
+
+        if (!isMobile() && !hasTouchSupport()) {
+            window.addEventListener("resize", handleResize)
+            initScene()
+            addImagePlanes()
+            render()
+        }
     })
     
 
