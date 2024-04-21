@@ -3,6 +3,7 @@ import { urlFor } from "../../../utils/sanityClient";
 import Star from '../../../icons/Star.astro'
 const { content } = Astro.props;
 import { Icon } from 'astro-icon/components'
+import SanityImage from "../../helpers/SanityImage.astro";
 
 const details = [...content.details, ...content.details]
 ---
@@ -35,26 +36,16 @@ const details = [...content.details, ...content.details]
       </div>
     </div>
 
-    <div class="media">
-      <img
-        class="image"
-        width="3600"
-        height="1800"
-        sizes="(max-width: 768px) 200vw, 100vw"
-        srcset={`
-          ${urlFor(content.image).width(60).height(30).auto('format').url()} 60w,
-          ${urlFor(content.image).width(600).height(300).auto('format').url()} 600w,
-          ${urlFor(content.image).width(1200).height(600).auto('format').url()} 1200w,
-          ${urlFor(content.image).width(1800).height(900).auto('format').url()} 1800w,
-          ${urlFor(content.image).width(2400).height(1200).auto('format').url()} 2400w,
-          ${urlFor(content.image).width(3000).height(1500).auto('format').url()} 3000w,
-          ${urlFor(content.image).width(3600).height(1800).auto('format').url()}
-        `}
-        src={urlFor(content.image).auto('format').url()}
-        alt={content.imageAlt} 
-      />
-    </div>
+  </div>
 
+
+  <div class="media">
+    <SanityImage 
+      sizes="100vw"
+      image={content.image}
+      aspectRatio={4 / 3}
+      threeImage={true}
+    />
   </div>
 </section>
 
@@ -62,46 +53,55 @@ const details = [...content.details, ...content.details]
   import { gsap } from "../../../utils/gsap";
 
   const hero = document.querySelector(".home_hero");
-  const content = hero.querySelector(".hero-content");
-  const logo = hero.querySelector("[data-icon=logoTrey]");
-  const description = hero.querySelector(".description")
-  const detailItems = hero.querySelectorAll(".detail-item")
-  const image = hero.querySelector(".image")
 
-  const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 1.4}})
+  if (hero) {
 
-  document.addEventListener("preloader:complete", () => {
-    timeline.from(image,{ scale: 1.2, duration: 4 })
-    timeline.from(logo,{ translateY: "-100%" }, "<0.2")
-    timeline.from(description,{ translateY: "100%" }, "<0.4")
-    timeline.from(detailItems,{ translateY: "100%", opacity: 0, stagger: 0.2 }, "<")
-  })
+    const logo = hero.querySelector("[data-icon=logoTrey]");
+    const description = hero.querySelector(".description")
+    const detailItems = hero.querySelectorAll(".detail-item")
+    const image = hero.querySelector(".image")
+    
+    const timeline = gsap.timeline({defaults: {ease: "power4.out", duration: 1.4}})
+
+    document.addEventListener("preloader:complete", () => {
+      timeline.from(image,{ scale: 1.2, duration: 4 })
+      timeline.from(logo,{ translateY: "-100%" }, "<0.2")
+      timeline.from(description,{ translateY: "100%" }, "<0.4")
+      timeline.from(detailItems,{ translateY: "100%", opacity: 0, stagger: 0.2 }, "<")
+    })
+  }
 
 </script>
 
 <style>
   .home_hero {
+    position: relative;
     height: calc(100lvh - var(--header-height) );
-    padding: var(--page-margin) var(--page-margin) 0;
+    margin: var(--page-margin) var(--page-margin) 0;
+    /* padding: var(--page-margin) var(--page-margin) 0; */
     /* padding: var(--space-3xs) var(--space-3xs) 0; */
     color: var(--color-background);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: stretch;
+    overflow: hidden;
   }
 
   .hero-content {
     /* align-self: stretch; */
-    position: relative;
+    /* position: relative; */
+    /* position: absolute; */
+    /* inset: 0; */
+    pointer-events: none;
     display: flex;
     flex-direction: column;
     align-items: stretch;
     justify-content: space-between;
     flex-basis: 100%;
-    border-radius: var(--radius-md);
-    overflow: hidden;
     width: 100%;
+    z-index: 1;
+    /* aspect-ratio: 2 / 1; */
     /* width: 30vw; */
   }
 
@@ -113,7 +113,8 @@ const details = [...content.details, ...content.details]
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    gap: var(--space-sm);
+    flex-wrap: wrap;
+    gap: var(--space-xs);
   }
 
   .logo {
@@ -176,19 +177,22 @@ const details = [...content.details, ...content.details]
   }
 
   .media {
+    width: 100%;
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
   }
 
-  .image {
+  /* .image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     z-index: 0;
-  }
+  } */
 
 
 </style>

@@ -8,12 +8,21 @@ export const client = createClient({
   apiVersion: '2024-01-30', // use current date (YYYY-MM-DD) to target the latest API version
 })
 
+const builder = imageUrlBuilder(client)
+
+export function urlFor(source) {
+  return builder.image(source)
+}
+
+const imageFields = `crop, asset->{_id, metadata}, alt`
+const projectCardFields = `..., mainImage{${imageFields}}, "projectType": { "title": type->title, "slug": type->slug } `
+
 const contentBlocks = (`
-  _type == "sectionHome_Hero" => {..., "imageURL": image.asset->url},
+  _type == "sectionHome_Hero" => {..., image{${imageFields}}, "imageURL": image.asset->url},
   _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
-  _type == "sectionGlobal_Projects" => {..., projects[]->{..., "projectType": { "title": type->title, "slug": type->slug } }},
+  _type == "sectionGlobal_Projects" => {..., projects[]->{${projectCardFields}}},
   _type == "sectionGlobal_ImagesLink" => {...},
-  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
+  _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., mainImage{..., ${imageFields} }, "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
   _type == "sectionGlobal_TextVideoAutoplay" => {..., "videoURL": video.asset->url},
   _type == "sectionGlobal_TextMedia" => {...},
   _type == "sectionGlobal_ContentBlocks" => {...},
@@ -21,12 +30,7 @@ const contentBlocks = (`
   _type == "sectionGlobal_TickerLink" => {...},
 `)
 
-
-const builder = imageUrlBuilder(client)
-
-export function urlFor(source) {
-  return builder.image(source)
-}
+const projectFields = `mainImage{..., ${imageFields} }, "projectType": { "title": type->title, "slug": type->slug }, "technologies": technology[]->{title, slug}, content[]{${contentBlocks}} }`
 
 export async function getSiteSettings() {
   const settings = await client.fetch('*[_type == "siteSettings"]')
@@ -34,7 +38,7 @@ export async function getSiteSettings() {
 }
 
 export async function getBlogPosts() {
-  const posts = await client.fetch('*[_type == "blogPost"]{..., category->{...} } | order(publishedAt desc)')
+  const posts = await client.fetch(`*[_type == "blogPost"]{..., mainImage{${imageFields}}, category->{...} } | order(publishedAt desc)`)
   return posts
 }
 
@@ -44,12 +48,12 @@ export async function getHomePageContent() {
 }
 
 export async function getProjects() {
-  const content = await client.fetch(`*[_type == "project"]{..., "projectType": { "title": type->title, "slug": type->slug }, "technologies": technology[]->{title, slug}, content[]{${contentBlocks}} } | order(launchDate desc) `)
+  const content = await client.fetch(`*[_type == "project"]{..., ${projectFields} | order(launchDate desc) `)
   return content
 }
 
 export async function getRelatedProjects(project) {
-  const relatedProjects = await client.fetch(`*[_type == "project" && type->slug.current == '${project.projectType.slug.current}' && slug.current != '${project.slug.current}']{..., "projectType": { "title": type->title, "slug": type->slug }} `)
+  const relatedProjects = await client.fetch(`*[_type == "project" && type->slug.current == '${project.projectType.slug.current}' && slug.current != '${project.slug.current}']{${projectCardFields}} | order(launchDate desc) `)
   const allProjects = await client.fetch(`*[_type == "project"]`)
   return { relatedProjects, allProjects }
 }

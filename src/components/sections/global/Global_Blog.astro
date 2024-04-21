@@ -2,53 +2,48 @@
 import Star from "../../../icons/Star.astro";
 import { getBlogPosts, urlFor } from "../../../utils/sanityClient";
 import Button from "../../global/Button.astro";
+import SanityImage from "../../helpers/SanityImage.astro";
 
 const data = await getBlogPosts();
 // console.log(data)
 
 const { content } = Astro.props;
+
+// console.log(content)
+const featuredPost = content && content.featuredPost ? content.featuredPost : data[0]
+console.log(featuredPost)
 ---
 <section class="blog">
   <div class="content">
 
     <div class="section-title">
       <span class="featured-post">
-        <h2 class="post-title h1">{data[0].title}</h2>
-        <Button type="primary" url="#" text="Read More" />
+        <h2 class="post-title h1">{featuredPost.title}</h2>
+        <Button type="primary" url={`/musings/${featuredPost.slug.current}`} text="Read More" />
       </span>
       <p class="caption">Musings</p>
     </div>
 
     <div class="section-detail">
       <div class="posts">
-        {data.map((post, i) => {
-          if (i > 0 && i < 4) return (
-            <a href="#" class="related-post">
+        {data.map((post, i) =>  (
+            <a href={`/musings/${post.slug.current}`} class="related-post">
               <p class="utility">{post.category.title}</p>
               <p class="related-post-title h6">{post.title}</p>
             </a>
           )
-        })}
+        )}
       </div>
-      <Button type="secondary" style="ticker" url="#" text="Read More" />
+      <Button type="secondary" style="ticker" url="/musings" text="Read More" />
     </div>
 
-    <img 
-      class="image"
-      width="100vw"
-      height="100vh"
-      sizes="100vw"
-      srcset={`
-        ${urlFor(data[0].mainImage).width(600).height(1200).auto('format').url()} 600w,
-        ${urlFor(data[0].mainImage).width(960).height(1920).auto('format').url()} 960w,
-        ${urlFor(data[0].mainImage).width(1280).height(640).auto('format').url()} 1280w,
-        ${urlFor(data[0].mainImage).width(1440).height(720).auto('format').url()} 1440w,
-        ${urlFor(data[0].mainImage).width(1880).height(940).auto('format').url()} 1880w,
-        ${urlFor(data[0].mainImage).width(2048).height(1024).auto('format').url()} 2048w,
-        ${urlFor(data[0].mainImage).width(2880).height(1440).auto('format').url()} 2880w,
-      `}
-      src={urlFor(data[0].mainImage).url()} 
-    />
+    <div class="media">
+      <SanityImage 
+        image={featuredPost.mainImage}
+        sizes="100vw"
+        threeImage={true}
+      />
+    </div>
   </div>
 </section>
 
@@ -138,7 +133,7 @@ const { content } = Astro.props;
     margin: 0;
   }
 
-  .image {
+  .media {
     position: absolute;
     top: 0;
     right: 0;
@@ -148,5 +143,11 @@ const { content } = Astro.props;
     height: 100%;
     object-fit: cover;
     z-index: 0;
+  }
+
+  @media screen and (max-width: 768px) {
+    .section-detail {
+      max-width: 100%;
+    }
   }
 </style>

@@ -1,0 +1,436 @@
+---
+---
+<div class="three-canvas"></div>
+
+<script>
+    import * as THREE from 'three';
+    import { 
+        WebGLRenderer,
+        Scene,
+        Mesh,
+        PerspectiveCamera,
+        TextureLoader,
+        Vector2,
+        Vector3,
+        Raycaster,
+        ShaderMaterial,
+        PlaneGeometry,
+        SRGBColorSpace,
+        LinearSRGBColorSpace,
+        BufferGeometry,
+        BufferAttribute,
+        ShapeGeometry,
+        RepeatWrapping,
+    } from 'three';
+
+    import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+    import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
+    import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+    import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+    import { LoopSubdivision } from 'three-subdivide';
+
+    import imagesLoaded from 'imagesloaded'
+
+    import imageVertex from '../../shaders/imageVertex.glsl'
+    import imageFragment from '../../shaders/imageFragment.glsl'
+    import postProcessVertex from '../../shaders/postProcessVertex.glsl'
+    import postProcessFragment from '../../shaders/postProcessFragment.glsl'
+    import noise from '../../shaders/noise.glsl'
+
+    import { lenis } from '../../utils/lenis';
+    import { gsap } from '../../utils/gsap';
+
+    let renderer : WebGLRenderer
+    let camera : PerspectiveCamera
+    let canvas : HTMLElement
+    let scene : Scene
+    let images : NodeListOf<HTMLImageElement>
+    let imageMeshes : Array<Mesh> = []
+    let textureLoader : TextureLoader
+    let composer : EffectComposer
+    let effectsPass : RenderPass
+    let raycaster : Raycaster
+
+    let width : number
+    let height : number
+    let scrollPosition = lenis.actualScroll
+    let initialScroll = lenis.actualScroll
+    let mousePosition = new Vector2(0.5, 0.5)
+    let mouseSpeed = new Vector2(0, 0)
+
+    let shouldRender = true
+
+
+    const isMobile = () => {
+        const minWidth = 768; // Minimum width for desktop devices
+        return window.innerWidth < minWidth || screen.width < minWidth;
+    }
+
+    function hasTouchSupport() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    }
+
+    const cameraDistance = 600
+
+    const initScene = () => {
+
+        // DOM Elements
+        canvas = document.querySelector('.three-canvas')
+        // images = document.querySelectorAll('img')
+        width = canvas.offsetWidth
+        height = canvas.offsetHeight
+
+        // Camera
+        camera = new PerspectiveCamera( 75, width / height, 100, 1000 );
+        camera.position.z = cameraDistance;
+        camera.fov = Math.atan( (height/2)/cameraDistance ) * 2 * (180/Math.PI)
+        camera.updateProjectionMatrix();
+
+        // Instantiate THREE utilities
+        scene = new Scene();
+        textureLoader = new TextureLoader()
+        raycaster = new Raycaster()
+
+        // Renderer
+        renderer = new WebGLRenderer({
+            alpha: true,
+            antialias: true,
+        });
+        renderer.setSize( width, height )
+        renderer.setPixelRatio( window.devicePixelRatio )
+        canvas.appendChild( renderer.domElement );
+        
+        // Instantiate Composer
+        composer = new EffectComposer( renderer )
+        const renderPass = new RenderPass( scene, camera )
+        const outputPass = new OutputPass()
+
+        // Custom Post Process Pass
+        const customPass = {
+            uniforms: {
+                "tDiffuse": { value: null },
+                "time": { value: null },
+                "uMousePosition": { value: null },
+            },
+            vertexShader: postProcessVertex,
+            fragmentShader: `${noise} ${postProcessFragment}`
+        }
+        effectsPass = new ShaderPass(customPass)
+        effectsPass.renderToScreen = true;
+        effectsPass.alpha = true
+
+        // Add Passes
+        composer.addPass( renderPass );
+        composer.addPass( effectsPass );
+        composer.addPass( outputPass );
+    }
+
+    const createImagePlane = (width, height, image) => {
+
+        const cornerRadius = 15
+        const smoothness = 5
+
+        const RoundedRectangle = ( w, h, r, s ) => { // width, height, radius corner, smoothness  
+	
+            // helper const's
+            const wi = w / 2 - r;		// inner width
+            const hi = h / 2 - r;		// inner height
+            const w2 = w / 2;			// half width
+            const h2 = h / 2;			// half height
+            const ul = r / w;			// u left
+            const ur = ( w - r ) / w;	// u right
+            const vl = r / h;			// v low
+            const vh = ( h - r ) / h;	// v high
+            
+            let positions = [
+                -wi, -h2, 0,  wi, -h2, 0,  wi, h2, 0,
+                -wi, -h2, 0,  wi,  h2, 0, -wi, h2, 0,
+                -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
+                -w2, -hi, 0, -wi,  hi, 0, -w2, hi, 0,
+                wi, -hi, 0,  w2, -hi, 0,  w2, hi, 0,
+                wi, -hi, 0,  w2,  hi, 0,  wi, hi, 0
+            ];
+            
+            let uvs = [
+                ul,  0, ur,  0, ur,  1,
+                ul,  0, ur,  1, ul,  1,
+                0, vl, ul, vl, ul, vh,
+                0, vl, ul, vh,  0, vh,
+                ur, vl,  1, vl,  1, vh,
+                ur, vl,  1, vh,	ur, vh 
+            ];
+            
+            let phia = 0; 
+            let phib, xc, yc, uc, vc, cosa, sina, cosb, sinb;
+            
+            for ( let i = 0; i < s * 4; i ++ ) {
+                phib = Math.PI * 2 * ( i + 1 ) / ( 4 * s );
+                cosa = Math.cos( phia );
+                sina = Math.sin( phia );
+                cosb = Math.cos( phib );
+                sinb = Math.sin( phib );
+                xc = i < s || i >= 3 * s ? wi : - wi;
+                yc = i < 2 * s ? hi : -hi;
+
+                positions.push( xc, yc, 0, xc + r * cosa, yc + r * sina, 0,  xc + r * cosb, yc + r * sinb, 0 );
+                uc =  i < s || i >= 3 * s ? ur : ul;
+                vc = i < 2 * s ? vh : vl;
+                
+                uvs.push( uc, vc, uc + ul * cosa, vc + vl * sina, uc + ul * cosb, vc + vl * sinb );
+                phia = phib;
+            }
+            
+            const geometry = new BufferGeometry( );
+            geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( positions ), 3 ) );
+            geometry.setAttribute( 'uv', new BufferAttribute( new Float32Array( uvs ), 2 ) );
+            
+            return geometry;
+        }
+
+        // const geometry = new PlaneGeometry(1, 1, 10, 10)
+
+        const geometry = LoopSubdivision.modify(RoundedRectangle(width, height, cornerRadius, smoothness), 3, {
+            flatOnly: true,
+            // uvSmooth: true,
+            preserveEdges: true,
+            maxTriangles: 2000,
+        })
+
+        const baseMaterial = new ShaderMaterial({
+            uniforms: {
+                uImage: { value: null },
+                // uImageSize: { value: new Vector2(width, height)},
+                uImageSize: { value: new Vector2(image.naturalWidth, image.naturalHeight)},
+                uImageScale: { value: new Vector2(1.0, 1.0)},
+                uElementSize: { value: new Vector2(width, height) },
+                uTime: { value: 0.0 },
+                uHover: { value: new Vector2(0.5, 0.5)},
+                uHoverState: { value: 0.0 },
+                uMousePosition: { value: mousePosition },
+                uMouseSpeed: { value: new Vector2(0.0, 0.0) }
+            },
+            vertexShader: imageVertex,
+            fragmentShader: imageFragment,
+            // wireframe: true,
+        })
+
+        let imageTexture = textureLoader.load(image.currentSrc, (texture) => {
+            texture.colorSpace = SRGBColorSpace
+            texture.needsUpdate = true
+        })
+
+
+        const material = baseMaterial.clone()
+        material.uniforms.uImage.value = imageTexture
+        const mesh = new Mesh( geometry, material );
+
+        image.addEventListener("mouseenter", () => {
+            gsap.to(material.uniforms.uHoverState, {
+                duration: 1,
+                value: 1
+            })
+        })
+
+        image.addEventListener("mouseleave", () => {
+            gsap.to(material.uniforms.uHoverState, {
+                duration: 1,
+                value: 0
+            })
+        })
+
+        return mesh;
+    }
+    
+
+    const addImagePlanes = () => {
+        
+        images.forEach((image, i) => {
+
+            // image.dataset.meshIndex = `${i}`
+            const boundingBox = image.getBoundingClientRect()
+
+            const plane = createImagePlane(boundingBox.width, boundingBox.height, image)
+            positionImage(plane, boundingBox)
+            scene.add( plane )
+
+            const meshObject = {
+                plane,
+                index: i,
+                boundingBox,
+                element: image,
+                initialPlaneSize: {
+                    width: boundingBox.width,
+                    height: boundingBox.height
+                },
+                initialCanvasSize: {
+                    width,
+                    height
+                }
+            }
+
+            imageMeshes.push(meshObject)
+            image.style.opacity = '0'
+        })
+        
+    }
+
+    const positionImage = (mesh, boundingBox) => {
+
+        // mesh.scale.set(boundingBox.width, boundingBox.height);
+        mesh.position.x = (boundingBox.left - width / 2 + boundingBox.width / 2)
+        mesh.position.y = (-boundingBox.top + height / 2  - (boundingBox.height) / 2 ) + scrollPosition - initialScroll
+    }
+
+    const handleResize = (e) => {
+
+        // console.log(e)
+
+        width = canvas.offsetWidth
+        height = canvas.offsetHeight
+
+        // console.log(height)
+        // console.log(canvas.innerHeight)
+
+        renderer.setSize( width, height );
+
+        camera.aspect = width / height
+        camera.fov = Math.atan( (height/2)/cameraDistance ) * 2 * (180/Math.PI)
+        camera.updateProjectionMatrix();
+        
+        initialScroll = lenis.actualScroll
+        repositionImages()
+    }
+
+    lenis.on("scroll", (e) => {
+        scrollPosition = lenis.actualScroll
+        imageMeshes.forEach((mesh) => {
+            positionImage(mesh.plane, mesh.boundingBox)
+        })
+    })
+
+    const repositionImages = () => {
+        // scrollPosition = lenis.actualScroll
+        imageMeshes.forEach((mesh) => {
+            const newBoundingBox = mesh.element.getBoundingClientRect();
+            mesh.boundingBox = newBoundingBox
+
+            const scaleX = newBoundingBox.width / mesh.initialPlaneSize.width
+            const scaleY = newBoundingBox.height / mesh.initialPlaneSize.height
+            mesh.plane.scale.set(scaleX, scaleY, 1.0)
+
+            mesh.plane.material.uniforms.uElementSize.value.x = newBoundingBox.width
+            mesh.plane.material.uniforms.uElementSize.value.y = newBoundingBox.height
+            // mesh.plane.material.uniforms.uImageSize.value = new Vector2(newBoundingBox.width, newBoundingBox.height * 1.0)
+            mesh.plane.material.uniforms.uImageSize.value = new Vector2(mesh.element.naturalWidth, mesh.element.naturalHeight * 1.0)
+            // mesh.plane.material.uniforms.uImageScale.value = new Vector2(scaleX, scaleY)
+
+            mesh.plane.material.needsUpdate = true
+
+            positionImage(mesh.plane, newBoundingBox)
+        })
+    }
+
+    const destroyScene = () => {
+        // scene.dispose()
+        // camera.dispose()
+        // renderer.dispose()
+    }
+
+    const render = () => {
+
+        requestAnimationFrame( render );
+        // renderer.render( scene, camera );
+
+        composer.render();
+
+        shouldRender = false
+
+        // console.log(mousePosition)
+        raycaster.setFromCamera( mousePosition, camera );
+
+        // calculate objects intersecting the picking ray
+        const intersects = raycaster.intersectObjects( scene.children );
+
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            gsap.to(intersects[0].object.material.uniforms.uMousePosition.value, {
+                duration: 0.1,
+                x: intersects[0].uv.x,
+                y: intersects[0].uv.y
+            }) 
+            gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
+                duration: 0.1,
+                x: mouseSpeed.x,
+                y: mouseSpeed.y
+            })
+        }
+
+        imageMeshes.map((mesh) => {
+            mesh.plane.material.uniforms.uTime.value += 1
+        })
+
+        effectsPass.uniforms.time.value += 1
+        gsap.to(effectsPass.uniforms.uMousePosition, {
+            duration: 0.1,
+            value: {
+                x: mousePosition.x,
+                y: mousePosition.y
+            }
+        })
+        // shouldRender = false
+    }
+
+
+    document.addEventListener("mousemove", (e) => {
+        // console.log(e)
+        // shouldRender = true
+
+        const positionX = (e.clientX / width) * 2 - 1
+        const positionY = -(e.clientY / height) * 2 + 1
+
+        let newSpeed = new Vector2(mousePosition.x - positionX, mousePosition.y - positionY)
+
+        gsap.to(mousePosition, {
+            duration: 0.1,
+            x: positionX,
+            y: positionY
+        })
+
+        gsap.to(mouseSpeed, {
+            duration: 1,
+            x: newSpeed.x,
+            y: newSpeed.y
+        })
+    })
+    
+    document.addEventListener("astro:page-load", () => {
+
+        imagesLoaded(document.body, () => {
+            images = document.querySelectorAll('[data-three-image="true"]')
+
+            initialScroll = lenis.actualScroll
+            scrollPosition = lenis.actualScroll
+
+            if (!isMobile() && !hasTouchSupport() && images) {
+                window.addEventListener("resize", handleResize)
+                initScene()
+                addImagePlanes()
+                render()
+            }
+        })
+
+    })
+    
+
+</script>
+
+<style>
+    .three-canvas {
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: -1;
+    }
+</style>

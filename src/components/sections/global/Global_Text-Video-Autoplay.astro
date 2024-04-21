@@ -23,6 +23,7 @@ const { content } = Astro.props;
                 autoplay
                 muted
                 playsinline
+                onloadedmetadata="this.muted = true"
             />
         ):
             <img 
