@@ -1,4 +1,5 @@
 ---
+import Blog from '../../../components/sections/global/Global_Blog.astro'
 import WorkFilter from '../../../components/sections/work/Work_Filter.astro'
 import WorkHero from '../../../components/sections/work/Work_Hero.astro'
 import WorkProjectGrid from '../../../components/sections/work/Work_ProjectGrid.astro'
@@ -27,6 +28,7 @@ const { title } = Astro.props;
         <WorkHero />
         <WorkFilter category={category} />
         <WorkProjectGrid category={category} />
+        <Blog />
     </main>
 
 </Layout>

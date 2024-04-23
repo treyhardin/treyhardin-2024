@@ -26,25 +26,29 @@ vec2 backgroundCoverUv(vec2 screenSize, vec2 imageSize, vec2 uv) {
   return uv * screenSize / newSize + newOffset;
 }
 
+vec3 rgbShift( vec2 uv, vec2 offset) {
+   float r = texture2D(uImage, uv + offset).x;
+   vec2 gb = texture2D(uImage, uv).yz;
+   return vec3(r,gb);
+ }
+
 void main() {
 
-    // vec2 newUV = vUv;
     vec2 newUV = backgroundCoverUv(uElementSize, uImageSize, vUv);
-    // newUV *= uImageScale;
-    // vec2 scaledUV = (newUV - 0.5) * uImageScale + 0.5;
-    // newUV = (newUV - 0.5) * uImageScale + 0.5;
 
-    float pixelCount = 30.;
-    float intensity = 100.;
-    float cursorSize = 0.3;
+    float pixelDivisions = 50.0;
+    float colorShift = 0.2;
+    float effectSensitivity = 50.;
+    float cursorSize = 0.5;
 
-    float divisionsX = (1.0 / pixelCount);
-    float divisionsY =  (1.0 / pixelCount);
+    float aspectRatio = uElementSize.x / uElementSize.y;
+    vec2 gridSize = vec2( pixelDivisions, floor(pixelDivisions / aspectRatio) );
 
-    vec2 pixelatedCoordinates = vec2(divisionsX * floor(newUV.x / divisionsX), divisionsY * floor(newUV.y / divisionsY));
-    vec2 effectScale = uHoverState * abs(uMouseSpeed) * intensity * (1.0 - smoothstep(0.01, cursorSize, vDistance) ) ;
+    vec2 pixelatedCoordinates = vec2( floor(newUV * gridSize)  / gridSize );
+    vec2 effectScale = uHoverState * uMouseSpeed * effectSensitivity * (1.0 - smoothstep(0.01, cursorSize, vDistance) );
 
+    vec3 shiftedImage = rgbShift( newUV, uMouseSpeed * colorShift);
     vec4 imageTexture = texture2D(uImage, mix(newUV, pixelatedCoordinates, effectScale));
 
-    gl_FragColor = vec4(imageTexture);
+    gl_FragColor = vec4( mix( imageTexture.xyz, shiftedImage, length(effectScale) * 0.2), 1.0);
 }

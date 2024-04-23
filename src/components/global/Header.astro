@@ -1,17 +1,19 @@
 ---
+import { getSiteSettings } from "../../utils/sanityClient";
+
 const { inline } = Astro.props;
+
+const data = await getSiteSettings()
+console.log(data)
 ---
 <header data-inline={`${inline}`}>
-  <a href="/" class="header-detail utility">
-    Trey Hardin
-  </a>
+  <a href="/" class="header-detail utility">{data.title}</a>
   <nav class="navigation-links">
-    <a href="/work" class="navigation-link utility">Work</a>
-    <a href="/about" class="navigation-link utility">About</a>
-    <a href="/about" class="navigation-link utility">Musings</a>
-    <a href="/contact" class="navigation-link utility">Contact</a>
+    {data.headerLinks.map((link) => (
+      <a href={link.url} class="navigation-link utility">{link.text}</a>
+    ))}
   </nav>
-  <p class="header-detail utility">Brooklyn, NY</a>
+  <p class="header-detail utility">{data.siteSubtitle}</a>
 </header>
 
 <script>

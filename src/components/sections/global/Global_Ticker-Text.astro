@@ -1,0 +1,86 @@
+---
+import { Icon } from "astro-icon/components";
+const { content } = Astro.props;
+
+const tickerContent = []
+
+const textIterations = 10;
+for (let i = 0; i < textIterations; i++) {
+    tickerContent.push(content.text)
+}
+---
+<section class="ticker-text">
+    <a class="ticker-track" href={content.url} target={content.externalLink ? "_blank" : ""}>
+        {tickerContent.map((text) => (
+            <p class="ticker-content h1">{content.text}</p>
+            <Icon name="star" />
+        ))}
+    </a>
+</section>
+
+<style>
+    .ticker-text {
+        overflow: hidden;
+        max-width: 100%;
+    }
+    
+    .ticker-text [data-icon] {
+        width: 1.5em;
+        height: 1.5em;
+        animation: star-spin 10s linear 0s infinite;
+    }
+
+    .ticker-track:hover [data-icon] {
+        animation-duration: 1s;
+    }
+
+    @keyframes star-spin {
+        to {
+            rotate: 360deg;
+        }
+    }
+
+    .ticker-track {
+        padding: var(--space-xs) 0;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-2xs);
+        width: max-content;
+        translate: 0% 0;
+        animation: ticker 20s linear 0s infinite;
+    }
+
+    @keyframes ticker {
+        to {
+            translate: calc(-50% - var(--space-2xs) / 2) 0;
+        }
+    }
+
+    .ticker-track:hover {
+        animation-play-state: paused;
+        color: var(--color-background);
+    }
+
+    .ticker-track::after {
+        background: var(--color-brand);
+        height: 0%;
+        width: 100%;
+        transition: height var(--anim-sm);
+        z-index: 0;
+    }
+
+    .ticker-track * {
+        position: relative;
+        z-index: 1;
+    }
+
+    .ticker-track:hover::after {
+        height: 100%;
+    }
+
+    .ticker-text {
+        margin: 0;
+    }
+</style>

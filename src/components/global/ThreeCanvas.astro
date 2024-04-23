@@ -3,7 +3,6 @@
 <div class="three-canvas"></div>
 
 <script>
-    import * as THREE from 'three';
     import { 
         WebGLRenderer,
         Scene,
@@ -19,15 +18,14 @@
         LinearSRGBColorSpace,
         BufferGeometry,
         BufferAttribute,
-        ShapeGeometry,
-        RepeatWrapping,
+        StaticDrawUsage,
+        MeshBasicMaterial,
     } from 'three';
 
     import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
     import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
     import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
     import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-    import { LoopSubdivision } from 'three-subdivide';
 
     import imagesLoaded from 'imagesloaded'
 
@@ -76,7 +74,6 @@
 
         // DOM Elements
         canvas = document.querySelector('.three-canvas')
-        // images = document.querySelectorAll('img')
         width = canvas.offsetWidth
         height = canvas.offsetHeight
 
@@ -127,10 +124,7 @@
 
     const createImagePlane = (width, height, image) => {
 
-        const cornerRadius = 15
-        const smoothness = 5
-
-        const RoundedRectangle = ( w, h, r, s ) => { // width, height, radius corner, smoothness  
+        const getRoundedPlaneGeometry = ( w, h, r, s, subdivisionX, subdivisionY ) => { // width, height, radius corner, smoothness  
 	
             // helper const's
             const wi = w / 2 - r;		// inner width
@@ -141,24 +135,81 @@
             const ur = ( w - r ) / w;	// u right
             const vl = r / h;			// v low
             const vh = ( h - r ) / h;	// v high
-            
-            let positions = [
-                -wi, -h2, 0,  wi, -h2, 0,  wi, h2, 0,
-                -wi, -h2, 0,  wi,  h2, 0, -wi, h2, 0,
-                -w2, -hi, 0, -wi, -hi, 0, -wi, hi, 0,
-                -w2, -hi, 0, -wi,  hi, 0, -w2, hi, 0,
-                wi, -hi, 0,  w2, -hi, 0,  w2, hi, 0,
-                wi, -hi, 0,  w2,  hi, 0,  wi, hi, 0
-            ];
-            
-            let uvs = [
-                ul,  0, ur,  0, ur,  1,
-                ul,  0, ur,  1, ul,  1,
-                0, vl, ul, vl, ul, vh,
-                0, vl, ul, vh,  0, vh,
-                ur, vl,  1, vl,  1, vh,
-                ur, vl,  1, vh,	ur, vh 
-            ];
+
+            let divisionCountX = subdivisionX + 2
+            let divisionCountY = subdivisionY + 2
+
+            const spaceX = wi * 2 / subdivisionX
+            const spaceY = hi * 2 / subdivisionY
+
+            let currentSpaceX
+            let currentSpaceY
+            let initialPositionX
+            let initialPositionY
+            let currentPositionX;
+            let currentPositionY;
+            let rowCount
+
+            const vertices = []
+            const uvs = []
+
+            for ( let y = 0; y < divisionCountY; y++) {
+
+                if (y == 0 ) {
+                    currentPositionY = -hi - r
+                }
+
+                if (y == 0 || y == divisionCountY - 1) {
+                    initialPositionX = -wi
+                    rowCount = subdivisionX
+                    currentSpaceY = r
+                } else {
+                    initialPositionX = -wi - r
+                    rowCount = divisionCountX
+                    currentSpaceY = spaceY
+                }
+
+                for ( let x = 0; x < rowCount; x++) {
+
+                    if (x == 0) {
+                        currentPositionX = initialPositionX
+                    }
+
+                    if ((x == 0 || x == rowCount - 1) && y != 0 && y != divisionCountY - 1) {
+                        initialPositionY = -hi
+                        currentSpaceX = r
+                    } else {
+                        initialPositionY = -hi - r
+                        currentSpaceX = spaceX
+                    }
+
+                    vertices.push(
+                        currentPositionX, currentPositionY,  0.0, // v0
+                        currentPositionX + currentSpaceX, currentPositionY,  0.0, // v1
+                        currentPositionX + currentSpaceX,  currentPositionY + currentSpaceY,  0.0, // v2
+
+                        currentPositionX + currentSpaceX,  currentPositionY + currentSpaceY, 0.0, // v3
+                        currentPositionX,  currentPositionY + currentSpaceY,  0.0, // v4
+                        currentPositionX, currentPositionY,  0.0  // v5
+                    )
+
+                    // Calculate UV coordinates for the square
+                    const u0 = (currentPositionX + wi) / (2 * wi);
+                    const v0 = (currentPositionY + hi + r) / (2 * hi);
+                    const u1 = (currentPositionX + wi + currentSpaceX) / (2 * wi);
+                    const v1 = (currentPositionY + hi + r) / (2 * hi);
+                    const u2 = (currentPositionX + wi + currentSpaceX) / (2 * wi);
+                    const v2 = (currentPositionY + hi + r + currentSpaceY) / (2 * hi);
+                    const u3 = (currentPositionX + wi) / (2 * wi);
+                    const v3 = (currentPositionY + hi + r + currentSpaceY) / (2 * hi);
+
+                    // Push UVs for all vertices of the square
+                    uvs.push(u0, v0, u1, v1, u2, v2, u2, v2, u3, v3, u0, v0);
+
+                    currentPositionX += currentSpaceX
+                }
+                currentPositionY += currentSpaceY
+            }
             
             let phia = 0; 
             let phib, xc, yc, uc, vc, cosa, sina, cosb, sinb;
@@ -172,7 +223,7 @@
                 xc = i < s || i >= 3 * s ? wi : - wi;
                 yc = i < 2 * s ? hi : -hi;
 
-                positions.push( xc, yc, 0, xc + r * cosa, yc + r * sina, 0,  xc + r * cosb, yc + r * sinb, 0 );
+                vertices.push( xc, yc, 0, xc + r * cosa, yc + r * sina, 0,  xc + r * cosb, yc + r * sinb, 0 );
                 uc =  i < s || i >= 3 * s ? ur : ul;
                 vc = i < 2 * s ? vh : vl;
                 
@@ -180,21 +231,27 @@
                 phia = phib;
             }
             
-            const geometry = new BufferGeometry( );
-            geometry.setAttribute( 'position', new BufferAttribute( new Float32Array( positions ), 3 ) );
-            geometry.setAttribute( 'uv', new BufferAttribute( new Float32Array( uvs ), 2 ) );
+
+            // const buffer = new Float32Array(vertices)
+            // console.log(buffer)
+
+            // const positions = new Float32Array()
+            const geometry = new BufferGeometry();
+            const verticesAttribute = new BufferAttribute( new Float32Array(vertices), 3 , false );
+            verticesAttribute.setUsage( StaticDrawUsage );
+
+            const uvAttribute = new BufferAttribute( new Float32Array(uvs), 2 , false );
+            uvAttribute.setUsage( StaticDrawUsage );
+
+            geometry.setAttribute( 'position', verticesAttribute);
+            geometry.setAttribute( 'uv', uvAttribute);
+            // geometry.setAttribute( 'uv', new BufferAttribute( new Float32Array( uvs ), 2 ) );
             
             return geometry;
         }
 
         // const geometry = new PlaneGeometry(1, 1, 10, 10)
 
-        const geometry = LoopSubdivision.modify(RoundedRectangle(width, height, cornerRadius, smoothness), 3, {
-            flatOnly: true,
-            // uvSmooth: true,
-            preserveEdges: true,
-            maxTriangles: 2000,
-        })
 
         const baseMaterial = new ShaderMaterial({
             uniforms: {
@@ -214,15 +271,22 @@
             // wireframe: true,
         })
 
+        const debugMaterial = new MeshBasicMaterial({
+            color: 0x0000ff,
+            wireframe: true,
+        })
+
         let imageTexture = textureLoader.load(image.currentSrc, (texture) => {
             texture.colorSpace = SRGBColorSpace
             texture.needsUpdate = true
+            // texture.magFilter = LinearFilter; // Magnification filter
+            // texture.minFilter = LinearFilter; // Minification filter
         })
 
 
         const material = baseMaterial.clone()
         material.uniforms.uImage.value = imageTexture
-        const mesh = new Mesh( geometry, material );
+        const mesh = new Mesh( getRoundedPlaneGeometry(width, height, 10, 5, 5, 5), material );
 
         image.addEventListener("mouseenter", () => {
             gsap.to(material.uniforms.uHoverState, {
