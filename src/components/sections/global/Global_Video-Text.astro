@@ -158,7 +158,8 @@ const { content } = Astro.props;
     margin: 0;
     padding: 0;
     list-style: none;
-    border: 0.5px solid var(--color-border);
+    border: 0.5px solid var(--color-foreground);
+    overflow: hidden;
     border-radius: var(--radius-sm);
   }
 
@@ -168,8 +169,8 @@ const { content } = Astro.props;
     text-align: center;
     padding: var(--space-3xs);
     overflow: hidden;
-    color: var(--color-border);
-    border: 0.5px solid var(--color-border);
+    color: var(--color-foreground);
+    border: 0.5px solid var(--color-foreground);
     /* visibility: hidden; */
   }
 

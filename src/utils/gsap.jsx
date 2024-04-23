@@ -6,7 +6,7 @@ import { ScrambleTextPlugin } from "gsap/ScrambleTextPlugin";
 
 export * from "gsap";
 export * from "gsap/ScrollTrigger";
-export * from "gsap/ScrollSmoother";
+// export * from "gsap/ScrollSmoother";
 
 gsap.registerPlugin(ScrollTrigger,ScrollSmoother, ScrambleTextPlugin);
 
@@ -16,6 +16,8 @@ export const mediaZoom = (element, timeline, timing) => {
     duration: 3
   }, timing)
 }
+
+
 
 // let scroll
 

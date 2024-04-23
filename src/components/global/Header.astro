@@ -4,7 +4,7 @@ import { getSiteSettings } from "../../utils/sanityClient";
 const { inline } = Astro.props;
 
 const data = await getSiteSettings()
-console.log(data)
+// console.log(data)
 ---
 <header data-inline={`${inline}`}>
   <a href="/" class="header-detail utility">{data.title}</a>

@@ -286,11 +286,11 @@
 
         const material = baseMaterial.clone()
         material.uniforms.uImage.value = imageTexture
-        const mesh = new Mesh( getRoundedPlaneGeometry(width, height, 10, 5, 5, 5), material );
+        const mesh = new Mesh( getRoundedPlaneGeometry(width, height, 10, 5, 2, 2), material );
 
         image.addEventListener("mouseenter", () => {
             gsap.to(material.uniforms.uHoverState, {
-                duration: 1,
+                duration: 0.8,
                 value: 1
             })
         })
@@ -300,6 +300,7 @@
                 duration: 1,
                 value: 0
             })
+            
         })
 
         return mesh;
@@ -424,21 +425,24 @@
                 y: intersects[0].uv.y
             }) 
             gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
-                duration: 0.1,
+                duration: 1,
                 x: mouseSpeed.x,
                 y: mouseSpeed.y
-            })
-            gsap.to(intersects[0].object.material.uniforms.uHoverState, {
-                duration: 1,
-                value: 1
             })
         }
 
         imageMeshes.map((mesh) => {
             mesh.plane.material.uniforms.uTime.value += 1
+            mesh.plane.material.uniforms.uMouseSpeed.value = mouseSpeed
+            // gsap.to(mesh.plane.material.uniforms.uMouseSpeed.value, {
+            //     duration: 1,
+            //     x: 0.0,
+            //     y: 0.0
+            // })
         })
 
         effectsPass.uniforms.time.value += 1
+
         gsap.to(effectsPass.uniforms.uMousePosition, {
             duration: 0.1,
             value: {
@@ -446,6 +450,20 @@
                 y: mousePosition.y
             }
         })
+
+        // mouseSpeed = new Vector3(0, 0)
+
+        gsap.to(mouseSpeed, {
+            duration: 1,
+            x: 0,
+            y: 0
+        })
+
+        // gsap.to(material.uniforms.uMouseSpeed, {
+        //         duration: 1,
+        //         x: 0,
+        //         y: 0
+        //     })
         // shouldRender = false
     }
 
