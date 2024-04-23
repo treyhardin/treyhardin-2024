@@ -409,24 +409,6 @@
 
         shouldRender = false
 
-        // console.log(mousePosition)
-        raycaster.setFromCamera( mousePosition, camera );
-
-        // calculate objects intersecting the picking ray
-        const intersects = raycaster.intersectObjects( scene.children );
-
-        for ( let i = 0; i < intersects.length; i ++ ) {
-            gsap.to(intersects[0].object.material.uniforms.uMousePosition.value, {
-                duration: 0.1,
-                x: intersects[0].uv.x,
-                y: intersects[0].uv.y
-            }) 
-            gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
-                duration: 0.1,
-                x: mouseSpeed.x,
-                y: mouseSpeed.y
-            })
-        }
 
         imageMeshes.map((mesh) => {
             mesh.plane.material.uniforms.uTime.value += 1
@@ -464,6 +446,26 @@
             x: newSpeed.x,
             y: newSpeed.y
         })
+
+
+        // console.log(mousePosition)
+        raycaster.setFromCamera( mousePosition, camera );
+
+        // calculate objects intersecting the picking ray
+        const intersects = raycaster.intersectObjects( scene.children );
+
+        for ( let i = 0; i < intersects.length; i ++ ) {
+            gsap.to(intersects[0].object.material.uniforms.uMousePosition.value, {
+                duration: 0.1,
+                x: intersects[0].uv.x,
+                y: intersects[0].uv.y
+            }) 
+            gsap.to(intersects[0].object.material.uniforms.uMouseSpeed.value, {
+                duration: 0.1,
+                x: mouseSpeed.x,
+                y: mouseSpeed.y
+            })
+        }
     })
     
     document.addEventListener("astro:page-load", () => {
