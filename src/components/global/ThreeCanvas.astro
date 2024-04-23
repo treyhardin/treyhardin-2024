@@ -334,7 +334,7 @@
             }
 
             imageMeshes.push(meshObject)
-            image.style.opacity = '0'
+            // image.style.opacity = '0'
         })
         
     }
@@ -489,6 +489,12 @@
             y: newSpeed.y
         })
     })
+
+    const hideImages = () => {
+        images.forEach((image) => {
+            image.style.opacity = '0'
+        })
+    }
     
     document.addEventListener("astro:page-load", () => {
 
@@ -503,6 +509,7 @@
                 initScene()
                 addImagePlanes()
                 render()
+                hideImages()
             }
         })
 
