@@ -64,7 +64,6 @@ content.preloaderImages.forEach(object => {
 
   const animateImages = () => {
 
-
     const image = element.querySelector('.image');
     let i = 0;
 
@@ -84,16 +83,10 @@ content.preloaderImages.forEach(object => {
   animateImages();
 
   const preloaderCompleteEvent = new Event("preloader:complete");
-  const activeSession = sessionStorage.getItem("activeSession");
 
   const dispatchLoadEvent = () => {
 
-    const animationCallback = () => {
-      document.dispatchEvent(preloaderCompleteEvent)
-  		sessionStorage.setItem("activeSession", "true");
-    }
-
-    animationCallback()
+    document.dispatchEvent(preloaderCompleteEvent)
     element.dataset.hidden = "true"
     isActive = false
   }
@@ -102,7 +95,7 @@ content.preloaderImages.forEach(object => {
   const maximumDelay = 1200
 
   document.addEventListener("astro:page-load", () => {
-    // console.log("Astro-load")
+    sessionStorage.setItem("activeSession", "true");
     setTimeout(() => {
       dispatchLoadEvent()
     }, transitionDelay);
@@ -110,7 +103,7 @@ content.preloaderImages.forEach(object => {
   }, {once: true})
 
   setTimeout(() => {
-    if (element.dataset.hidden != "true") {
+    if (sessionStorage.getItem("activeSession") != "true") {
       dispatchLoadEvent()
     } 
   }, maximumDelay);
