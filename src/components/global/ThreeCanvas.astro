@@ -490,8 +490,9 @@
         })
     })
 
-    const hideImages = () => {
+    const hideImages = (images) => {
         images.forEach((image) => {
+            image.style.transition = 'opacity 0.3s ease-out'
             image.style.opacity = '0'
         })
     }
@@ -509,7 +510,7 @@
                 initScene()
                 addImagePlanes()
                 render()
-                hideImages()
+                hideImages(images)
             }
         })
 
@@ -526,6 +527,6 @@
         right: 0;
         bottom: 0;
         left: 0;
-        z-index: -1;
+        /* z-index: -1; */
     }
 </style>
