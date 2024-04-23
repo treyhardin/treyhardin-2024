@@ -9,8 +9,16 @@ const data = await getBlogPosts();
 
 const { content } = Astro.props;
 
+
+
 // console.log(content)
 const featuredPost = content && content.featuredPost ? content.featuredPost : data[0]
+
+if (!content || !content.featuredPost) {
+  data.shift()
+}
+
+
 // console.log(featuredPost)
 ---
 <section class="blog">
