@@ -17,6 +17,13 @@
   --grid-gap: var(--space-3xs);
 }
 
+html, body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
 @media screen and (max-width: 768px) {
   :root {
     --page-margin-narrow: var(--page-margin);

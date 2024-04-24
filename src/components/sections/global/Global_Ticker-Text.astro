@@ -9,22 +9,22 @@ for (let i = 0; i < textIterations; i++) {
     tickerContent.push(content.text)
 }
 ---
-<section class="ticker-link">
+<section class="ticker-text">
     <a class="ticker-track" href={content.url} target={content.externalLink ? "_blank" : ""}>
         {tickerContent.map((text) => (
-            <p class="ticker-text h1">{content.text}</p>
+            <p class="ticker-content h1">{content.text}</p>
             <Icon name="star" />
         ))}
     </a>
 </section>
 
 <style>
-    .ticker-link {
+    .ticker-text {
         overflow: hidden;
         max-width: 100%;
     }
     
-    .ticker-link [data-icon] {
+    .ticker-text [data-icon] {
         width: 1.5em;
         height: 1.5em;
         animation: star-spin 10s linear 0s infinite;
@@ -64,7 +64,7 @@ for (let i = 0; i < textIterations; i++) {
     }
 
     .ticker-track::after {
-        background: var(--color-foreground);
+        background: var(--color-brand);
         height: 0%;
         width: 100%;
         transition: height var(--anim-sm);

@@ -3,82 +3,117 @@ import { urlFor } from "../../utils/sanityClient";
 import { Icon } from 'astro-icon/components'
 
 const { content } = Astro.props;
+
+const tickerText = []
+
+const tickerTextCount = 10;
+for (let i = 0; i < tickerTextCount; i++ ) {
+  tickerText.push(content.preloaderText)
+}
+
+const images = []
+
+// console.log(content)
+
+content.preloaderImages.forEach(object => {
+  images.push(urlFor(object.image).width(600).height(300).url())
+});
+
 ---
-<div class="preloader" transition:persist>
+<div class="preloader" transition:persist data-hidden="false">
   <div class="content h1" id="preloader">
-    <Icon name="logoTrey" />
-    <span class="media">
-      {content.preloaderImages.map((asset, i) => (
-          <img 
-            class="image"
-            src={urlFor(asset.image).url()}
-            data-index={i}
-            alt=""
-          />
-      ))}
-    </span>
-    <Icon name="logoHardin" />
+    <div class="section-title">
+      <Icon name="logoTrey" />
+      <div class="media">
+        <img 
+          class="image"
+          width="400"
+          height="300"
+          src={images[0]}
+          alt="Preloader image"
+        />
+        <!-- {content.preloaderImages.map((asset, i) => (
+            <img 
+              class="image"
+              src={urlFor(asset.image).url()}
+              data-index={i}
+              alt=""
+            />
+        ))} -->
+      </div>
+      <Icon name="logoHardin" />
+    </div>
+
+    <div class="ticker caption">
+      <div class="ticker-track">
+        {tickerText.map((tickerText) => (
+          <div class="ticker-item utility">
+            <p>{tickerText}</p>
+            <Icon name="star" />
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 </div>
 
-<script >
+<script define:vars={{ images }} >
 
-  import { gsap } from '../../utils/gsap.jsx'
+  const element = document.querySelector('.preloader');
+  let isActive = true
 
   const animateImages = () => {
 
-    const element = document.querySelector('.preloader');
-    const images = element.querySelectorAll('.image');
+    const image = element.querySelector('.image');
     let i = 0;
 
     setInterval(() => {
 
-      if (i < images.length - 1) {
-        i++;
-      } else {
-        i = 0;
-      }
+      if (isActive) {
+        image.src = images[i]
 
-      images.forEach(image => {
-        if (image.dataset.index != i) {
-          image.style.opacity = 0;
+        if (i < images.length - 1) {
+          i++
         } else {
-          image.style.opacity = 1;
+          i = 0
         }
-      });
+      }
     }, 300);
   }
-
   animateImages();
 
   const preloaderCompleteEvent = new Event("preloader:complete");
 
+  const dispatchLoadEvent = () => {
+
+    document.dispatchEvent(preloaderCompleteEvent)
+    element.dataset.hidden = "true"
+    isActive = false
+  }
+
+  const transitionDelay = 800
+  const maximumDelay = 1200
+
   document.addEventListener("astro:page-load", () => {
-    // console.log("Astro-load")
-
-    const animationCallback = () => {
-      // console.log('complete')
-      document.dispatchEvent(preloaderCompleteEvent)
-  		sessionStorage.setItem("activeSession", "true");
-    }
-
-    const activeSession = sessionStorage.getItem("activeSession");
-    if (activeSession != "true") {
-      gsap.to(".preloader", {
-        duration: 0.4,
-        autoAlpha: 0,
-        delay: 1,
-        oncomplete: animationCallback,
-      })
-    } 
+    sessionStorage.setItem("activeSession", "true");
+    setTimeout(() => {
+      dispatchLoadEvent()
+    }, transitionDelay);
 
   }, {once: true})
+
+  setTimeout(() => {
+    if (sessionStorage.getItem("activeSession") != "true") {
+      dispatchLoadEvent()
+    } 
+  }, maximumDelay);
 
 </script>
 
 <style>
   .preloader {
     background: var(--color-foreground);
+    /* background: #1c1c1c; */
     color: var(--color-reverse);
     position: fixed;
     top: 0;
@@ -86,74 +121,112 @@ const { content } = Astro.props;
     bottom: 0;
     left: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 999;
     pointer-events: none;
+    transition: opacity var(--anim-lg);
+  }
+
+  .preloader[data-hidden="true"] {
+    opacity: 0;
   }
 
   .content {
+    /* max-width: 40vw; */
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    /* max-width: min-content; */
+    /* gap: var(--space-3xs); */
+    border: 1px solid currentColor;
+    overflow: hidden;
+    border-radius: var(--radius-sm);
+  }
+
+  .section-title {
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: stretch;
-    gap: var(--space-2xs);
-    /* flex: 1 0 auto; */
-    /* color: var(--color-brand-secondary); */
-    /* animation: cycle-text-color 1s linear 0s infinite; */
+    gap: var(--space-3xs);
+    height: max(40px, 6svh);
+    margin: var(--space-2xs) var(--space-2xs) var(--space-3xs);
   }
 
-  @keyframes cycle-text-color {
-    0% {
-      color: var(--color-foreground);
-    }
-    50% {
-      color: var(--color-brand-secondary)
-    }
-    /* 33% {
-      color: var(--color-brand)
-    }
-    66% {
-      color: var(--color-brand-secondary)
-    } */
-    100% {
-      color: var(--color-foreground);
-    }
-  }
-
-  [data-icon] {
+  .section-title [data-icon] {
     flex: 0 0 auto;
-    /* height: 5vw;
-    width: auto; */
-    /* height: 100%; */
-    /* width: auto; */
+    /* width: fit-content; */
+    height: auto;=
   }
 
   .media {
-    /* aspect-ratio: 2 / 1; */
-    background-color: red;
-    /* flex-shrink: 0; */
-    flex: 0 0 10vw;
-    margin-bottom: 1.5vw;
-    /* margin-bottom: 20px; */
-    /* height: 0.9em; */
-    /* border-radius: var(--radius-sm); */
+    aspect-ratio: 6 / 3;
+    flex: 0 0 auto;
+    max-height: 100%;
+    display: flex;
     border-radius: var(--radius-rounded);
     overflow: hidden;
     position: relative;
   }
 
   .image {
-    /* width: 200px; */
-    /* height: 200px; */
-    /* height: 100%;
-    width: auto; */
-    /* height: 100%; */
-    /* height: 100%; */
-    /* width: auto; */
-    position: absolute;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
+    height: auto;
+  }
+
+  .ticker {
+    --gap: var(--space-3xs);
+    overflow-x: hidden;
+    max-width: min-content;
+    position: relative;
+    min-width: 100%;
+    border-top: 1px solid currentColor;
+    /* padding: var(--space-3xs) 0; */
+    /* height: 2em; */
+    min-height: calc(1em + var(--space-3xs) * 2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .ticker-track {
+    display: flex;
+    flex-direction: row;
+    gap: var(--gap);
+    position: absolute;
+    min-width: max-content;
+    animation: ticker 20s linear 0s infinite;
+  }
+
+  .ticker-item {
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--gap);
+    min-width: max-content;
+  }
+
+  .ticker-item [data-icon] {
+    height: 1em;
+    width: auto;
+    animation: star-rotate 10s linear 0s infinite;
+  }
+
+  @keyframes ticker {
+    from {
+      translate: 0 0 ;
+    }
+    to {
+      translate: calc(-50% - var(--gap)) 0;
+    }
+  }
+
+  @keyframes star-rotate {
+    to {
+      rotate: 360deg;
+    }
   }
 </style>

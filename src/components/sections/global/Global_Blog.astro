@@ -9,9 +9,17 @@ const data = await getBlogPosts();
 
 const { content } = Astro.props;
 
+
+
 // console.log(content)
 const featuredPost = content && content.featuredPost ? content.featuredPost : data[0]
-console.log(featuredPost)
+
+if (!content || !content.featuredPost) {
+  data.shift()
+}
+
+
+// console.log(featuredPost)
 ---
 <section class="blog">
   <div class="content">
@@ -49,7 +57,7 @@ console.log(featuredPost)
 
 <style>
   .blog {
-    height: calc(100svh - var(--header-height));
+    min-height: calc(90svh - var(--header-height));
     /* display: none; */
     padding: var(--page-margin);
     /* margin: var(--space-md) 0; */
@@ -60,7 +68,7 @@ console.log(featuredPost)
   }
 
   .content {
-    flex-basis: 100%;
+    flex: 1 0 100%;
     border-radius: var(--radius-lg);
     overflow: hidden;
     position: relative;
@@ -146,6 +154,12 @@ console.log(featuredPost)
   }
 
   @media screen and (max-width: 768px) {
+
+    .section-title {
+      flex-direction: column-reverse;
+      gap: var(--space-3xs);
+    }
+
     .section-detail {
       max-width: 100%;
     }
