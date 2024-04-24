@@ -8,8 +8,8 @@ const { content } = Astro.props;
 
   <span class="section-title">
     <h2 class="heading">
-      <div class="h3">{content.headingLine1}</div>
-      <div class="h3">{content.headingLine2}</div>
+      <div class="heading-line h3">{content.headingLine1}</div>
+      <div class="heading-line h3">{content.headingLine2}</div>
     </h2>
     <div class="title-content">
       <p class="section-video-text_description description caption">{content.description}</p>
@@ -55,24 +55,35 @@ const { content } = Astro.props;
 </section>
 
 <script>
-  import { gsap, mediaZoom, scrambleIn } from "../../../utils/gsap";
+  import { gsap, mediaZoom, scrambleIn, mediaScroll } from "../../../utils/gsap";
 
   const sectionVideoText = document.querySelector(".video-text")
+  const headingLines = sectionVideoText.querySelectorAll(".heading-line")
+  const description = document.querySelector(".title-content")
   const media = sectionVideoText.querySelector(".asset")
-  const heading = sectionVideoText.querySelector("")
 
-  const mediaTimeline = gsap.timeline({ scrollTrigger: media, defaults: { ease: "power4.out", duration: 0.8 }})
-  const headingTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_heading", defaults: { ease: "power4.out", duration: 0.8 }})
-  const descriptionTimeline = gsap.timeline({ scrollTrigger: ".section-video-text_description", defaults: { ease: "power4.out", duration: 1.8 }})
+  const sectionTimeline = gsap.timeline({ scrollTrigger: {
+    trigger: sectionVideoText,
+    start: "top 80%"
+  }, defaults: { ease: "power4.out", duration: 0.8 }})
 
-  mediaZoom(media, mediaTimeline);
-  scrambleIn(".section-video-text_heading", headingTimeline)
 
-  descriptionTimeline.from(".section-video-text_description", { opacity: 0 })
-  descriptionTimeline.from(".section-video-text_detail", {
+  mediaScroll(media)
+  mediaZoom(media, sectionTimeline)
+  scrambleIn(headingLines, sectionTimeline, "<")
+
+  sectionTimeline.from(description, { 
+    opacity: 0,
+    y: 40,
+  }, "<0.4")
+
+  sectionTimeline.from(".section-video-text_detail", {
     opacity: 0,
     stagger: 0.1
   }, "<0.2")
+  
+  
+  
 
 </script>
 
@@ -84,7 +95,7 @@ const { content } = Astro.props;
     align-items: stretch;
     padding: var(--space-lg) var(--page-margin-narrow);
     gap: var(--space-md);
-    min-height: 80svh;
+    /* min-height: 80svh; */
     /* width: 100%; */
     /* display: none; */
   }
