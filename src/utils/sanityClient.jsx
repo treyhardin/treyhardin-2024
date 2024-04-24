@@ -19,9 +19,9 @@ const projectCardFields = `..., mainImage{${imageFields}}, "projectType": { "tit
 
 const contentBlocks = (`
   _type == "sectionHome_Hero" => {..., image{${imageFields}}, "imageURL": image.asset->url},
-  _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url},
+  _type == "sectionGlobal_VideoText" => {..., "videoURL": video.asset->url, image{${imageFields}} },
   _type == "sectionGlobal_Projects" => {..., projects[]->{${projectCardFields}}},
-  _type == "sectionGlobal_ImagesLink" => {...},
+  _type == "sectionGlobal_ImagesLink" => {..., images[]{..., image{${imageFields}} } },
   _type == "sectionGlobal_Blog" => {..., "featuredPost": featuredPost->{..., mainImage{..., ${imageFields} }, "otherPosts": *[_type == "blogPost" && ^._id != _id ]{..., "categoryName": category->title } | order(publishedAt desc)[0..2] } },
   _type == "sectionGlobal_TextVideoAutoplay" => {..., "videoURL": video.asset->url},
   _type == "sectionGlobal_TextMedia" => {...},

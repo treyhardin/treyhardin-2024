@@ -1,6 +1,7 @@
 ---
 import { urlFor } from "../../../utils/sanityClient";
 import Button from '../../global/Button.astro'
+import SanityImage from "../../helpers/SanityImage.astro";
 
 const { content } = Astro.props;
 ---
@@ -29,16 +30,9 @@ const { content } = Astro.props;
         playsinline
       />
      : 
-      <img 
-        class="asset image"
-        id="section-video-text_media"
+      <SanityImage
         sizes="(max-width: 768px): 100vw, 33vw"
-        srcset={`
-          ${urlFor(content.image).width(600).height(1000).auto('format').url()} 600w,
-          ${urlFor(content.image).width(800).height(1000).auto('format').url()} 800w,
-          ${urlFor(content.image).width(1280).height(1000).auto('format').url()} 1280w,
-        `}
-        src={urlFor(content.image).url()} 
+        image={content.image}
       />
     }
 

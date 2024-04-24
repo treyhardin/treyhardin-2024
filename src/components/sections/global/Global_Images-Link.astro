@@ -1,6 +1,7 @@
 ---
 import Star from "../../../icons/Star.astro";
 import { urlFor } from "../../../utils/sanityClient";
+import SanityImage from "../../helpers/SanityImage.astro";
 import GlobalTickerLink from "./Global_Ticker-Link.astro";
 
 const { content } = Astro.props;
@@ -10,24 +11,16 @@ const tickerText = [];
 for (let i = 0; i < tickerCount; i++) {
   tickerText.push(content.linkText);
 }
+
+console.log(content.images[0])
 ---
-<section class="images-link">
+<section class="section_images-link">
 
   <div class="section-title">
     <span class="media-featured">
-      <img 
-        class="image"
-        width="40vw"
-        height="30vw"
-        sizes="30vw"
-        srcset={`
-          ${urlFor(content.images[0].image).width(400).height(300).auto('format').url()} 400w,
-          ${urlFor(content.images[0].image).width(600).height(450).auto('format').url()} 600w,
-          ${urlFor(content.images[0].image).width(960).height(720).auto('format').url()} 960w,
-          ${urlFor(content.images[0].image).width(1280).height(960).auto('format').url()} 1280w,
-          ${urlFor(content.images[0].image).width(1440).height(1080).auto('format').url()} 1080w,
-        `}
-        src={urlFor(content.images[0].image).url()}
+      <SanityImage 
+        image={content.images[0].image}
+        sizes="50vw"
       />
     </span>
     <span class="text">
@@ -52,18 +45,9 @@ for (let i = 0; i < tickerCount; i++) {
         if (i > 0){
           return (
             <span class="media-inline">
-              <img 
-                width="20vw"
-                height="26.67vw"
-                class="inline-image"
+              <SanityImage 
                 sizes="20vw"
-                srcset={`
-                  ${urlFor(asset.image).width(120).height(90).auto('format').url()} 120w,
-                  ${urlFor(asset.image).width(240).height(180).auto('format').url()} 240w,
-                  ${urlFor(asset.image).width(400).height(300).auto('format').url()} 400w,
-                  ${urlFor(asset.image).width(600).height(450).auto('format').url()} 600w,
-                `}
-                src={urlFor(asset.image).url()} 
+                image={asset.image}
               />
             </span>
           )
@@ -74,8 +58,30 @@ for (let i = 0; i < tickerCount; i++) {
 
 </section>
 
+<script>
+
+
+
+  // const timeline = 
+
+import { gsap, mediaScroll } from "../../../utils/gsap"
+
+  const section = document.querySelector('.section_images-link')
+  const images = section.querySelectorAll('img')
+
+  const timeline = gsap.timeline({ scrollTrigger: {
+    trigger: section,
+    start: "top 80%"
+  }, defaults: { ease: "power4.out", duration: 0.8 }})
+
+  images.forEach((image) => {
+    mediaScroll(image)
+  })
+
+</script>
+
 <style>
-  .images-link {
+  .section_images-link {
     padding: var(--space-xl) 0;
     /* height: calc(100svh - var(--header-height)); */
     display: flex;
