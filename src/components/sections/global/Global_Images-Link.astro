@@ -37,7 +37,7 @@ console.log(content.images[0])
 
   <div class="section-details">
     <span class="pagination">
-      <p class="caption">{content.subtext}</p>
+      <p class="pagination-title caption">{content.subtext}</p>
       <span class="divider"></span>
     </span>
     <span class="inline-images">
@@ -64,19 +64,29 @@ console.log(content.images[0])
 
   // const timeline = 
 
-import { gsap, mediaScroll } from "../../../utils/gsap"
+import { gsap, mediaScroll, rotateIn, fadeUp } from "../../../utils/gsap"
 
   const section = document.querySelector('.section_images-link')
   const images = section.querySelectorAll('img')
+  const description = section.querySelector('.description')
+  const paginationTitle = section.querySelector('.pagination-title')
+  const paginationBar = section.querySelector('.divider')
 
   const timeline = gsap.timeline({ scrollTrigger: {
     trigger: section,
     start: "top 80%"
-  }, defaults: { ease: "power4.out", duration: 0.8 }})
+  }, defaults: { ease: "power4.out", duration: 1.2 }})
 
   images.forEach((image) => {
     mediaScroll(image)
   })
+
+  rotateIn(description, timeline, "<")
+  fadeUp(paginationTitle, timeline, 0.6, "<0.4")
+  timeline.from(paginationBar, {
+    maxWidth: "0%",
+    duration: 3,
+  }, "<0.4")
 
 </script>
 
@@ -159,6 +169,7 @@ import { gsap, mediaScroll } from "../../../utils/gsap"
     flex-grow: 1;
     height: 1px;
     background: currentColor;
+    max-width: 100%;
   }
 
   .inline-images {

@@ -429,6 +429,10 @@
                 x: mouseSpeed.x,
                 y: mouseSpeed.y
             })
+            gsap.to(intersects[0].object.material.uniforms.uHoverState, {
+                duration: 0.8,
+                value: 1
+            })
         }
 
         imageMeshes.map((mesh) => {

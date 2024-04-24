@@ -43,6 +43,14 @@ export const rotateIn = ( element, timeline, timing ) => {
   }, timing)
 }
 
+export const fadeUp = ( element, timeline, duration, timing ) => {
+  timeline.from(element, {
+    opacity: 0,
+    y: 40,
+    duration: duration
+  }, timing)
+}
+
 export const scrambleIn = ( element, timeline, timing) => {
   timeline.to(element, {
     autoAlpha: 1,
