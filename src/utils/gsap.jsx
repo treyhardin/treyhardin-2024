@@ -43,7 +43,7 @@ export const rotateIn = ( element, timeline, timing ) => {
   }, timing)
 }
 
-export const fadeUp = ( element, timeline, duration, timing ) => {
+export const fadeUp = ( element, timeline, duration = 1, timing ) => {
   timeline.from(element, {
     opacity: 0,
     y: 40,
