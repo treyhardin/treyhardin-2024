@@ -11,21 +11,21 @@ import { Icon } from 'astro-icon/components'
         <Icon name="logoTrey" class="logo"/>
         <span class="tagline">
           <Icon name="star" />
-          <p class="utility">"George" technically</p>
+          <p class="tagline-text utility">"George" technically</p>
         </span>
       </span>
 
       <nav class="navigation">
-        <a href="#" class="h5">Work</a>
-        <a href="#" class="h5">About</a>
-        <a href="#" class="h5">Musings</a>
-        <a href="#" class="h5">Contact</a>
+        <a class="footer-link h6" href="#" class="h5">Work</a>
+        <a class="footer-link h6" href="#" class="h5">About</a>
+        <a class="footer-link h6" href="#" class="h5">Musings</a>
+        <a class="footer-link h6" href="#" class="h5">Contact</a>
       </nav>
     </div>
 
 
     <div class="section-details">
-      <p class="h5">Brooklyn, NY</p>
+      <p class="subtitle h5">Brooklyn, NY</p>
       <span class="logo-secondary">
         <Icon name="logoHardin" class="logo" />
       </span>
@@ -37,6 +37,41 @@ import { Icon } from 'astro-icon/components'
     <a href="#" class="utility">Truman Creative</p>
   </div>
 </footer>
+
+<script>
+
+  import { gsap } from "../../utils/gsap";
+
+  const section = document.querySelector('footer')
+  const links = section.querySelectorAll('.footer-link')
+  const subtitle = section.querySelector('.subtitle')
+  const tagline = section.querySelector('.tagline-text')
+
+  console.log(section)
+  // console.log(links)
+
+  const timeline = gsap.timeline({ scrollTrigger: {
+    trigger: section,
+    start: "top 80%"
+  }, defaults: { ease: "power4.out", duration: 1.0 }})
+
+  timeline.from(links, {
+    opacity: 0,
+    y: 30,
+    stagger: 0.2,
+  })
+
+  timeline.from(subtitle, {
+    opacity: 0,
+    y: 30,
+  }, "<0.8")
+
+  timeline.from(tagline, {
+    opacity: 0,
+    y: 30,
+  }, "<0.4")
+
+</script>
 
 <style>
 
