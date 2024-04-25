@@ -501,22 +501,25 @@
         })
     }
     
-    document.addEventListener("astro:page-load", () => {
+    document.addEventListener("astro:page-load", (e) => {
 
-        imagesLoaded(document.body, () => {
-            images = document.querySelectorAll('[data-three-image="true"]')
+        if (e.target instanceof Document) {
 
-            initialScroll = lenis.actualScroll
-            scrollPosition = lenis.actualScroll
+            imagesLoaded(e.target.body, () => {
+                images = document.querySelectorAll('[data-three-image="true"]')
 
-            if (!isMobile() && !hasTouchSupport() && images) {
-                window.addEventListener("resize", handleResize)
-                initScene()
-                addImagePlanes()
-                render()
-                hideImages(images)
-            }
-        })
+                initialScroll = lenis.actualScroll
+                scrollPosition = lenis.actualScroll
+
+                if (!isMobile() && !hasTouchSupport() && images) {
+                    window.addEventListener("resize", handleResize)
+                    initScene()
+                    addImagePlanes()
+                    render()
+                    hideImages(images)
+                }
+            })
+        }
 
     })
     
