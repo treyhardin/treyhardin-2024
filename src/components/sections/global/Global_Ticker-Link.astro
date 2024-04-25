@@ -10,14 +10,25 @@ for (let i = 0; i < textIterations; i++) {
 }
 ---
 <section class="section_ticker-link">
+    { content.url ? 
     <a class="ticker-track" href={content.url} target={content.externalLink ? "_blank" : ""}>
         {tickerContent.map((text) => (
             <div class="ticker-item">
-            <p class="ticker-text h1">{content.text}</p>
-            <Icon name="star" />
-        </div>
+                <p class="ticker-text h1">{content.text}</p>
+                <Icon name="star" />
+            </div>
         ))}
     </a>
+    : 
+    <div class="ticker-track">
+        {tickerContent.map((text) => (
+            <div class="ticker-item">
+                <p class="ticker-text h2">{content.text}</p>
+                <Icon name="star" />
+            </div>
+        ))}
+    </div>
+    }
 </section>
 
 <script>
@@ -78,12 +89,12 @@ for (let i = 0; i < textIterations; i++) {
         }
     }
 
-    .ticker-track:hover {
+    a.ticker-track:hover {
         animation-play-state: paused;
         color: var(--color-background);
     }
 
-    .ticker-track::after {
+    a.ticker-track::after {
         background: var(--color-foreground);
         height: 0%;
         width: 100%;

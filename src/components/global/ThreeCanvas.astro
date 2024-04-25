@@ -367,6 +367,7 @@
     }
 
     lenis.on("scroll", (e) => {
+        // console.log(lenis)
         scrollPosition = lenis.actualScroll
         imageMeshes.forEach((mesh) => {
             positionImage(mesh.plane, mesh.boundingBox)

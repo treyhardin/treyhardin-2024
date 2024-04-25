@@ -42,6 +42,16 @@ export async function getBlogPosts() {
   return posts
 }
 
+export async function getBlogPageContent() {
+  const pageContent = await client.fetch('*[_type == "blogPage"]')
+  return pageContent[0]
+}
+
+export async function getBlogCategories() {
+  const categories = await client.fetch(`*[_type == "blogCategory"]{...}`)
+  return categories
+}
+
 export async function getHomePageContent() {
   const content = await client.fetch(`*[_type == "homePage"]{..., content[]{${contentBlocks}} }`)
   return content[0]
