@@ -62,7 +62,7 @@ const { title, theme = "light", inlineHeader = false } = Astro.props;
 		<main id="smooth-wrapper">
 			<div id="smooth-content">
 				<slot />
-				<Footer />
+				<Footer content={data} />
 			</div>
 		</main>
 	</body>

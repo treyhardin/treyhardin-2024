@@ -12,24 +12,44 @@ gsap.registerPlugin(ScrollTrigger,ScrollSmoother, ScrambleTextPlugin);
 
 export const mediaZoom = (element, timeline, timing) => {
   timeline.from(element, {
-    scale: 1.4,
-    duration: 3
+    // opacity: 0,
+    scale: 1.5,
+    duration: 3,
   }, timing)
 }
 
+export const mediaScroll = ( element ) => {
+  gsap.fromTo(element, 
+    {
+      y: "-10%",
+      scale: 1.2
+    },
+    {
+      y: "10%",
+      scale: 1.2,
+      scrollTrigger: {
+        trigger: element,
+        scrub: true
+      }
+    }
+)
+}
 
+export const rotateIn = ( element, timeline, timing ) => {
+  timeline.from(element, {
+    opacity: 0,
+    rotate: 3,
+    transformOrigin: "-200% 0"
+  }, timing)
+}
 
-// let scroll
-
-// document.addEventListener("astro:page-load", () => {
-//   console.log('scrooool')
-//   if (scroll) scroll.kill()
-//   scroll = ScrollSmoother.create({
-//     smooth: 1,
-//     effects: true,
-//   });
-// })
-
+export const fadeUp = ( element, timeline, duration = 1, timing ) => {
+  timeline.from(element, {
+    opacity: 0,
+    y: 40,
+    duration: duration
+  }, timing)
+}
 
 export const scrambleIn = ( element, timeline, timing) => {
   timeline.to(element, {
@@ -37,7 +57,7 @@ export const scrambleIn = ( element, timeline, timing) => {
     scrambleText: {
       text: "{original}",
       chars: "!@#$%^&*()TREY",
-      revealDelay: 0.6,
+      revealDelay: 0.4,
       speed: 0.7,
     },
     duration: 0.6,

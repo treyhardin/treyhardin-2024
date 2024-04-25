@@ -9,17 +9,48 @@ for (let i = 0; i < textIterations; i++) {
     tickerContent.push(content.text)
 }
 ---
-<section class="ticker-link">
+<section class="section_ticker-link">
+    { content.url ? 
     <a class="ticker-track" href={content.url} target={content.externalLink ? "_blank" : ""}>
         {tickerContent.map((text) => (
-            <p class="ticker-text h1">{content.text}</p>
-            <Icon name="star" />
+            <div class="ticker-item">
+                <p class="ticker-text h1">{content.text}</p>
+                <Icon name="star" />
+            </div>
         ))}
     </a>
+    : 
+    <div class="ticker-track">
+        {tickerContent.map((text) => (
+            <div class="ticker-item">
+                <p class="ticker-text h2">{content.text}</p>
+                <Icon name="star" />
+            </div>
+        ))}
+    </div>
+    }
 </section>
 
+<script>
+    import { gsap } from "../../../utils/gsap"
+    const section = document.querySelector('.section_ticker-link')
+    const tickerItems = section.querySelectorAll('.ticker-item')
+
+    gsap.from(tickerItems, {
+        scrollTrigger: {
+            trigger: section,
+            start: "top 80%"
+        },
+        y: 40,
+        opacity: 0,
+        duration: 1,
+        stagger: 0.1,
+    })
+    
+</script>
+
 <style>
-    .ticker-link {
+    .section_ticker-link {
         overflow: hidden;
         max-width: 100%;
     }
@@ -58,12 +89,12 @@ for (let i = 0; i < textIterations; i++) {
         }
     }
 
-    .ticker-track:hover {
+    a.ticker-track:hover {
         animation-play-state: paused;
         color: var(--color-background);
     }
 
-    .ticker-track::after {
+    a.ticker-track::after {
         background: var(--color-foreground);
         height: 0%;
         width: 100%;
@@ -71,10 +102,18 @@ for (let i = 0; i < textIterations; i++) {
         z-index: 0;
     }
 
-    .ticker-track * {
-        position: relative;
+    .ticker-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: var(--space-xs);
         z-index: 1;
     }
+
+    /* .ticker-track * {
+        position: relative;
+        z-index: 1;
+    } */
 
     .ticker-track:hover::after {
         height: 100%;

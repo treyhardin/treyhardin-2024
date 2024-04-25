@@ -1,3 +1,9 @@
 ---
+const { postCount, categories} = Astro.props
 ---
-<h1>Musings Hero</h1>
+<h1>Musings</h1>
+<p>({postCount})</p>
+
+{categories.map((category) => (
+    <a href={`/musings/${category.slug.current}`}>{category.title}</a>
+))}

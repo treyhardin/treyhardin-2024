@@ -1,13 +1,31 @@
 ---
 import BlogHero from "../../components/sections/musings/Blog_Hero.astro";
 import BlogGrid from "../../components/sections/musings/Blog_Grid.astro"
-import TickerText from "../../components/sections/global/Global_Ticker-Text.astro"
 import Layout from "../../layouts/Layout.astro";
+import TickerLink from "../../components/sections/global/Global_Ticker-Link.astro"
+import { getBlogCategories, getBlogPosts, getBlogPageContent } from "../../utils/sanityClient";
+
+const content = await getBlogPageContent()
+const posts = await getBlogPosts()
+const categories = await getBlogCategories()
+
+console.log(content)
 
 ---
 <Layout
     title="Musings"
 >
-    <BlogHero />
-    <BlogGrid />
+    <BlogHero
+        postCount={posts.length}
+        categories={categories}
+    />
+    <TickerLink 
+        content={{text: content.tickerText}}
+    />
+    <!-- <TickerText 
+        text={'test'}
+    /> -->
+    <BlogGrid
+        posts={posts}
+    />
 </Layout>

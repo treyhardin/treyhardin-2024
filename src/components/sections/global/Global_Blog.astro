@@ -21,7 +21,7 @@ if (!content || !content.featuredPost) {
 
 // console.log(featuredPost)
 ---
-<section class="blog">
+<section class="section_blog">
   <div class="content">
 
     <div class="section-title">
@@ -29,7 +29,7 @@ if (!content || !content.featuredPost) {
         <h2 class="post-title h1">{featuredPost.title}</h2>
         <Button type="primary" url={`/musings/${featuredPost.slug.current}`} text="Read More" />
       </span>
-      <p class="caption">Musings</p>
+      <p class="subtitle caption">Musings</p>
     </div>
 
     <div class="section-detail">
@@ -55,8 +55,35 @@ if (!content || !content.featuredPost) {
   </div>
 </section>
 
+<script>
+  import { fadeUp, rotateIn, gsap } from "../../../utils/gsap";
+
+  const section = document.querySelector('.section_blog')
+  const title = section.querySelector('.featured-post')
+  const subtitle = section.querySelector('.subtitle')
+  const posts = section.querySelectorAll('.related-post')
+  const details = section.querySelector('.section-detail')
+  const button = details.querySelector('.button')
+
+  const timeline = gsap.timeline({ scrollTrigger: {
+    trigger: section,
+    start: "top 80%"
+  }, defaults: { ease: "power4.out", duration: 1.2 }})
+
+  fadeUp(title, timeline)
+  rotateIn(subtitle, timeline, "<0.4")
+  timeline.from(posts, {
+    opacity: 0,
+    y: 20,
+    stagger: 0.2,
+  }, "<0.2")
+  fadeUp(button, timeline, 2, "<0.6")
+
+
+</script>
+
 <style>
-  .blog {
+  .section_blog {
     min-height: calc(90svh - var(--header-height));
     /* display: none; */
     padding: var(--page-margin);

@@ -1,5 +1,7 @@
 ---
 import { Icon } from 'astro-icon/components'
+
+const { content } = Astro.props;
 ---
 <footer>
 
@@ -11,21 +13,20 @@ import { Icon } from 'astro-icon/components'
         <Icon name="logoTrey" class="logo"/>
         <span class="tagline">
           <Icon name="star" />
-          <p class="utility">"George" technically</p>
+          <p class="tagline-text utility">{content.footerTagline}</p>
         </span>
       </span>
 
       <nav class="navigation">
-        <a href="#" class="h5">Work</a>
-        <a href="#" class="h5">About</a>
-        <a href="#" class="h5">Musings</a>
-        <a href="#" class="h5">Contact</a>
+        {content.footerNavigation.map((link) => (
+          <a class="footer-link h6" href={link.url}>{link.text}</a>
+        ))}
       </nav>
     </div>
 
 
     <div class="section-details">
-      <p class="h5">Brooklyn, NY</p>
+      <p class="subtitle h6">{content.footerSubtitle}</p>
       <span class="logo-secondary">
         <Icon name="logoHardin" class="logo" />
       </span>
@@ -33,10 +34,49 @@ import { Icon } from 'astro-icon/components'
     </div>
   </div>
   <div class="subfooter">
-    <p class="utility">Trey Hardin ©2024</p>
-    <a href="#" class="utility">Truman Creative</p>
+    <p class="utility">{content.copyrightText}</p>
+    <div class="subfooter-links">
+      {content.footerLinks.map((link) => (
+        <a class="utility" href={link.url} target="_blank">{link.text}</a>
+      ))}
+    </div>
   </div>
 </footer>
+
+<script>
+
+  import { gsap } from "../../utils/gsap";
+
+  const section = document.querySelector('footer')
+  const links = section.querySelectorAll('.footer-link')
+  const subtitle = section.querySelector('.subtitle')
+  const tagline = section.querySelector('.tagline-text')
+
+  // console.log(section)
+  // console.log(links)
+
+  const timeline = gsap.timeline({ scrollTrigger: {
+    trigger: section,
+    start: "top 80%"
+  }, defaults: { ease: "power4.out", duration: 1.0 }})
+
+  timeline.from(links, {
+    opacity: 0,
+    y: 30,
+    stagger: 0.2,
+  })
+
+  timeline.from(subtitle, {
+    opacity: 0,
+    y: 30,
+  }, "<0.8")
+
+  timeline.from(tagline, {
+    opacity: 0,
+    y: 30,
+  }, "<0.4")
+
+</script>
 
 <style>
 
@@ -101,6 +141,13 @@ import { Icon } from 'astro-icon/components'
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+  }
+
+  .subfooter-links {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-sm);
   }
 
   @media screen and (max-width: 768px) {
